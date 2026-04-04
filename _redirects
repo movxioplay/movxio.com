@@ -1,4 +1,3 @@
 # Redirect root to index
 /home    /index.html    301
 /movies  /browse.html   301
-/watch   /watch.html    301
