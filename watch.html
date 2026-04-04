@@ -75,35 +75,50 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   height: 100vh !important;
   aspect-ratio: unset !important;
   max-height: unset !important;
-  background: #000;
-  display: flex;
-  flex-direction: column;
+  background: #000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
 }
+/* Video.js wrapper in fullscreen */
 #playerContainer:fullscreen .video-js,
 #playerContainer:-webkit-full-screen .video-js,
 #playerContainer:-moz-full-screen .video-js,
 #playerContainer:-ms-fullscreen .video-js {
-  flex: 1 !important;
+  flex: 1 1 0 !important;
   width: 100% !important;
   height: 0 !important;
   min-height: 0 !important;
   aspect-ratio: unset !important;
   max-height: unset !important;
-  object-fit: contain;
+  position: relative !important;
 }
+/* Actual video element in fullscreen - CONTAIN not cover */
+#playerContainer:fullscreen .video-js video,
+#playerContainer:-webkit-full-screen .video-js video,
+#playerContainer:-moz-full-screen .video-js video,
+#playerContainer:-ms-fullscreen .video-js video {
+  position: absolute !important;
+  top: 0 !important; left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+/* Controls stay at bottom */
 #playerContainer:fullscreen #customControls,
 #playerContainer:-webkit-full-screen #customControls,
 #playerContainer:-moz-full-screen #customControls,
 #playerContainer:-ms-fullscreen #customControls {
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  bottom: auto !important;
 }
-#playerContainer:fullscreen .video-js video,
-#playerContainer:-webkit-full-screen .video-js video {
+/* Title bar in fullscreen */
+#playerContainer:fullscreen #playerTitleBar,
+#playerContainer:-webkit-full-screen #playerTitleBar {
   position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
+  top: 0 !important;
 }
 
 /* Portrait mobile — fill width */
