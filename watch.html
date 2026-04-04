@@ -412,8 +412,8 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 
 <script>
 const CONFIG = {
-  SUPABASE_URL:  localStorage.getItem('cv_url')    || '',
-  SUPABASE_KEY:  localStorage.getItem('cv_key')    || '',
+  SUPABASE_URL:  localStorage.getItem('cv_url')    || 'https://kncqgatjjcezlnwwikqm.supabase.co',
+  SUPABASE_KEY:  localStorage.getItem('cv_key')    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc',
   WORKER_URL:    localStorage.getItem('cv_worker') || '',
   SAVE_INTERVAL: 10,
 };
@@ -616,12 +616,13 @@ async function incrementViews(fid) {
 // ── Render film info ──────────────────────────────────────────
 function renderInfo(film) {
   document.title = `${film.title} — MOVXIO`;
-  document.getElementById('filmEyebrow').textContent = film.genre || 'Now Streaming';
+  const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
+  document.getElementById('filmEyebrow').textContent = genres[0] || 'Now Streaming';
   document.getElementById('filmTitle').textContent = film.title;
   document.getElementById('filmDesc').textContent = film.description || '';
   document.getElementById('filmMeta').innerHTML = [
     film.year     ? `<span class="meta-tag">${esc(String(film.year))}</span>` : '',
-    film.genre    ? `<span class="meta-tag">${esc(film.genre)}</span>` : '',
+    ...genres.map(g => `<span class="meta-tag">${esc(g)}</span>`),
     film.language ? `<span class="meta-tag">${esc(film.language)}</span>` : '',
     film.duration_secs ? `<span class="meta-tag">${formatDur(film.duration_secs)}</span>` : '',
     `<span class="meta-tag free">★ Free</span>`,
