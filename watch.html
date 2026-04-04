@@ -64,20 +64,19 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .video-js .vjs-big-play-button { display: none !important; }
 .video-js .vjs-loading-spinner { display: none !important; }
 .video-js .vjs-error-display { display: none !important; }
-.video-js { width: 100% !important; aspect-ratio: 16/9; background: #000; cursor: none; }
-
-/* Portrait mobile — fill width */
-@media (max-width: 600px) {
-  .player-section { position: relative; }
-  #playerContainer { aspect-ratio: 16/9; width: 100%; max-height: 56vw; }
-  .video-js { max-height: 56vw; }
+/* Force video + all Video.js wrappers to fill the container absolutely */
+.video-js,
+.video-js .vjs-tech,
+.video-js video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  background: #000;
+  cursor: none;
+  aspect-ratio: unset !important;
 }
-/* Landscape mobile — fill screen */
-@media (max-height: 500px) and (orientation: landscape) {
-  #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
-  .video-js { aspect-ratio: unset !important; height: 100svh !important; }
-}
-.video-js.vjs-has-started .vjs-poster { display: none !important; }
 
 /* ── PLAYER CONTAINER ── */
 #playerContainer {
@@ -87,8 +86,20 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   background: #000;
   overflow: hidden;
   cursor: none;
+  /* Ensure children don't collapse it */
+  min-height: 0;
 }
 #playerContainer.controls-visible { cursor: default; }
+
+/* Portrait mobile — fill width */
+@media (max-width: 600px) {
+  .player-section { position: relative; }
+  #playerContainer { aspect-ratio: 16/9; width: 100%; max-height: 56vw; }
+}
+/* Landscape mobile — fill screen */
+@media (max-height: 500px) and (orientation: landscape) {
+  #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
+}
 
 /* ── LOADING STATE ── */
 #playerLoading {
@@ -809,10 +820,11 @@ clickOverlay.addEventListener('click', (e) => {
   const side = x < rect.width / 3 ? 'left' : x > rect.width * 2/3 ? 'right' : 'center';
   const now = Date.now();
 
-  if (now - lastTap < 300 && lastTapSide === side && side !== 'center') {
-    // Double tap/click — skip
+  if (now - lastTap < 300 && lastTapSide === side) {
+    // Double click/tap
     if (side === 'left') { seek(-10); showSkipIndicator('back'); }
-    else { seek(10); showSkipIndicator('fwd'); }
+    else if (side === 'right') { seek(10); showSkipIndicator('fwd'); }
+    else { toggleFullscreen(); } // double-click center = fullscreen
     lastTap = 0;
     return;
   }
@@ -835,10 +847,11 @@ clickOverlay.addEventListener('touchend', (e) => {
   const side = x < rect.width / 3 ? 'left' : x > rect.width * 2/3 ? 'right' : 'center';
   const now = Date.now();
 
-  if (now - lastTap < 300 && lastTapSide === side && side !== 'center') {
+  if (now - lastTap < 300 && lastTapSide === side) {
     clearTimeout(touchTimer);
     if (side === 'left') { seek(-10); showSkipIndicator('back'); }
-    else { seek(10); showSkipIndicator('fwd'); }
+    else if (side === 'right') { seek(10); showSkipIndicator('fwd'); }
+    else { toggleFullscreen(); } // double-tap center = fullscreen
     lastTap = 0;
     return;
   }
@@ -1134,12 +1147,14 @@ function initPlayer(film, videoUrl) {
     player.addRemoteTextTrack({ kind:'subtitles', src:sub.url, srclang:sub.lang.toLowerCase().slice(0,2), label:sub.lang, default: false }, false);
   });
 
+  // CC button — always visible
+  const btnCC = document.getElementById('btnCC');
+  btnCC.style.display = '';
+  const ccList = document.getElementById('ccList');
+  const checkSVG = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
   // Show CC button if subtitles available
   if (subs.length > 0) {
-    const btnCC = document.getElementById('btnCC');
-    btnCC.style.display = '';
-    const ccList = document.getElementById('ccList');
-    const checkSVG = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
     const offItem = document.createElement('div');
     offItem.className = 'menu-item cc-item active';
     offItem.dataset.lang = 'off';
@@ -1173,6 +1188,13 @@ function initPlayer(film, videoUrl) {
       document.getElementById('ccMenu').classList.remove('open');
       document.getElementById('btnCC').classList.toggle('active', !isOff);
     });
+  } else {
+    // No subtitles — show placeholder
+    const noSub = document.createElement('div');
+    noSub.style.cssText = 'padding:10px 10px 8px;font-size:12px;color:var(--text-muted);font-family:"DM Sans",sans-serif;';
+    noSub.textContent = 'No subtitles available';
+    ccList.appendChild(noSub);
+    btnCC.style.opacity = '0.45';
   }
 
   player.on('waiting', () => {
