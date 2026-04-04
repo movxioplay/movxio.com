@@ -89,7 +89,35 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .form-group textarea { resize: vertical; min-height: 80px; }
 .form-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
-/* ── TOGGLE ── */
+/* ── GENRE CHECKBOXES ── */
+.genre-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.genre-cb {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 40px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-dim);
+  transition: all 0.15s;
+  user-select: none;
+}
+.genre-cb:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+.genre-cb input[type="checkbox"] { display: none; }
+.genre-cb:has(input:checked) {
+  background: rgba(232,71,63,0.12);
+  border-color: var(--accent);
+  color: var(--text);
+}
+.genre-cb span { font-size: 13px; }
 .toggle-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; }
 .toggle { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
 .toggle input { opacity: 0; width: 0; height: 0; }
@@ -219,14 +247,20 @@ tr:hover td { background: rgba(255,255,255,0.02); }
             <label>Year</label>
             <input type="number" id="f-year" placeholder="2024" min="1900" max="2099" inputmode="numeric">
           </div>
-          <div class="form-group">
-            <label>Genre</label>
-            <select id="f-genre">
-              <option value="">Select genre</option>
-              <option>action</option><option>drama</option><option>comedy</option>
-              <option>thriller</option><option>horror</option><option>documentary</option>
-              <option>romance</option><option>sci-fi</option>
-            </select>
+          <div class="form-group" style="grid-column:1/-1;">
+            <label>Genre <span style="font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;">(select one or more)</span></label>
+            <div class="genre-checkboxes" id="genreCheckboxes">
+              <label class="genre-cb"><input type="checkbox" value="action">      <span>💥 Action</span></label>
+              <label class="genre-cb"><input type="checkbox" value="drama">       <span>🎭 Drama</span></label>
+              <label class="genre-cb"><input type="checkbox" value="comedy">      <span>😄 Comedy</span></label>
+              <label class="genre-cb"><input type="checkbox" value="thriller">    <span>🔪 Thriller</span></label>
+              <label class="genre-cb"><input type="checkbox" value="horror">      <span>👻 Horror</span></label>
+              <label class="genre-cb"><input type="checkbox" value="documentary"> <span>📽️ Documentary</span></label>
+              <label class="genre-cb"><input type="checkbox" value="romance">     <span>💖 Romance</span></label>
+              <label class="genre-cb"><input type="checkbox" value="sci-fi">      <span>🚀 Sci-Fi</span></label>
+              <label class="genre-cb"><input type="checkbox" value="sinhala">     <span>🇱🇰 සිංහල</span></label>
+              <label class="genre-cb"><input type="checkbox" value="tamil">       <span>🇱🇰 தமிழ்</span></label>
+            </div>
           </div>
         </div>
 
@@ -386,8 +420,8 @@ wrangler r2 bucket list</div>
 <div class="toast" id="toast"></div>
 
 <script>
-let SUPABASE_URL    = localStorage.getItem('cv_url')    || 'YOUR_SUPABASE_URL';
-let SUPABASE_KEY    = localStorage.getItem('cv_key')    || 'YOUR_SUPABASE_ANON_KEY';
+let SUPABASE_URL    = localStorage.getItem('cv_url')    || 'https://kncqgatjjcezlnwwikqm.supabase.co';
+let SUPABASE_KEY    = localStorage.getItem('cv_key')    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc';
 let WORKER_URL      = localStorage.getItem('cv_worker') || '';
 let R2_BASE         = localStorage.getItem('cv_r2')     || 'https://videos.movxio.com';
 let ADMIN_PASSWORD  = localStorage.getItem('cv_pwd')    || 'admin123';
@@ -440,10 +474,17 @@ let localFilms = JSON.parse(localStorage.getItem('cv_films') || 'null') || [
 ];
 function saveLocal() { localStorage.setItem('cv_films', JSON.stringify(localFilms)); }
 
+// ── Genre badge helper ────────────────────────────────────────
+function genreBadges(genre) {
+  if (!genre) return '—';
+  return genre.split(',').map(g => g.trim()).filter(Boolean)
+    .map(g => `<span class="badge-genre" style="margin-right:3px;">${g}</span>`).join('');
+}
+
 // ── Load films ────────────────────────────────────────────────
 async function loadFilms() {
   let films;
-  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+  if (SUPABASE_URL) {
     try { films = await supaFetch('films?select=*&order=created_at.desc'); }
     catch(e) { films = localFilms; toast('Using local data (Supabase error)', true); }
   } else { films = localFilms; }
@@ -452,7 +493,8 @@ async function loadFilms() {
   document.getElementById('stat-total').textContent    = films.length;
   document.getElementById('stat-featured').textContent = films.filter(f => f.featured).length;
   document.getElementById('stat-video').textContent    = films.filter(f => f.hls_url).length;
-  document.getElementById('stat-genres').textContent   = new Set(films.map(f => f.genre).filter(Boolean)).size;
+  const allGenres = new Set(films.flatMap(f => (f.genre||'').split(',').map(g=>g.trim()).filter(Boolean)));
+  document.getElementById('stat-genres').textContent   = allGenres.size;
 
   if (!films.length) {
     document.getElementById('film-list').innerHTML = `<div class="empty-state"><div class="icon">🎬</div><p>No films yet. Click Add Film to get started!</p></div>`;
@@ -466,7 +508,7 @@ async function loadFilms() {
       ${f.thumbnail_url ? `<img class="list-thumb" src="${f.thumbnail_url}" alt="">` : `<div class="list-thumb-ph">🎬</div>`}
       <div class="list-info">
         <div class="list-title">${f.title}${f.featured ? ' <span class="badge-featured">★</span>' : ''}</div>
-        <div class="list-meta">${f.genre || '—'} · ${f.year || '—'} · ${f.hls_url ? '🟢 HLS' : '🔴 No video'}</div>
+        <div class="list-meta">${genreBadges(f.genre)} · ${f.year || '—'} · ${f.hls_url ? '🟢 HLS' : '🔴 No video'}</div>
       </div>
       <div class="list-actions">
         <button class="btn-edit" onclick='editFilm(${JSON.stringify(f)})'>Edit</button>
@@ -479,7 +521,7 @@ async function loadFilms() {
     <tr>
       <td>${f.thumbnail_url ? `<img class="row-thumb" src="${f.thumbnail_url}" alt="">` : '🎬'}</td>
       <td><strong>${f.title}</strong></td>
-      <td>${f.genre ? `<span class="badge-genre">${f.genre}</span>` : '—'}</td>
+      <td>${f.genre ? genreBadges(f.genre) : '—'}</td>
       <td>${f.year || '—'}</td>
       <td>${f.hls_url ? `<span class="badge-hls">✓ HLS</span>` : `<span class="badge-no-video">No video</span>`}</td>
       <td>${f.featured ? `<span class="badge-featured">★ Featured</span>` : '<span style="color:var(--muted);font-size:12px;">Standard</span>'}</td>
@@ -495,7 +537,7 @@ function openForm() {
   editingId = null;
   document.getElementById('form-title').textContent = 'Add New Film';
   ['f-title','f-year','f-lang','f-duration','f-hls','f-thumb','f-desc'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-genre').value = '';
+  document.querySelectorAll('#genreCheckboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
   document.getElementById('f-featured').checked = false;
   document.getElementById('subtitle-list').innerHTML = '';
   subtitleCount = 0;
@@ -510,7 +552,10 @@ function editFilm(film) {
   document.getElementById('form-title').textContent = 'Edit Film';
   document.getElementById('f-title').value    = film.title         || '';
   document.getElementById('f-year').value     = film.year          || '';
-  document.getElementById('f-genre').value    = film.genre         || '';
+  const genres = (film.genre || '').split(',').map(g => g.trim()).filter(Boolean);
+  document.querySelectorAll('#genreCheckboxes input[type="checkbox"]').forEach(cb => {
+    cb.checked = genres.includes(cb.value);
+  });
   document.getElementById('f-lang').value     = film.language      || '';
   document.getElementById('f-duration').value = film.duration_secs ? Math.round(film.duration_secs / 60) : '';
   document.getElementById('f-hls').value      = film.hls_url       || '';
@@ -567,7 +612,7 @@ async function saveFilm() {
   const data = {
     title,
     year:          parseInt(document.getElementById('f-year').value) || null,
-    genre:         document.getElementById('f-genre').value    || null,
+    genre:         Array.from(document.querySelectorAll('#genreCheckboxes input:checked')).map(cb => cb.value).join(',') || null,
     language:      document.getElementById('f-lang').value     || null,
     hls_url:       document.getElementById('f-hls').value      || null,
     thumbnail_url: document.getElementById('f-thumb').value    || null,
@@ -577,7 +622,7 @@ async function saveFilm() {
     duration_secs: durMins ? durMins * 60 : null,
   };
 
-  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+  if (SUPABASE_URL) {
     try {
       if (editingId) await supaFetch(`films?id=eq.${editingId}`, 'PATCH', data);
       else await supaFetch('films', 'POST', data);
@@ -598,7 +643,7 @@ async function saveFilm() {
 // ── Delete film ───────────────────────────────────────────────
 async function deleteFilm(id) {
   if (!confirm('Delete this film? This cannot be undone.')) return;
-  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+  if (SUPABASE_URL) {
     try { await supaFetch(`films?id=eq.${id}`, 'DELETE'); toast('Deleted!'); loadFilms(); }
     catch(e) { toast('Error deleting film', true); }
   } else {
