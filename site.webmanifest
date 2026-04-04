@@ -1,0 +1,13 @@
+{
+  "name": "MOVXIO",
+  "short_name": "MOVXIO",
+  "description": "Free movies. No signup. Ever.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080810",
+  "theme_color": "#e8473f",
+  "icons": [
+    {"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},
+    {"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}
+  ]
+}
