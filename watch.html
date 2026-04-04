@@ -781,6 +781,12 @@ playerContainer.addEventListener('touchstart', showControls, { passive: true });
 let lastTap = 0, lastTapSide = null;
 const clickOverlay = document.getElementById('clickOverlay');
 
+clickOverlay.addEventListener('dblclick', (e) => {
+  // Double click anywhere = fullscreen
+  toggleFullscreen();
+  lastTap = 0; // prevent single click firing
+});
+
 clickOverlay.addEventListener('click', (e) => {
   if (!player) return;
   const rect = clickOverlay.getBoundingClientRect();
@@ -788,17 +794,15 @@ clickOverlay.addEventListener('click', (e) => {
   const side = x < rect.width / 3 ? 'left' : x > rect.width * 2/3 ? 'right' : 'center';
   const now = Date.now();
 
-  if (now - lastTap < 300 && lastTapSide === side && side !== 'center') {
-    // Double tap/click — skip
-    if (side === 'left') { seek(-10); showSkipIndicator('back'); }
-    else { seek(10); showSkipIndicator('fwd'); }
+  // Ignore if this is part of a double click
+  if (now - lastTap < 300 && lastTapSide === side) {
     lastTap = 0;
     return;
   }
   lastTap = now;
   lastTapSide = side;
 
-  // Single click — play/pause (with delay to allow double tap)
+  // Single click — play/pause (with delay to allow double click detection)
   setTimeout(() => {
     if (Date.now() - lastTap >= 280) togglePlay();
   }, 300);
@@ -1109,52 +1113,73 @@ function initPlayer(film, videoUrl) {
 
   if (film.thumbnail_url) player.poster(film.thumbnail_url);
 
-  // Add subtitle tracks
+  // Add subtitle tracks and build CC menu after player is ready
   const subs = film.subtitles || [];
-  subs.forEach((sub, i) => {
-    player.addRemoteTextTrack({ kind:'subtitles', src:sub.url, srclang:sub.lang.toLowerCase().slice(0,2), label:sub.lang, default: false }, false);
-  });
-
-  // Show CC button if subtitles available
-  if (subs.length > 0) {
-    const btnCC = document.getElementById('btnCC');
-    btnCC.style.display = '';
-    const ccList = document.getElementById('ccList');
-    const checkSVG = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-    const offItem = document.createElement('div');
-    offItem.className = 'menu-item cc-item active';
-    offItem.dataset.lang = 'off';
-    offItem.innerHTML = checkSVG + ' Off';
-    ccList.appendChild(offItem);
+  
+  player.ready(() => {
+    // Add tracks
     subs.forEach(sub => {
-      const item = document.createElement('div');
-      item.className = 'menu-item cc-item';
-      item.dataset.srclang = sub.lang.toLowerCase().slice(0,2);
-      item.dataset.lang = sub.lang;
-      item.innerHTML = checkSVG + ' ' + sub.lang;
-      ccList.appendChild(item);
+      player.addRemoteTextTrack({
+        kind: 'subtitles',
+        src: sub.url,
+        srclang: sub.lang.toLowerCase().slice(0, 2),
+        label: sub.lang,
+        default: false
+      }, false);
     });
 
-    ccList.addEventListener('click', (e) => {
-      const item = e.target.closest('.cc-item');
-      if (!item) return;
-      document.querySelectorAll('.cc-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      const isOff = item.dataset.lang === 'off';
-      const targetLang = item.dataset.srclang || '';
-      // Disable all tracks first
-      const tracks = player.textTracks();
-      for (let i = 0; i < tracks.length; i++) {
-        if (isOff) {
-          tracks[i].mode = 'disabled';
-        } else {
-          tracks[i].mode = tracks[i].language === targetLang ? 'showing' : 'disabled';
+    // Build CC menu
+    if (subs.length > 0) {
+      document.getElementById('btnCC').style.display = '';
+      const ccList = document.getElementById('ccList');
+      ccList.innerHTML = '';
+      const checkSVG = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
+      // Off option
+      const offItem = document.createElement('div');
+      offItem.className = 'menu-item cc-item active';
+      offItem.dataset.lang = 'off';
+      offItem.innerHTML = checkSVG + ' Off';
+      ccList.appendChild(offItem);
+
+      // Language options
+      subs.forEach(sub => {
+        const item = document.createElement('div');
+        item.className = 'menu-item cc-item';
+        item.dataset.srclang = sub.lang.toLowerCase().slice(0, 2);
+        item.dataset.label = sub.lang;
+        item.innerHTML = checkSVG + ' ' + sub.lang;
+        ccList.appendChild(item);
+      });
+
+      // Click handler
+      ccList.addEventListener('click', (e) => {
+        const item = e.target.closest('.cc-item');
+        if (!item) return;
+        document.querySelectorAll('.cc-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const isOff = item.dataset.lang === 'off';
+        const targetSrclang = item.dataset.srclang || '';
+        const targetLabel = item.dataset.label || '';
+
+        // Set track modes
+        const tracks = player.textTracks();
+        for (let i = 0; i < tracks.length; i++) {
+          const t = tracks[i];
+          if (isOff) {
+            t.mode = 'disabled';
+          } else {
+            // Match by language code or label
+            const match = t.language === targetSrclang || t.label === targetLabel;
+            t.mode = match ? 'showing' : 'disabled';
+          }
         }
-      }
-      document.getElementById('ccMenu').classList.remove('open');
-      document.getElementById('btnCC').classList.toggle('active', !isOff);
-    });
-  }
+        document.getElementById('ccMenu').classList.remove('open');
+        document.getElementById('btnCC').classList.toggle('active', !isOff);
+        showKeyHint(isOff ? 'CC Off' : 'CC: ' + targetLabel);
+      });
+    }
+  });
 
   player.src({ type: 'application/x-mpegURL', src: videoUrl });
 
