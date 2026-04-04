@@ -66,6 +66,46 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .video-js .vjs-error-display { display: none !important; }
 .video-js { width: 100% !important; aspect-ratio: 16/9; background: #000; cursor: none; }
 
+/* ── FULLSCREEN ── */
+#playerContainer:fullscreen,
+#playerContainer:-webkit-full-screen,
+#playerContainer:-moz-full-screen,
+#playerContainer:-ms-fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  aspect-ratio: unset !important;
+  max-height: unset !important;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+#playerContainer:fullscreen .video-js,
+#playerContainer:-webkit-full-screen .video-js,
+#playerContainer:-moz-full-screen .video-js,
+#playerContainer:-ms-fullscreen .video-js {
+  flex: 1 !important;
+  width: 100% !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  aspect-ratio: unset !important;
+  max-height: unset !important;
+  object-fit: contain;
+}
+#playerContainer:fullscreen #customControls,
+#playerContainer:-webkit-full-screen #customControls,
+#playerContainer:-moz-full-screen #customControls,
+#playerContainer:-ms-fullscreen #customControls {
+  flex-shrink: 0;
+}
+#playerContainer:fullscreen .video-js video,
+#playerContainer:-webkit-full-screen .video-js video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
 /* Portrait mobile — fill width */
 @media (max-width: 600px) {
   .player-section { position: relative; }
@@ -869,6 +909,8 @@ function updateFullscreenUI() {
   const fs = !!(document.fullscreenElement || document.webkitFullscreenElement);
   document.getElementById('iconExpand').style.display = fs ? 'none' : '';
   document.getElementById('iconCompress').style.display = fs ? '' : 'none';
+  // Force video.js to recalculate dimensions
+  if (player) setTimeout(() => player.trigger('resize'), 100);
 }
 document.addEventListener('fullscreenchange', updateFullscreenUI);
 document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
