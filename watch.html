@@ -65,6 +65,18 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .video-js .vjs-loading-spinner { display: none !important; }
 .video-js .vjs-error-display { display: none !important; }
 .video-js { width: 100% !important; aspect-ratio: 16/9; background: #000; cursor: none; }
+
+/* Portrait mobile — fill width */
+@media (max-width: 600px) {
+  .player-section { position: relative; }
+  #playerContainer { aspect-ratio: 16/9; width: 100%; max-height: 56vw; }
+  .video-js { max-height: 56vw; }
+}
+/* Landscape mobile — fill screen */
+@media (max-height: 500px) and (orientation: landscape) {
+  #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
+  .video-js { aspect-ratio: unset !important; height: 100svh !important; }
+}
 .video-js.vjs-has-started .vjs-poster { display: none !important; }
 
 /* ── PLAYER CONTAINER ── */
@@ -571,12 +583,7 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
             </button>
             <div class="settings-popup" id="settingsMenu">
               <div class="menu-label">Playback Speed</div>
-              <div id="speedList">
-                ${[0.5,0.75,1,1.25,1.5,2].map(s=>`<div class="menu-item speed-item ${s===1?'active':''}" data-speed="${s}">
-                  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  ${s===1?'Normal':s+'×'}
-                </div>`).join('')}
-              </div>
+              <div id="speedList"></div>
             </div>
           </div>
 
@@ -846,17 +853,25 @@ function updateVolumeUI() {
 // ── Fullscreen ────────────────────────────────────────────────
 document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
 function toggleFullscreen() {
-  if (!document.fullscreenElement) {
-    playerContainer.requestFullscreen?.() || playerContainer.webkitRequestFullscreen?.();
+  // iOS Safari: use video element native fullscreen
+  const vid = player ? player.el().querySelector('video') : null;
+  if (videojs.browser.IS_IOS && vid) {
+    if (vid.webkitEnterFullscreen) { vid.webkitEnterFullscreen(); return; }
+  }
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    const el = playerContainer;
+    (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen).call(el);
   } else {
-    document.exitFullscreen?.() || document.webkitExitFullscreen?.();
+    (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen).call(document);
   }
 }
-document.addEventListener('fullscreenchange', () => {
-  const fs = !!document.fullscreenElement;
+function updateFullscreenUI() {
+  const fs = !!(document.fullscreenElement || document.webkitFullscreenElement);
   document.getElementById('iconExpand').style.display = fs ? 'none' : '';
   document.getElementById('iconCompress').style.display = fs ? '' : 'none';
-});
+}
+document.addEventListener('fullscreenchange', updateFullscreenUI);
+document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
 // ── Progress bar ──────────────────────────────────────────────
 const progressWrap = document.getElementById('progressWrap');
@@ -951,6 +966,19 @@ document.getElementById('btnCC').addEventListener('click', (e) => {
   settings.classList.remove('open');
   menu.classList.toggle('open');
 });
+
+// ── Build speed list ─────────────────────────────────────────
+(function() {
+  const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+  const list = document.getElementById('speedList');
+  speeds.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'menu-item speed-item' + (s === 1 ? ' active' : '');
+    div.dataset.speed = s;
+    div.innerHTML = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ' + (s === 1 ? 'Normal' : s + '×');
+    list.appendChild(div);
+  });
+})();
 
 // ── Settings Menu ─────────────────────────────────────────────
 document.getElementById('btnSettings').addEventListener('click', (e) => {
@@ -1050,31 +1078,39 @@ function initPlayer(film, videoUrl) {
     const btnCC = document.getElementById('btnCC');
     btnCC.style.display = '';
     const ccList = document.getElementById('ccList');
+    const checkSVG = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
     const offItem = document.createElement('div');
     offItem.className = 'menu-item cc-item active';
     offItem.dataset.lang = 'off';
-    offItem.innerHTML = `<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Off`;
+    offItem.innerHTML = checkSVG + ' Off';
     ccList.appendChild(offItem);
     subs.forEach(sub => {
       const item = document.createElement('div');
       item.className = 'menu-item cc-item';
-      item.dataset.lang = sub.lang.toLowerCase().slice(0,2);
-      item.innerHTML = `<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ${sub.lang}`;
+      item.dataset.srclang = sub.lang.toLowerCase().slice(0,2);
+      item.dataset.lang = sub.lang;
+      item.innerHTML = checkSVG + ' ' + sub.lang;
       ccList.appendChild(item);
     });
 
     ccList.addEventListener('click', (e) => {
       const item = e.target.closest('.cc-item');
       if (!item) return;
-      const lang = item.dataset.lang;
       document.querySelectorAll('.cc-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
+      const isOff = item.dataset.lang === 'off';
+      const targetLang = item.dataset.srclang || '';
+      // Disable all tracks first
       const tracks = player.textTracks();
       for (let i = 0; i < tracks.length; i++) {
-        tracks[i].mode = tracks[i].language === lang ? 'showing' : 'disabled';
+        if (isOff) {
+          tracks[i].mode = 'disabled';
+        } else {
+          tracks[i].mode = tracks[i].language === targetLang ? 'showing' : 'disabled';
+        }
       }
       document.getElementById('ccMenu').classList.remove('open');
-      document.getElementById('btnCC').classList.toggle('active', lang !== 'off');
+      document.getElementById('btnCC').classList.toggle('active', !isOff);
     });
   }
 
