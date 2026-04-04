@@ -1212,8 +1212,8 @@ footer {
 // ============================================================
 // CONFIG — paste your Supabase credentials in admin settings
 // ============================================================
-let SUPABASE_URL = localStorage.getItem('cv_url') || '';
-let SUPABASE_KEY = localStorage.getItem('cv_key') || '';
+let SUPABASE_URL = localStorage.getItem('cv_url') || 'https://kncqgatjjcezlnwwikqm.supabase.co';
+let SUPABASE_KEY = localStorage.getItem('cv_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc';
 
 // ============================================================
 // SUPABASE FETCH
@@ -1245,7 +1245,8 @@ function filmCard(film, idx = 0) {
     : `<div class="card-thumb-placeholder ${ph}"><span class="placeholder-icon">🎬</span></div>`;
 
   const year = film.year || '';
-  const genre = film.genre || '';
+  const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
+  const genreTags = genres.map(g => `<span class="card-genre-tag">${esc(g)}</span>`).join('');
   const dur = film.duration_secs ? formatDur(film.duration_secs) : '';
 
   return `
@@ -1264,7 +1265,7 @@ function filmCard(film, idx = 0) {
       <div class="card-title">${esc(film.title)}</div>
       <div class="card-meta">
         <span>${year}</span>
-        ${genre ? `<span class="card-genre-tag">${esc(genre)}</span>` : ''}
+        ${genreTags}
       </div>
     </div>
   </div>`;
@@ -1344,7 +1345,7 @@ function renderAllFilms(genre) {
   currentGenre = genre;
   const filtered = genre === 'all'
     ? allFilms
-    : allFilms.filter(f => (f.genre || '').toLowerCase() === genre);
+    : allFilms.filter(f => (f.genre||'').split(',').map(g=>g.trim()).includes(genre));
 
   const grid = document.getElementById('allFilmsGrid');
   const empty = document.getElementById('emptyState');
