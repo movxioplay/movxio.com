@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Watch Free — MOVXIO</title>
 <meta name="description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta name="robots" content="index, follow">
@@ -40,7 +40,11 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden;
+  /* iOS safe area for notched phones */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
 body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
@@ -225,7 +229,7 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 /* ── CUSTOM CONTROLS BAR ── */
 #customControls {
   position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 0 18px 18px;
+  padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px));
   z-index: 9;
   opacity: 0; transform: translateY(10px);
   transition: opacity 0.35s, transform 0.35s cubic-bezier(0.4,0,0.2,1);
@@ -544,6 +548,9 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   margin-bottom: 2px;
 }
 .related-card:hover { background: var(--surface); }
+@media (hover: none) {
+  .related-card:active { background: var(--surface); }
+}
 .related-thumb {
   width: 56px; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px;
   flex-shrink: 0; background: var(--surface2);
@@ -568,8 +575,8 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* ── MORE (mobile) ── */
-.more-section { padding: 32px 32px 80px; max-width: 1400px; margin: 0 auto; }
+/* ── MORE (mobile grid) ── */
+.more-section { padding: 28px 20px 80px; max-width: 1400px; margin: 0 auto; }
 @media (min-width: 960px) { .more-section { display: none; } }
 .more-title { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 16px; }
 .film-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
@@ -589,7 +596,13 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .placeholder-icon { font-size: 32px; opacity: 0.15; }
 .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,16,0.95) 0%, rgba(8,8,16,0.5) 50%, transparent 100%); opacity: 0; transition: opacity 0.25s; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; gap: 6px; }
 .card-play { align-self: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; box-shadow: 0 4px 20px rgba(232,71,63,0.5); transform: scale(0.8); transition: transform 0.2s; }
+.film-card:hover .card-overlay { opacity: 1; }
 .film-card:hover .card-play { transform: scale(1); }
+/* Touch: always show overlay */
+@media (hover: none) {
+  .card-overlay { opacity: 1; background: linear-gradient(to top, rgba(8,8,16,0.85) 0%, transparent 60%); }
+  .card-play { transform: scale(1); }
+}
 .card-play svg { width: 13px; height: 13px; fill: #fff; margin-left: 2px; }
 .card-overlay-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11.5px; line-height: 1.2; color: var(--text); }
 
@@ -607,30 +620,106 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 .footer-bottom { max-width: 1400px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .footer-bottom p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
 
-/* ── MOBILE ── */
-@media (max-width: 900px) {
-  nav { padding: 0 20px; }
-  .content-outer { padding: 0 20px; }
-  .film-info { padding: 24px 0 0; }
-  .sidebar { padding-top: 8px; }
-  .more-section { padding: 24px 20px 72px; }
-  footer { padding: 40px 20px 24px; }
-  .footer-inner { flex-direction: column; gap: 24px; }
-  .footer-links { gap: 28px; }
+/* ══════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE SYSTEM
+══════════════════════════════════════════ */
+
+/* ── Controls: on touch devices always show thumb on progress ── */
+@media (hover: none) {
+  .progress-track { height: 4px; }
+  .progress-thumb { transform: translate(-50%,-50%) scale(1) !important; width: 18px; height: 18px; }
+  .progress-tooltip { display: none; }
+  /* Larger hit area for scrubbing on mobile */
+  .progress-wrap { height: 32px; }
+  /* Volume slider hidden on mobile (use system volume) */
+  .volume-wrap .volume-slider-wrap { display: none; }
+  /* Show controls on tap — no hover needed */
+  .ctrl-btn:hover { transform: none; background: none; }
+  .ctrl-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.12); }
 }
+
+/* ── Nav ── */
 @media (max-width: 600px) {
-  .film-hero { gap: 18px; }
-  .film-poster-wrap { width: 100px; }
-  .film-title { font-size: 22px; }
-  .meta-key { min-width: 76px; font-size: 9px; }
+  nav { padding: 0 14px; height: 56px; }
+  .nav-logo { font-size: 18px; }
+  .back-btn { font-size: 12px; padding: 6px 10px; }
 }
+
+/* ── Player controls bar: tighten on small screens ── */
 @media (max-width: 480px) {
-  .film-grid { grid-template-columns: repeat(2, 1fr); }
-  .footer-links { flex-direction: column; gap: 20px; }
-  .ctrl-time { font-size: 10px; }
+  #customControls { padding: 0 10px 12px; }
   .ctrl-btn { width: 36px; height: 36px; }
   .ctrl-btn svg { width: 18px; height: 18px; }
-  .film-poster-wrap { width: 84px; }
+  .ctrl-time { font-size: 10px; padding: 0 3px; }
+  /* Hide volume button on very small screens — use system volume */
+  .volume-wrap { display: none; }
+  /* Compact skip labels */
+  .ctrl-btn-skip .skip-num { font-size: 7px; bottom: 5px; }
+}
+
+/* ── Content outer grid ── */
+@media (max-width: 959px) {
+  .content-outer { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
+  /* Sidebar becomes a horizontal scroll row on mobile */
+  .sidebar { padding-top: 0; border-top: 1px solid var(--border); margin-top: 24px; }
+  .sidebar-title { padding-top: 24px; }
+  #relatedList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 4px;
+    padding-bottom: 8px;
+  }
+}
+
+/* ── Film info panel ── */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .film-info { padding: 20px 0 0; }
+  .more-section { padding: 20px 20px 72px; }
+  footer { padding: 36px 20px 24px; }
+  .footer-inner { flex-direction: column; gap: 20px; }
+  .footer-links { gap: 24px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
+@media (max-width: 600px) {
+  .film-hero { gap: 16px; }
+  .film-poster-wrap { width: 96px; }
+  .film-title { font-size: clamp(18px, 5vw, 24px); margin-bottom: 10px; }
+  .film-desc { font-size: 13px; -webkit-line-clamp: 2; margin-bottom: 14px; }
+  .meta-key { min-width: 72px; font-size: 9px; }
+  .meta-row { font-size: 12px; padding: 7px 0; }
+  .action-row { gap: 8px; padding-bottom: 24px; }
+  .action-btn { font-size: 12px; padding: 9px 14px; min-height: 40px; }
+}
+
+@media (max-width: 380px) {
+  .film-poster-wrap { width: 80px; }
+  .film-hero { gap: 12px; }
+  .film-title { font-size: 18px; }
+  .meta-key { min-width: 64px; }
+  /* Stack action buttons */
+  .action-row { flex-direction: column; }
+  .action-btn { width: 100%; justify-content: center; }
+}
+
+/* ── Film grid (more section) ── */
+@media (max-width: 480px) {
+  .film-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+/* ── Footer ── */
+@media (max-width: 480px) {
+  .footer-links { flex-direction: column; gap: 18px; }
+  footer { padding: 28px 16px 20px; }
+}
+
+/* ── Landscape mobile: player fills viewport, hide overflow ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  nav { display: none; }
+  .player-section { height: 100svh; }
+  #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
+  .content-outer, .ad-slot, footer, .more-section { display: none; }
 }
 </style>
 </head>
