@@ -468,6 +468,9 @@ async function getSignedUrl(slug) {
 
 function slugFromUrl(url) {
   if (!url) return null;
+  // Handle simple path: "movie1/index.m3u8" -> "movie1"
+  if (!url.startsWith('http')) return url.split('/')[0];
+  // Handle full URL: ".../films/movie1/..." -> "movie1"
   const m = url.match(/films\/([^/]+)\//);
   return m ? m[1] : null;
 }
