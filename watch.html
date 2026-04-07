@@ -9,8 +9,13 @@
 <link rel="canonical" href="https://movxio.com/watch.html">
 <meta property="og:type" content="video.movie">
 <meta property="og:site_name" content="MOVXIO">
+<meta property="og:title" content="Watch Free — MOVXIO">
+<meta property="og:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
+<meta property="og:image" content="https://movxio.com/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@movxio">
+<meta name="twitter:title" content="Watch Free — MOVXIO">
+<meta name="twitter:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -739,6 +744,7 @@ function updateNavWlBtn(saved) {
 
 // ── STATE ─────────────────────────────────────────────────────
 const filmId = new URLSearchParams(location.search).get('id');
+console.log('watch.html loaded. URL:', location.href, '| filmId:', JSON.stringify(filmId));
 let player = null;
 let currentFilm = null;
 let controlsTimer = null;
@@ -746,14 +752,31 @@ let isDragging = false;
 
 // ── FETCH ─────────────────────────────────────────────────────
 async function fetchFilms() {
-  if (!CONFIG.SUPABASE_URL) return DEMO;
+  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) {
+    console.warn('No Supabase config, using demo data');
+    return DEMO;
+  }
   try {
-    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/films?select=*`, {
-      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
+    const url = `${CONFIG.SUPABASE_URL}/rest/v1/films?select=*`;
+    console.log('Fetching from:', url);
+    const res = await fetch(url, {
+      headers: {
+        'apikey': CONFIG.SUPABASE_KEY,
+        'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`
+      }
     });
-    const data = res.ok ? await res.json() : DEMO;
-    return data.length ? data : DEMO;
-  } catch { return DEMO; }
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Supabase error:', res.status, errText);
+      return DEMO;
+    }
+    const data = await res.json();
+    console.log('Supabase returned', data.length, 'films');
+    return (Array.isArray(data) && data.length) ? data : DEMO;
+  } catch(e) {
+    console.error('fetchFilms error:', e.message, e);
+    return DEMO;
+  }
 }
 
 async function getSignedUrl(slug) {
@@ -1095,6 +1118,7 @@ function initPlayer(film, videoUrl) {
   if (!videoUrl) {
     loading.style.display = 'none';
     noVideo.style.display = 'flex';
+    // Still show film info even with no video
     return;
   }
 
@@ -1188,11 +1212,20 @@ function initPlayer(film, videoUrl) {
 
 // ── RENDER INFO ───────────────────────────────────────────────
 function renderInfo(film) {
-  // Dynamic SEO
+  // Dynamic SEO — safe null-checks on all querySelector calls
   document.title = `${film.title} — Watch Free on MOVXIO`;
-  document.querySelector('meta[name="description"]').setAttribute('content', `Watch ${film.title} free online at MOVXIO. No account needed, no subscription.`);
-  document.querySelector('meta[property="og:title"]').setAttribute('content', `${film.title} — MOVXIO`);
-  document.querySelector('meta[name="twitter:title"]').setAttribute('content', `${film.title} — Watch Free`);
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', `Watch ${film.title} free on MOVXIO. No account needed.`);
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', `${film.title} — MOVXIO`);
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
+  const ogImg = document.querySelector('meta[property="og:image"]');
+  if (ogImg && film.thumbnail_url) ogImg.setAttribute('content', film.thumbnail_url);
+  const twTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twTitle) twTitle.setAttribute('content', `${film.title} — Watch Free`);
+  const twDesc = document.querySelector('meta[name="twitter:description"]');
+  if (twDesc) twDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
 
   const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
   document.getElementById('filmEyebrow').textContent = genres[0] || 'Now Streaming';
@@ -1304,38 +1337,53 @@ function renderRelated(films, currentId, currentGenres) {
 
 // ── TRACK HISTORY ─────────────────────────────────────────────
 function trackHistory(id) {
-  let h = JSON.parse(localStorage.getItem('mvx_history')||'[]');
-  h = [id, ...h.filter(i => i !== id)].slice(0, 30);
-  localStorage.setItem('mvx_history', JSON.stringify(h));
+  try {
+    let h = JSON.parse(localStorage.getItem('mvx_history')||'[]');
+    h = [id, ...h.filter(i => i !== id)].slice(0, 30);
+    localStorage.setItem('mvx_history', JSON.stringify(h));
+  } catch(e) {}
 }
 
 // ── MAIN ──────────────────────────────────────────────────────
 async function init() {
-  const films = await fetchFilms();
-  const film  = films.find(f => f.id === filmId) || films[0];
+  try {
+    const films = await fetchFilms();
+    console.log('Films fetched:', films.length, '| filmId from URL:', JSON.stringify(filmId));
+    if (!filmId) console.warn('No film ID in URL — showing first film as fallback');
 
-  if (!film) {
+    // Match by id — works for both UUIDs and demo IDs
+    const film = filmId ? (films.find(f => String(f.id) === String(filmId)) || films[0]) : films[0];
+
+    if (!film) {
+      document.getElementById('playerLoading').style.display = 'none';
+      document.getElementById('noVideo').style.display = 'flex';
+      document.getElementById('filmTitle').textContent = 'Film not found';
+      return;
+    }
+
+    console.log('Rendering film:', film.title, '| hls_url:', film.hls_url);
+
+    trackHistory(film.id);
+    renderInfo(film);
+
+    const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
+    renderRelated(films, film.id, genres);
+    loadReactions(film.id);
+
+    let videoUrl = film.hls_url || null;
+    if (videoUrl && slugFromUrl(videoUrl)) {
+      document.getElementById('loadingText').textContent = 'Preparing stream...';
+      const signed = await getSignedUrl(slugFromUrl(videoUrl));
+      if (signed) videoUrl = signed;
+    }
+
+    initPlayer(film, videoUrl);
+  } catch(e) {
+    console.error('watch.html init() error:', e);
+    // Still try to hide loading and show no-video
     document.getElementById('playerLoading').style.display = 'none';
     document.getElementById('noVideo').style.display = 'flex';
-    document.getElementById('filmTitle').textContent = 'Film not found';
-    return;
   }
-
-  trackHistory(film.id);
-  renderInfo(film);
-
-  const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
-  renderRelated(films, film.id, genres);
-  loadReactions(film.id);
-
-  let videoUrl = film.hls_url || null;
-  if (videoUrl && slugFromUrl(videoUrl)) {
-    document.getElementById('loadingText').textContent = 'Preparing stream...';
-    const signed = await getSignedUrl(slugFromUrl(videoUrl));
-    if (signed) videoUrl = signed;
-  }
-
-  initPlayer(film, videoUrl);
 }
 
 init();
