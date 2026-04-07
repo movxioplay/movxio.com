@@ -7,776 +7,1040 @@
 <meta name="description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://movxio.com/watch.html">
-<meta property="og:type" content="video.movie">
-<meta property="og:site_name" content="MOVXIO">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Watch Free — MOVXIO">
 <meta property="og:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
-<meta property="og:image" content="https://movxio.com/og-image.png">
+<meta property="og:site_name" content="MOVXIO">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@movxio">
-<meta name="twitter:title" content="Watch Free — MOVXIO">
-<meta name="twitter:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- Video.js -->
+<!-- Video.js HLS engine (hidden, custom UI on top) -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.6.1/video-js.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.6.1/video.min.js"></script>
 
 <style>
 :root {
-  --bg: #080810; --surface: #0e0e1a; --surface2: #13131f; --surface3: #18181f;
-  --border: rgba(255,255,255,0.06); --text: #f0eee8;
-  --text-muted: #6b6980; --text-dim: #9997b0;
-  --accent: #e8473f; --accent2: #ff6b35; --gold: #f5c842; --blue: #3d7fff;
-  --green: #2dd4a0; --radius: 6px; --ctrl-h: 56px;
+  --bg: #080810;
+  --surface: #0e0e1a;
+  --surface2: #13131f;
+  --border: rgba(255,255,255,0.06);
+  --text: #f0eee8;
+  --text-muted: #6b6980;
+  --text-dim: #9997b0;
+  --accent: #e8473f;
+  --accent2: #ff6b35;
+  --gold: #f5c842;
+  --blue: #3d7fff;
+  --radius: 6px;
+  --ctrl-h: 56px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body {
-  background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif;
-  font-size: 15px; line-height: 1.6; overflow-x: hidden;
-  padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
-  padding-bottom: 64px;
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden;
+  /* iOS safe area for notched phones */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 
 /* ── NAV ── */
-nav.top-nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.04); }
+nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.04); }
 .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); display: flex; align-items: center; gap: 2px; }
 .nav-logo span { color: var(--accent); }
 .back-btn { display: flex; align-items: center; gap: 8px; color: var(--text-dim); font-size: 13.5px; font-weight: 500; padding: 6px 14px; border-radius: 40px; transition: all 0.2s; min-height: 44px; }
 .back-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
 .back-btn svg { width: 15px; flex-shrink: 0; }
-.nav-actions { display: flex; align-items: center; gap: 8px; }
-.nav-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 14px; border-radius: 40px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
-.nav-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
-.nav-btn svg { width: 14px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; }
-.nav-btn.saved { color: var(--gold); border-color: rgba(232,184,75,0.4); background: rgba(232,184,75,0.08); }
-.nav-btn.saved svg { fill: var(--gold); stroke: var(--gold); }
-@media (max-width: 600px) { nav.top-nav { padding: 0 16px; height: 56px; } .nav-logo { font-size: 18px; } }
+@media (max-width: 600px) { nav { padding: 0 16px; } }
 
-/* ── BOTTOM NAV ── */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: stretch; }
-.bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; cursor: pointer; border: none; background: none; }
-.bottom-nav-item svg { width: 20px; height: 20px; }
-.bottom-nav-item.active { color: var(--accent); }
-@media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
-
-/* ══════════════════════════════════════
-   MAIN LAYOUT — 123movies style
-   Player left (or top on mobile), sidebar right
-══════════════════════════════════════ */
-.watch-layout {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  grid-template-rows: auto;
-  gap: 0;
-  max-width: 1600px;
-  margin: 0 auto;
-}
-@media (max-width: 1100px) { .watch-layout { grid-template-columns: 1fr 300px; } }
-@media (max-width: 900px)  { .watch-layout { grid-template-columns: 1fr; } }
-
-/* ── PLAYER COLUMN ── */
-.player-col { min-width: 0; }
-
-/* ── SIDEBAR COLUMN ── */
-.sidebar-col { background: var(--surface); border-left: 1px solid var(--border); min-height: calc(100vh - 64px); }
-@media (max-width: 900px) { .sidebar-col { border-left: none; border-top: 1px solid var(--border); min-height: auto; } }
-
-/* ══════════════════════════════════════
-   PLAYER
-══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   PLAYER WRAPPER
+═══════════════════════════════════════ */
 .player-section { background: #000; width: 100%; position: relative; }
+
+/* Hide Video.js default UI completely */
 .video-js .vjs-control-bar { display: none !important; }
 .video-js .vjs-big-play-button { display: none !important; }
 .video-js .vjs-loading-spinner { display: none !important; }
 .video-js .vjs-error-display { display: none !important; }
-.video-js, .video-js .vjs-tech, .video-js video {
-  position: absolute !important; inset: 0 !important;
-  width: 100% !important; height: 100% !important;
-  object-fit: contain; background: #000; cursor: none; aspect-ratio: unset !important;
+/* Force video + all Video.js wrappers to fill the container absolutely */
+.video-js,
+.video-js .vjs-tech,
+.video-js video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  background: #000;
+  cursor: none;
+  aspect-ratio: unset !important;
 }
 
+/* ── PLAYER CONTAINER ── */
 #playerContainer {
-  position: relative; width: 100%; aspect-ratio: 16/9;
-  background: #000; overflow: hidden; cursor: none; min-height: 0;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  overflow: hidden;
+  cursor: none;
+  /* Ensure children don't collapse it */
+  min-height: 0;
 }
 #playerContainer.controls-visible { cursor: default; }
-@media (max-width: 600px) { #playerContainer { aspect-ratio: 16/9; max-height: 56vw; } }
+
+/* Portrait mobile — fill width */
+@media (max-width: 600px) {
+  .player-section { position: relative; }
+  #playerContainer { aspect-ratio: 16/9; width: 100%; max-height: 56vw; }
+}
+/* Landscape mobile — fill screen */
 @media (max-height: 500px) and (orientation: landscape) {
   #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
 }
 
-/* Loading */
-#playerLoading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; background: #06060f; z-index: 10; }
-.spinner { width: 48px; height: 48px; position: relative; }
-.spinner::before, .spinner::after { content: ''; position: absolute; inset: 0; border-radius: 50%; }
-.spinner::before { border: 2px solid rgba(232,71,63,0.12); }
-.spinner::after { border: 2px solid transparent; border-top-color: var(--accent); border-right-color: rgba(232,71,63,0.4); animation: spin 0.9s cubic-bezier(0.4,0,0.2,1) infinite; box-shadow: 0 0 18px rgba(232,71,63,0.25); }
+/* ── LOADING STATE ── */
+#playerLoading {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+  background: #06060f; z-index: 10;
+}
+.spinner {
+  width: 48px; height: 48px; position: relative;
+}
+.spinner::before, .spinner::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+}
+.spinner::before {
+  border: 2px solid rgba(232,71,63,0.12);
+}
+.spinner::after {
+  border: 2px solid transparent;
+  border-top-color: var(--accent);
+  border-right-color: rgba(232,71,63,0.4);
+  animation: spinPremium 0.9s cubic-bezier(0.4,0,0.2,1) infinite;
+  box-shadow: 0 0 18px rgba(232,71,63,0.25);
+}
+@keyframes spinPremium { to { transform: rotate(360deg); } }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.18em; text-transform: uppercase; animation: loadPulse 1.8s ease-in-out infinite; }
-@keyframes loadPulse { 0%,100%{opacity:.4}50%{opacity:1} }
+.loading-text {
+  font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  animation: loadPulse 1.8s ease-in-out infinite;
+}
+@keyframes loadPulse { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+@keyframes noVideoPulse { 0%,100% { transform:scale(1); opacity:0.6; } 50% { transform:scale(1.12); opacity:1; } }
 
-/* No video */
-#noVideo { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 16px; background: #06060f; }
-@keyframes noVideoPulse { 0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.12);opacity:1} }
+/* ── NO VIDEO STATE ── */
+#noVideo {
+  position: absolute; inset: 0; display: none;
+  align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+  background: #06060f;
+}
 
-/* Click overlay */
-#clickOverlay { position: absolute; inset: 0; z-index: 5; cursor: pointer; }
+/* ── CLICK OVERLAY (play/pause on click) ── */
+#clickOverlay {
+  position: absolute; inset: 0; z-index: 5;
+  cursor: pointer;
+}
 
-/* Center indicator */
+/* ── CENTER PLAY/PAUSE INDICATOR ── */
 #centerIndicator {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
   width: 88px; height: 88px; border-radius: 50%;
-  background: rgba(0,0,0,0.42); backdrop-filter: blur(20px);
+  background: rgba(0,0,0,0.42);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
   border: 1px solid rgba(255,255,255,0.14);
   display: flex; align-items: center; justify-content: center;
   pointer-events: none; z-index: 8;
-  transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s; opacity: 0;
+  transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+  opacity: 0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 #centerIndicator.show { transform: translate(-50%,-50%) scale(1); opacity: 1; }
 #centerIndicator.hide { transform: translate(-50%,-50%) scale(0.75); opacity: 0; }
-#centerIndicator svg { width: 34px; color: #fff; }
+#centerIndicator svg { width: 34px; color: #fff; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
 
-/* Skip indicators */
-.skip-indicator { position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; z-index: 8; opacity: 0; transition: opacity 0.25s; }
+/* ── SKIP INDICATORS ── */
+.skip-indicator {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  pointer-events: none; z-index: 8; opacity: 0;
+  transition: opacity 0.25s;
+}
 .skip-indicator.left { left: 12%; }
 .skip-indicator.right { right: 12%; }
 .skip-indicator.show { opacity: 1; }
-.skip-ripple { width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; animation: ripplePulse 0.35s cubic-bezier(0.34,1.4,0.64,1); }
-@keyframes ripplePulse { from{transform:scale(0.65);opacity:0}to{transform:scale(1);opacity:1} }
+.skip-ripple {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  animation: ripplePulse 0.35s cubic-bezier(0.34,1.4,0.64,1);
+}
+@keyframes ripplePulse { from { transform: scale(0.65); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .skip-ripple svg { width: 30px; color: #fff; }
 .skip-label { font-family: 'Space Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.75); letter-spacing: 0.08em; }
 
-/* Gradients */
-.ctrl-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 220px; background: linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.55) 45%, transparent 100%); pointer-events: none; z-index: 6; opacity: 0; transition: opacity 0.35s; }
-.top-gradient { position: absolute; top: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%); pointer-events: none; z-index: 6; opacity: 0; transition: opacity 0.35s; }
+/* ── GRADIENT OVERLAY (for controls visibility) ── */
+.ctrl-gradient {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 220px;
+  background: linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.1) 75%, transparent 100%);
+  pointer-events: none; z-index: 6;
+  opacity: 0; transition: opacity 0.35s;
+}
+.top-gradient {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+  pointer-events: none; z-index: 6;
+  opacity: 0; transition: opacity 0.35s;
+}
 #playerContainer.controls-visible .ctrl-gradient,
 #playerContainer.controls-visible .top-gradient { opacity: 1; }
 
-/* Title bar */
-#playerTitleBar { position: absolute; top: 0; left: 0; right: 0; padding: 20px 24px 0; display: flex; align-items: center; gap: 12px; z-index: 9; opacity: 0; transform: translateY(-10px); transition: opacity 0.35s, transform 0.35s; pointer-events: none; }
+/* ── TITLE BAR (top) ── */
+#playerTitleBar {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 20px 24px 0;
+  display: flex; align-items: center; gap: 12px;
+  z-index: 9;
+  opacity: 0; transform: translateY(-10px);
+  transition: opacity 0.35s, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
 #playerContainer.controls-visible #playerTitleBar { opacity: 1; transform: translateY(0); pointer-events: auto; }
-#playerTitleText { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: -0.02em; color: rgba(255,255,255,0.95); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 8px rgba(0,0,0,0.5); }
+#playerTitleText {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+  letter-spacing: -0.02em; color: rgba(255,255,255,0.95);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
 
-/* Custom controls */
-#customControls { position: absolute; bottom: 0; left: 0; right: 0; padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 9; opacity: 0; transform: translateY(10px); transition: opacity 0.35s, transform 0.35s; pointer-events: none; }
+/* ── CUSTOM CONTROLS BAR ── */
+#customControls {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px));
+  z-index: 9;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.35s, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
 #playerContainer.controls-visible #customControls { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-/* Progress bar */
-.progress-wrap { position: relative; height: 22px; display: flex; align-items: center; cursor: pointer; margin-bottom: 10px; }
-.progress-track { position: absolute; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.12); border-radius: 3px; transition: height 0.18s; overflow: visible; }
+/* ── PROGRESS BAR ── */
+.progress-wrap {
+  position: relative; height: 22px; display: flex; align-items: center;
+  cursor: pointer; margin-bottom: 10px;
+}
+.progress-track {
+  position: absolute; left: 0; right: 0; height: 3px;
+  background: rgba(255,255,255,0.12); border-radius: 3px;
+  transition: height 0.18s cubic-bezier(0.4,0,0.2,1);
+  overflow: visible;
+}
 .progress-wrap:hover .progress-track { height: 5px; }
-.progress-buffer { position: absolute; left: 0; top: 0; height: 100%; background: rgba(255,255,255,0.22); border-radius: 3px; pointer-events: none; }
-.progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); border-radius: 3px; pointer-events: none; box-shadow: 0 0 8px rgba(232,71,63,0.5); }
-.progress-thumb { position: absolute; top: 50%; transform: translate(-50%,-50%) scale(0); width: 15px; height: 15px; border-radius: 50%; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.5); pointer-events: none; transition: transform 0.18s cubic-bezier(0.34,1.4,0.64,1); }
+.progress-buffer {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: rgba(255,255,255,0.22); border-radius: 3px;
+  pointer-events: none;
+}
+.progress-fill {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: var(--accent); border-radius: 3px;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(232,71,63,0.5);
+  transition: box-shadow 0.2s;
+}
+.progress-wrap:hover .progress-fill { box-shadow: 0 0 14px rgba(232,71,63,0.7); }
+.progress-thumb {
+  position: absolute; top: 50%; transform: translate(-50%,-50%) scale(0);
+  width: 15px; height: 15px; border-radius: 50%;
+  background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 0 0 2px rgba(232,71,63,0.3);
+  pointer-events: none; transition: transform 0.18s cubic-bezier(0.34,1.4,0.64,1);
+}
 .progress-wrap:hover .progress-thumb { transform: translate(-50%,-50%) scale(1); }
-.progress-tooltip { position: absolute; bottom: 26px; background: rgba(8,8,16,0.92); color: #fff; font-family: 'Space Mono', monospace; font-size: 10.5px; padding: 4px 9px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.08); pointer-events: none; white-space: nowrap; opacity: 0; transform: translateX(-50%); transition: opacity 0.15s; }
+.progress-tooltip {
+  position: absolute; bottom: 26px;
+  background: rgba(8,8,16,0.92); color: #fff;
+  font-family: 'Space Mono', monospace; font-size: 10.5px;
+  padding: 4px 9px; border-radius: 5px;
+  border: 1px solid rgba(255,255,255,0.08);
+  pointer-events: none; white-space: nowrap;
+  opacity: 0; transform: translateX(-50%); transition: opacity 0.15s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
 .progress-wrap:hover .progress-tooltip { opacity: 1; }
 
-/* Controls row */
-.ctrl-row { display: flex; align-items: center; gap: 2px; }
+/* ── CONTROLS ROW ── */
+.ctrl-row {
+  display: flex; align-items: center; gap: 2px;
+}
 .ctrl-left { flex: 1; display: flex; align-items: center; gap: 1px; }
 .ctrl-right { display: flex; align-items: center; gap: 1px; }
-.ctrl-btn { width: 42px; height: 42px; border-radius: 10px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.82); transition: color 0.15s, background 0.15s, transform 0.12s; flex-shrink: 0; position: relative; }
+
+/* ── CONTROL BUTTONS ── */
+.ctrl-btn {
+  width: 42px; height: 42px; border-radius: 10px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.82); transition: color 0.15s, background 0.15s, transform 0.12s;
+  flex-shrink: 0; position: relative;
+}
 .ctrl-btn:hover { color: #fff; background: rgba(255,255,255,0.1); transform: scale(1.08); }
 .ctrl-btn:active { transform: scale(0.94); }
 .ctrl-btn svg { width: 20px; height: 20px; pointer-events: none; }
 .ctrl-btn.active { color: var(--accent); }
-.ctrl-btn-skip { position: relative; }
-.ctrl-btn-skip .skip-num { position: absolute; font-size: 8px; font-weight: 700; font-family: 'Space Mono', monospace; color: currentColor; bottom: 7px; left: 50%; transform: translateX(-50%); pointer-events: none; line-height: 1; }
-.ctrl-time { font-family: 'Space Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.7); padding: 0 6px; white-space: nowrap; letter-spacing: 0.03em; user-select: none; }
-.ctrl-time strong { color: #fff; font-weight: 400; }
-.volume-wrap { display: flex; align-items: center; gap: 4px; }
-.volume-slider-wrap { width: 0; overflow: hidden; transition: width 0.28s cubic-bezier(0.4,0,0.2,1); display: flex; align-items: center; }
-.volume-wrap:hover .volume-slider-wrap, .volume-wrap:focus-within .volume-slider-wrap { width: 76px; }
-.volume-slider { -webkit-appearance: none; appearance: none; width: 68px; height: 3px; border-radius: 3px; background: rgba(255,255,255,0.18); outline: none; cursor: pointer; margin: 0 4px; accent-color: #fff; }
-.volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: #fff; cursor: pointer; }
 
-/* Menus */
-.menu-popup { position: absolute; bottom: calc(100% + 10px); right: 0; background: rgba(8,8,18,0.97); border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 6px; min-width: 165px; backdrop-filter: blur(24px); box-shadow: 0 12px 40px rgba(0,0,0,0.7); display: none; z-index: 20; animation: menuUp 0.18s cubic-bezier(0.34,1.4,0.64,1); }
-@keyframes menuUp { from{opacity:0;transform:translateY(8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)} }
+/* Skip buttons with label */
+.ctrl-btn-skip { position: relative; }
+.ctrl-btn-skip .skip-num {
+  position: absolute; font-size: 8px; font-weight: 700;
+  font-family: 'Space Mono', monospace; color: currentColor;
+  bottom: 7px; left: 50%; transform: translateX(-50%);
+  pointer-events: none; line-height: 1;
+}
+
+/* ── TIME DISPLAY ── */
+.ctrl-time {
+  font-family: 'Space Mono', monospace; font-size: 12px;
+  color: rgba(255,255,255,0.7); padding: 0 6px;
+  white-space: nowrap; letter-spacing: 0.03em;
+  user-select: none;
+}
+.ctrl-time strong { color: #fff; font-weight: 400; }
+
+/* ── VOLUME ── */
+.volume-wrap { display: flex; align-items: center; gap: 4px; }
+.volume-slider-wrap {
+  width: 0; overflow: hidden; transition: width 0.28s cubic-bezier(0.4,0,0.2,1);
+  display: flex; align-items: center;
+}
+.volume-wrap:hover .volume-slider-wrap,
+.volume-wrap:focus-within .volume-slider-wrap { width: 76px; }
+.volume-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 68px; height: 3px; border-radius: 3px;
+  background: rgba(255,255,255,0.18);
+  outline: none; cursor: pointer; margin: 0 4px;
+  accent-color: #fff;
+}
+.volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,0.4); transition: transform 0.15s; }
+.volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* ── CC / SUBTITLES MENU ── */
+.menu-popup {
+  position: absolute; bottom: calc(100% + 10px); right: 0;
+  background: rgba(8,8,18,0.97); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px; padding: 6px; min-width: 165px;
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04) inset;
+  display: none; z-index: 20;
+  animation: menuUp 0.18s cubic-bezier(0.34,1.4,0.64,1);
+}
+@keyframes menuUp { from { opacity:0; transform:translateY(8px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
 .menu-popup.open { display: block; }
-.settings-popup { position: absolute; bottom: calc(100% + 10px); right: 0; background: rgba(8,8,18,0.97); border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 6px; min-width: 185px; backdrop-filter: blur(24px); box-shadow: 0 12px 40px rgba(0,0,0,0.7); display: none; z-index: 20; animation: menuUp 0.18s cubic-bezier(0.34,1.4,0.64,1); }
-.settings-popup.open { display: block; }
-.menu-label { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-muted); padding: 6px 10px 4px; }
-.menu-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--text-dim); transition: background 0.12s, color 0.12s; font-family: 'DM Sans', sans-serif; }
+.menu-label {
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--text-muted); padding: 6px 10px 4px;
+}
+.menu-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 7px; cursor: pointer;
+  font-size: 13px; color: var(--text-dim);
+  transition: background 0.12s, color 0.12s;
+  font-family: 'DM Sans', sans-serif;
+}
 .menu-item:hover { background: rgba(255,255,255,0.07); color: var(--text); }
 .menu-item.active { color: var(--accent); }
 .menu-item .check { width: 14px; color: var(--accent); opacity: 0; }
 .menu-item.active .check { opacity: 1; }
 
-/* Resume banner */
-#resumeBanner { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); background: rgba(8,8,18,0.96); border: 1px solid rgba(232,71,63,0.3); border-radius: 12px; padding: 14px 20px; display: none; align-items: center; gap: 14px; font-size: 13px; z-index: 15; white-space: nowrap; backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); animation: bannerUp 0.32s cubic-bezier(0.34,1.4,0.64,1); }
-#resumeBanner.show { display: flex; }
-@keyframes bannerUp { from{opacity:0;transform:translateX(-50%) translateY(12px) scale(0.97)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)} }
-#resumeBanner strong { color: var(--accent); font-family: 'Space Mono', monospace; }
-.resume-btn { background: var(--accent); color: #fff; border: none; padding: 7px 16px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-.resume-dismiss { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; padding: 0 4px; }
+/* ── SETTINGS MENU ── */
+.settings-popup {
+  position: absolute; bottom: calc(100% + 10px); right: 0;
+  background: rgba(8,8,18,0.97); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px; padding: 6px; min-width: 185px;
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04) inset;
+  display: none; z-index: 20;
+  animation: menuUp 0.18s cubic-bezier(0.34,1.4,0.64,1);
+}
+.settings-popup.open { display: block; }
 
-/* Key hint */
-#keyHint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(8,8,18,0.88); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: 'Space Mono', monospace; font-size: 12px; padding: 9px 18px; border-radius: 8px; pointer-events: none; z-index: 15; opacity: 0; transition: opacity 0.2s; white-space: nowrap; backdrop-filter: blur(12px); }
+/* ── RESUME BANNER ── */
+#resumeBanner {
+  position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: rgba(8,8,18,0.96);
+  border: 1px solid rgba(232,71,63,0.3);
+  border-radius: 12px; padding: 14px 20px;
+  display: none; align-items: center; gap: 14px;
+  font-size: 13px; z-index: 15; white-space: nowrap;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,71,63,0.08);
+  animation: bannerUp 0.32s cubic-bezier(0.34,1.4,0.64,1);
+}
+#resumeBanner.show { display: flex; }
+@keyframes bannerUp { from { opacity:0; transform:translateX(-50%) translateY(12px) scale(0.97); } to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }
+#resumeBanner strong { color: var(--accent); font-family: 'Space Mono', monospace; }
+.resume-btn { background: var(--accent); color: #fff; border: none; padding: 7px 16px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s, transform 0.12s; }
+.resume-btn:hover { background: var(--accent2); transform: scale(1.04); }
+.resume-btn:active { transform: scale(0.97); }
+.resume-dismiss { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; padding: 0 4px; transition: color 0.2s; }
+.resume-dismiss:hover { color: var(--text); }
+
+/* ── KEYBOARD HINT ── */
+#keyHint {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: rgba(8,8,18,0.88);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  font-family: 'Space Mono', monospace; font-size: 12px;
+  padding: 9px 18px; border-radius: 8px;
+  pointer-events: none; z-index: 15;
+  opacity: 0; transition: opacity 0.2s;
+  white-space: nowrap;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
 #keyHint.show { opacity: 1; }
 
-/* Buffering */
-#bufferingIndicator { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 7; pointer-events: none; }
+/* ── AD SLOT ── */
+.ad-slot { background: rgba(255,255,255,0.02); border-top: 1px dashed rgba(255,255,255,0.06); border-bottom: 1px dashed rgba(255,255,255,0.06); min-height: 60px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; color: var(--text-muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
 
-/* ══════════════════════════════════════
-   PLAYER INFO BAR (below player)
-══════════════════════════════════════ */
-.player-info-bar {
-  background: var(--surface); border-bottom: 1px solid var(--border);
-  padding: 16px 20px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+/* ════════════════════════════════════════
+   FILM INFO PANEL — cinematic layout
+════════════════════════════════════════ */
+.content-outer {
+  max-width: 1400px; margin: 0 auto; padding: 0 32px 0;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 0 48px;
+  align-items: start;
 }
-.player-film-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.02em; color: var(--text); }
-.player-film-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-muted); flex-wrap: wrap; margin-top: 4px; }
-.meta-tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--text-dim); font-family: 'Space Mono', monospace; }
-.meta-tag.imdb { background: rgba(245,200,66,0.1); border-color: rgba(245,200,66,0.2); color: var(--gold); }
-.meta-tag.rating { background: rgba(255,255,255,0.06); }
-.player-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+@media (max-width: 959px) {
+  .content-outer { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
+}
 
-/* Like / Dislike */
-.reaction-btns { display: flex; align-items: center; gap: 6px; }
-.reaction-btn { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 14px; border-radius: 40px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
-.reaction-btn svg { width: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; }
-.reaction-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
-.reaction-btn.liked { background: rgba(45,212,160,0.1); border-color: rgba(45,212,160,0.3); color: var(--green); }
-.reaction-btn.liked svg { fill: var(--green); stroke: var(--green); }
-.reaction-btn.disliked { background: rgba(232,71,63,0.1); border-color: rgba(232,71,63,0.3); color: var(--accent); }
-.reaction-btn.disliked svg { fill: var(--accent); stroke: var(--accent); }
+/* ── FILM PANEL (left) ── */
+.film-info { padding: 36px 0 0; }
 
-/* Share btn */
-.share-btn { display: flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 14px; border-radius: 40px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
-.share-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
-.share-btn svg { width: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
-.share-btn.copied { color: var(--green); border-color: rgba(45,212,160,0.3); }
+/* Poster + details row */
+.film-hero {
+  display: flex; gap: 28px; align-items: flex-start; margin-bottom: 28px;
+}
+.film-poster-wrap {
+  flex-shrink: 0; width: 130px;
+  border-radius: 10px; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+  background: var(--surface2); aspect-ratio: 2/3;
+  position: relative; /* needed for abs img */
+}
+.film-poster-wrap img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.film-poster-ph {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-size: 36px; opacity: 0.2;
+}
+.film-poster-badge {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  background: rgba(232,71,63,0.92); color: #fff;
+  font-family: 'Space Mono', monospace; font-size: 8px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; white-space: nowrap;
+}
 
-/* ══════════════════════════════════════
-   FILM DETAILS (below player, full width)
-══════════════════════════════════════ */
-.film-details-section {
-  padding: 20px;
+.film-details { flex: 1; min-width: 0; padding-top: 4px; }
+.film-eyebrow {
+  font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase;
+  letter-spacing: 0.18em; color: var(--accent); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.film-eyebrow::after {
+  content: ''; flex: 1; height: 1px; background: rgba(232,71,63,0.2); max-width: 60px;
+}
+.film-title {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(22px, 4vw, 38px); letter-spacing: -0.03em; line-height: 1.05;
+  color: var(--text); margin-bottom: 14px;
+}
+.film-desc {
+  font-size: 13.5px; color: var(--text-dim); line-height: 1.75; margin-bottom: 20px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ── META TABLE ── */
+.meta-table { display: flex; flex-direction: column; gap: 0; margin-bottom: 22px; }
+.meta-row {
+  display: flex; align-items: baseline; gap: 0;
+  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 13px;
+}
+.meta-row:first-child { padding-top: 0; }
+.meta-key {
+  font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text-muted); min-width: 90px; flex-shrink: 0;
+  padding-top: 1px;
+}
+.meta-val { color: var(--text-dim); line-height: 1.5; }
+.meta-val a, .meta-val .meta-link {
+  color: var(--text-dim); transition: color 0.15s; cursor: default;
+}
+.meta-val a:hover, .meta-val .meta-link:hover { color: var(--text); }
+.meta-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.meta-badge.hd { background: var(--gold); color: #000; }
+.meta-badge.fhd { background: #fff; color: #000; }
+.meta-badge.free { background: rgba(232,71,63,0.15); color: #ff8a82; border: 1px solid rgba(232,71,63,0.25); }
+.meta-imdb { display: inline-flex; align-items: center; gap: 5px; }
+.meta-imdb .star { color: var(--gold); font-size: 13px; }
+.meta-views-badge { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
+
+/* ── ACTION ROW ── */
+.action-row {
+  display: flex; gap: 10px; flex-wrap: wrap; padding-bottom: 32px;
   border-bottom: 1px solid var(--border);
 }
+.action-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+  border-radius: 40px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-dim);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all 0.2s; text-decoration: none;
+  font-family: 'DM Sans', sans-serif; min-height: 42px;
+}
+.action-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: var(--surface2); }
+.action-btn.copied { border-color: var(--accent); color: var(--accent); background: rgba(232,71,63,0.08); }
+.action-btn svg { width: 14px; flex-shrink: 0; }
+.action-btn-primary {
+  background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600;
+}
+.action-btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.action-btn-primary svg { width: 14px; }
 
-/* Two-col inside player col: poster + details */
-.film-hero { display: flex; gap: 24px; align-items: flex-start; }
-.film-poster-wrap { flex-shrink: 0; width: 110px; border-radius: 8px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06); background: var(--surface2); aspect-ratio: 2/3; position: relative; }
-.film-poster-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.film-poster-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; opacity: 0.2; }
-.film-poster-badge { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); background: rgba(232,71,63,0.9); color: #fff; font-family: 'Space Mono', monospace; font-size: 8px; padding: 2px 7px; border-radius: 3px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.08em; }
-
-.film-info-col { flex: 1; min-width: 0; }
-.film-eyebrow { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 6px; }
-.film-title-big { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(18px, 3.5vw, 28px); letter-spacing: -0.03em; line-height: 1.1; color: var(--text); margin-bottom: 10px; }
-.film-desc-text { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.film-desc-text.expanded { -webkit-line-clamp: unset; display: block; }
-.expand-btn { background: none; border: none; color: var(--accent); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 0; margin-bottom: 14px; }
-
-/* Meta table */
-.meta-table { display: flex; flex-direction: column; gap: 0; }
-.meta-row { display: flex; align-items: baseline; gap: 0; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
-.meta-row:first-child { padding-top: 0; }
-.meta-key { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); min-width: 80px; flex-shrink: 0; padding-top: 1px; }
-.meta-val { color: var(--text-dim); line-height: 1.5; }
-.meta-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-.meta-badge.hd { background: var(--gold); color: #000; }
-.meta-badge.free { background: rgba(232,71,63,0.15); color: #ff8a82; border: 1px solid rgba(232,71,63,0.25); }
-.genre-link { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--text-dim); margin: 1px 2px 1px 0; cursor: pointer; transition: all 0.15s; text-decoration: none; }
-.genre-link:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ══════════════════════════════════════
-   AD SLOT (below details)
-══════════════════════════════════════ */
-.ad-slot { display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(255,255,255,0.02); border-top: 1px dashed rgba(255,255,255,0.06); border-bottom: 1px dashed rgba(255,255,255,0.06); }
-.ad-slot-player { min-height: 60px; }
-
-/* ══════════════════════════════════════
-   SIDEBAR (right column)
-══════════════════════════════════════ */
-.sidebar-inner { padding: 16px; }
-.sidebar-section-title { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-.sidebar-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* Related card */
-.related-card { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-bottom: 2px; text-decoration: none; }
-.related-card:hover { background: var(--surface2); }
-.related-thumb { width: 54px; aspect-ratio: 2/3; object-fit: cover; border-radius: 5px; flex-shrink: 0; background: var(--surface2); box-shadow: 0 2px 12px rgba(0,0,0,0.4); }
-.related-thumb-ph { width: 54px; aspect-ratio: 2/3; border-radius: 5px; flex-shrink: 0; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; opacity: 0.3; }
+/* ── SIDEBAR ── */
+.sidebar { padding-top: 36px; }
+.sidebar-title {
+  font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-card {
+  display: flex; align-items: center; gap: 12px; padding: 10px 10px;
+  border-radius: 10px; cursor: pointer; transition: background 0.2s; text-decoration: none;
+  margin-bottom: 2px;
+}
+.related-card:hover { background: var(--surface); }
+@media (hover: none) {
+  .related-card:active { background: var(--surface); }
+}
+.related-thumb {
+  width: 56px; aspect-ratio: 2/3; object-fit: cover; border-radius: 6px;
+  flex-shrink: 0; background: var(--surface2);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+.related-thumb-ph {
+  width: 56px; aspect-ratio: 2/3; border-radius: 6px; flex-shrink: 0;
+  background: var(--surface2); display: flex; align-items: center; justify-content: center;
+  font-size: 20px; opacity: 0.3;
+}
 .related-info { min-width: 0; }
-.r-title { font-family: 'Syne', sans-serif; font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 3px; line-height: 1.2; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.r-meta { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
-.r-genre { font-size: 11px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.r-imdb { color: var(--gold); font-family: 'Space Mono', monospace; font-size: 10px; }
-
-/* Sidebar ad */
-.sidebar-ad { background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.07); border-radius: 6px; min-height: 250px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
-
-/* ══════════════════════════════════════
-   SHARE MODAL
-══════════════════════════════════════ */
-.share-modal { position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px; }
-.share-modal.open { display: flex; }
-.share-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); }
-.share-box { position: relative; z-index: 1; background: var(--surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; }
-.share-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 6px; }
-.share-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
-.share-btns { display: flex; flex-direction: column; gap: 10px; }
-.share-option { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: all 0.2s; }
-.share-option:hover { border-color: rgba(255,255,255,0.15); background: var(--surface2); transform: translateX(4px); }
-.share-option-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.share-option-label { font-size: 14px; font-weight: 600; }
-.share-option-desc { font-size: 12px; color: var(--text-muted); }
-.share-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
-.share-close:hover { color: var(--text); background: var(--surface2); }
-.share-link-wrap { display: flex; gap: 8px; margin-top: 12px; }
-.share-link-wrap input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; }
-.share-link-wrap button { background: var(--accent); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
-
-/* ══════════════════════════════════════
-   MOBILE MORE SECTION
-══════════════════════════════════════ */
-.more-section { padding: 20px; }
-.more-title { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 14px; }
-.more-grid { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); }
-@media (max-width: 480px) { .more-grid { grid-template-columns: repeat(2, 1fr); } }
-.more-card { position: relative; border-radius: 7px; overflow: hidden; cursor: pointer; background: var(--surface); transition: transform 0.2s; }
-.more-card:hover { transform: translateY(-3px); }
-.more-thumb { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: var(--surface2); display: block; }
-.more-thumb-ph { width: 100%; aspect-ratio: 2/3; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 24px; opacity: 0.2; }
-.more-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,16,0.9) 0%, transparent 60%); display: flex; flex-direction: column; justify-content: flex-end; padding: 8px; }
-.more-title-text { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--text); line-height: 1.2; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 900px) {
-  nav.top-nav { padding: 0 20px; }
-  .film-details-section { padding: 16px; }
-  .sidebar-inner { padding: 16px; }
-  .player-info-bar { padding: 12px 16px; }
+.related-info .r-title {
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--text); margin-bottom: 3px; line-height: 1.25;
+  letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.related-info .r-meta {
+  font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted);
+}
+.related-info .r-genre {
+  font-size: 11px; color: var(--text-dim); margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── MORE (mobile grid) ── */
+.more-section { padding: 28px 20px 80px; max-width: 1400px; margin: 0 auto; }
+@media (min-width: 960px) { .more-section { display: none; } }
+.more-title { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 16px; }
+.film-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 400px) { .film-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 600px) { .film-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+.film-card { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.25s ease; background: var(--surface); }
+.film-card:hover { transform: translateY(-4px); }
+.film-card:hover .card-overlay { opacity: 1; }
+.film-card:hover .card-thumb img { transform: scale(1.06); }
+.card-thumb { position: relative; aspect-ratio: 2/3; overflow: hidden; background: var(--surface2); }
+.card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.card-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.placeholder-1 { background: linear-gradient(145deg, #1a1228, #0d1a2e); }
+.placeholder-2 { background: linear-gradient(145deg, #1a1518, #2a0d12); }
+.placeholder-3 { background: linear-gradient(145deg, #0d1a15, #1a2a15); }
+.placeholder-4 { background: linear-gradient(145deg, #1a1a0d, #2a200a); }
+.placeholder-icon { font-size: 32px; opacity: 0.15; }
+.card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,16,0.95) 0%, rgba(8,8,16,0.5) 50%, transparent 100%); opacity: 0; transition: opacity 0.25s; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; gap: 6px; }
+.card-play { align-self: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; box-shadow: 0 4px 20px rgba(232,71,63,0.5); transform: scale(0.8); transition: transform 0.2s; }
+.film-card:hover .card-overlay { opacity: 1; }
+.film-card:hover .card-play { transform: scale(1); }
+/* Touch: always show overlay */
+@media (hover: none) {
+  .card-overlay { opacity: 1; background: linear-gradient(to top, rgba(8,8,16,0.85) 0%, transparent 60%); }
+  .card-play { transform: scale(1); }
+}
+.card-play svg { width: 13px; height: 13px; fill: #fff; margin-left: 2px; }
+.card-overlay-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11.5px; line-height: 1.2; color: var(--text); }
+
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
+.footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
+.footer-brand .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); margin-bottom: 10px; }
+.footer-brand .logo span { color: var(--accent); }
+.footer-brand p { font-size: 13px; color: var(--text-muted); max-width: 240px; line-height: 1.6; }
+.footer-links { display: flex; gap: 48px; flex-wrap: wrap; }
+.footer-col h4 { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 16px; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-col ul li a { font-size: 13.5px; color: var(--text-dim); transition: color 0.2s; }
+.footer-col ul li a:hover { color: var(--text); }
+.footer-bottom { max-width: 1400px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.footer-bottom p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
+
+/* ══════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE SYSTEM
+══════════════════════════════════════════ */
+
+/* ── Controls: on touch devices always show thumb on progress ── */
+@media (hover: none) {
+  .progress-track { height: 4px; }
+  .progress-thumb { transform: translate(-50%,-50%) scale(1) !important; width: 18px; height: 18px; }
+  .progress-tooltip { display: none; }
+  /* Larger hit area for scrubbing on mobile */
+  .progress-wrap { height: 32px; }
+  /* Volume slider hidden on mobile (use system volume) */
+  .volume-wrap .volume-slider-wrap { display: none; }
+  /* Show controls on tap — no hover needed */
+  .ctrl-btn:hover { transform: none; background: none; }
+  .ctrl-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.12); }
+}
+
+/* ── Nav ── */
 @media (max-width: 600px) {
-  nav.top-nav { height: 56px; }
-  .film-hero { gap: 14px; }
-  .film-poster-wrap { width: 80px; }
-  .film-title-big { font-size: 17px; }
-  .film-desc-text { font-size: 12.5px; }
-  .meta-key { min-width: 64px; font-size: 9px; }
-  .meta-row { font-size: 12px; padding: 6px 0; }
-  .player-actions { flex-wrap: wrap; gap: 6px; }
+  nav { padding: 0 14px; height: 56px; }
+  .nav-logo { font-size: 18px; }
+  .back-btn { font-size: 12px; padding: 6px 10px; }
 }
+
+/* ── Player controls bar: tighten on small screens ── */
+@media (max-width: 480px) {
+  #customControls { padding: 0 10px 12px; }
+  .ctrl-btn { width: 36px; height: 36px; }
+  .ctrl-btn svg { width: 18px; height: 18px; }
+  .ctrl-time { font-size: 10px; padding: 0 3px; }
+  /* Hide volume button on very small screens — use system volume */
+  .volume-wrap { display: none; }
+  /* Compact skip labels */
+  .ctrl-btn-skip .skip-num { font-size: 7px; bottom: 5px; }
+}
+
+/* ── Content outer grid ── */
+@media (max-width: 959px) {
+  .content-outer { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
+  /* Sidebar becomes a horizontal scroll row on mobile */
+  .sidebar { padding-top: 0; border-top: 1px solid var(--border); margin-top: 24px; }
+  .sidebar-title { padding-top: 24px; }
+  #relatedList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 4px;
+    padding-bottom: 8px;
+  }
+}
+
+/* ── Film info panel ── */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .film-info { padding: 20px 0 0; }
+  .more-section { padding: 20px 20px 72px; }
+  footer { padding: 36px 20px 24px; }
+  .footer-inner { flex-direction: column; gap: 20px; }
+  .footer-links { gap: 24px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 6px; }
+}
+
+@media (max-width: 600px) {
+  .film-hero { gap: 16px; }
+  .film-poster-wrap { width: 96px; }
+  .film-title { font-size: clamp(18px, 5vw, 24px); margin-bottom: 10px; }
+  .film-desc { font-size: 13px; -webkit-line-clamp: 2; margin-bottom: 14px; }
+  .meta-key { min-width: 72px; font-size: 9px; }
+  .meta-row { font-size: 12px; padding: 7px 0; }
+  .action-row { gap: 8px; padding-bottom: 24px; }
+  .action-btn { font-size: 12px; padding: 9px 14px; min-height: 40px; }
+}
+
+@media (max-width: 380px) {
+  .film-poster-wrap { width: 80px; }
+  .film-hero { gap: 12px; }
+  .film-title { font-size: 18px; }
+  .meta-key { min-width: 64px; }
+  /* Stack action buttons */
+  .action-row { flex-direction: column; }
+  .action-btn { width: 100%; justify-content: center; }
+}
+
+/* ── Film grid (more section) ── */
+@media (max-width: 480px) {
+  .film-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+/* ── Footer ── */
+@media (max-width: 480px) {
+  .footer-links { flex-direction: column; gap: 18px; }
+  footer { padding: 28px 16px 20px; }
+}
+
+/* ── Landscape mobile: player fills viewport, hide overflow ── */
 @media (max-height: 500px) and (orientation: landscape) {
-  nav.top-nav { display: none; }
+  nav { display: none; }
   .player-section { height: 100svh; }
   #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
-  .watch-layout, .bottom-nav, .ad-slot, footer, .more-section { display: none; }
+  .content-outer, .ad-slot, footer, .more-section { display: none; }
 }
 </style>
 </head>
 <body>
 
-<!-- ── TOP NAV ── -->
-<nav class="top-nav">
+<nav>
   <a href="index.html" class="nav-logo">MOV<span>X</span>IO</a>
-  <div class="nav-actions">
-    <button class="nav-btn" id="navWlBtn" onclick="toggleNavWatchlist()">
-      <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  <button class="nav-btn" id="navWlBtn" onclick="toggleNavWatchlist()">
+      <svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px;"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       <span id="navWlText">Watchlist</span>
     </button>
     <a href="browse.html" class="back-btn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Browse
-    </a>
-  </div>
-</nav>
-
-<!-- ══ WATCH LAYOUT ══ -->
-<div class="watch-layout">
-
-  <!-- ══ LEFT / PLAYER COLUMN ══ -->
-  <div class="player-col">
-
-    <!-- Player -->
-    <div class="player-section">
-      <div id="playerContainer">
-
-        <!-- Loading -->
-        <div id="playerLoading">
-          <div class="spinner"></div>
-          <div class="loading-text" id="loadingText">Loading stream...</div>
-        </div>
-
-        <!-- No video -->
-        <div id="noVideo">
-          <div style="position:relative;display:flex;align-items:center;justify-content:center;">
-            <div style="position:absolute;width:96px;height:96px;border-radius:50%;background:rgba(232,71,63,0.08);animation:noVideoPulse 2.4s ease-in-out infinite;"></div>
-            <div style="position:absolute;width:76px;height:76px;border-radius:50%;background:rgba(232,71,63,0.12);animation:noVideoPulse 2.4s ease-in-out 0.4s infinite;"></div>
-            <div style="width:64px;height:64px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(232,71,63,0.4);position:relative;z-index:1;">
-              <svg width="22" viewBox="0 0 16 16" fill="#fff" style="margin-left:3px;"><path d="M4 2l10 6-10 6V2z"/></svg>
-            </div>
-          </div>
-          <p style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:24px;">Video coming soon</p>
-        </div>
-
-        <!-- Buffering -->
-        <div id="bufferingIndicator" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:7;pointer-events:none;">
-          <div style="width:52px;height:52px;position:relative;">
-            <div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(232,71,63,0.12);"></div>
-            <div style="position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:rgba(232,71,63,0.85);border-right-color:rgba(232,71,63,0.35);animation:spin 0.9s cubic-bezier(0.4,0,0.2,1) infinite;box-shadow:0 0 20px rgba(232,71,63,0.2);"></div>
-          </div>
-        </div>
-
-        <!-- Video element -->
-        <video id="movxioPlayer" class="video-js" playsinline preload="metadata"></video>
-
-        <!-- Click overlay -->
-        <div id="clickOverlay"></div>
-
-        <!-- Gradients -->
-        <div class="top-gradient"></div>
-        <div class="ctrl-gradient"></div>
-
-        <!-- Title bar -->
-        <div id="playerTitleBar">
-          <div id="playerTitleText"></div>
-        </div>
-
-        <!-- Center indicator -->
-        <div id="centerIndicator">
-          <svg id="centerIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </div>
-
-        <!-- Skip indicators -->
-        <div class="skip-indicator left" id="skipBack">
-          <div class="skip-ripple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.74"/></svg></div>
-          <span class="skip-label">-10s</span>
-        </div>
-        <div class="skip-indicator right" id="skipFwd">
-          <div class="skip-ripple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-4.74"/></svg></div>
-          <span class="skip-label">+10s</span>
-        </div>
-
-        <!-- Key hint -->
-        <div id="keyHint"></div>
-
-        <!-- Resume banner -->
-        <div id="resumeBanner">
-          <span>Continue from <strong id="resumeTime">0:00</strong>?</span>
-          <button class="resume-btn" id="resumeBtn">Resume</button>
-          <button class="resume-dismiss" id="resumeDismiss">✕</button>
-        </div>
-
-        <!-- Custom Controls -->
-        <div id="customControls">
-          <div class="progress-wrap" id="progressWrap">
-            <div class="progress-track" id="progressTrack">
-              <div class="progress-buffer" id="progressBuffer" style="width:0%"></div>
-              <div class="progress-fill" id="progressFill" style="width:0%"></div>
-              <div class="progress-thumb" id="progressThumb" style="left:0%"></div>
-            </div>
-            <div class="progress-tooltip" id="progressTooltip">0:00</div>
-          </div>
-          <div class="ctrl-row">
-            <div class="ctrl-left">
-              <button class="ctrl-btn" id="btnPlayPause" title="Play/Pause (Space)">
-                <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-              </button>
-              <button class="ctrl-btn ctrl-btn-skip" id="btnBack" title="Back 10s (←)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.74"/></svg>
-                <span class="skip-num">10</span>
-              </button>
-              <button class="ctrl-btn ctrl-btn-skip" id="btnFwd" title="Forward 10s (→)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-4.74"/></svg>
-                <span class="skip-num">10</span>
-              </button>
-              <div class="volume-wrap">
-                <button class="ctrl-btn" id="btnMute" title="Mute (M)">
-                  <svg id="iconVol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                  <svg id="iconMute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-                </button>
-                <div class="volume-slider-wrap">
-                  <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100">
-                </div>
-              </div>
-              <div class="ctrl-time">
-                <strong id="timeNow">0:00</strong> / <span id="timeDur">0:00</span>
-              </div>
-            </div>
-            <div class="ctrl-right">
-              <!-- CC -->
-              <div style="position:relative;">
-                <button class="ctrl-btn" id="btnCC" title="Subtitles (C)" style="display:none">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M7 13h4M15 13h2M7 9h2M13 9h4"/></svg>
-                </button>
-                <div class="menu-popup" id="ccMenu">
-                  <div class="menu-label">Subtitles</div>
-                  <div id="ccList"></div>
-                </div>
-              </div>
-              <!-- Settings -->
-              <div style="position:relative;">
-                <button class="ctrl-btn" id="btnSettings" title="Settings">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-                </button>
-                <div class="settings-popup" id="settingsMenu">
-                  <div class="menu-label">Playback Speed</div>
-                  <div id="speedList"></div>
-                </div>
-              </div>
-              <!-- Fullscreen -->
-              <button class="ctrl-btn" id="btnFullscreen" title="Fullscreen (F)">
-                <svg id="iconExpand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-                <svg id="iconCompress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /playerContainer -->
-    </div><!-- /player-section -->
-
-    <!-- Player info bar -->
-    <div class="player-info-bar">
-      <div>
-        <div class="player-film-title" id="infoTitle">Loading...</div>
-        <div class="player-film-meta" id="infoMeta"></div>
-      </div>
-      <div class="player-actions">
-        <div class="reaction-btns">
-          <button class="reaction-btn" id="likeBtn" onclick="react('like')">
-            <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-            <span id="likeCount">0</span>
-          </button>
-          <button class="reaction-btn" id="dislikeBtn" onclick="react('dislike')">
-            <svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
-            <span id="dislikeCount">0</span>
-          </button>
-        </div>
-        <button class="share-btn" id="shareBtn" onclick="openShare()">
-          <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          Share
-        </button>
-      </div>
-    </div>
-
-    <!-- Film details -->
-    <div class="film-details-section">
-      <div class="film-hero">
-        <div class="film-poster-wrap" id="filmPosterWrap">
-          <div class="film-poster-ph" id="filmPosterPh">🎬</div>
-          <div class="film-poster-badge">Free</div>
-        </div>
-        <div class="film-info-col">
-          <div class="film-eyebrow" id="filmEyebrow">Now Streaming</div>
-          <h1 class="film-title-big" id="filmTitle">Loading...</h1>
-          <p class="film-desc-text" id="filmDesc"></p>
-          <button class="expand-btn" id="expandDescBtn" onclick="toggleDesc()" style="display:none">Show more ↓</button>
-          <div class="meta-table" id="filmMetaTable"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ad below film details -->
-    <div class="ad-slot ad-slot-player" id="adWatchPlayer"><span>Advertisement</span></div>
-
-    <!-- Mobile: more films grid -->
-    <div class="more-section" id="moreSection" style="display:none;">
-      <div class="more-title">More to Watch</div>
-      <div class="more-grid" id="moreGrid"></div>
-    </div>
-
-  </div><!-- /player-col -->
-
-  <!-- ══ RIGHT / SIDEBAR COLUMN ══ -->
-  <div class="sidebar-col">
-    <div class="sidebar-inner">
-
-      <!-- Sidebar ad (desktop) -->
-      <div class="sidebar-ad" id="adWatchSidebar">Advertisement</div>
-
-      <!-- Up Next -->
-      <div class="sidebar-section-title">Up Next</div>
-      <div id="relatedList"></div>
-
-    </div>
-  </div>
-
-</div><!-- /watch-layout -->
-
-<!-- ── FOOTER ── -->
-<footer style="border-top:1px solid var(--border);padding:40px 32px 28px;">
-  <div style="max-width:1400px;margin:0 auto;display:flex;align-items:flex-start;justify-content:space-between;gap:48px;flex-wrap:wrap;">
-    <div>
-      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.5px;color:var(--text);margin-bottom:8px;">MOV<span style="color:var(--accent);">X</span>IO</div>
-      <p style="font-size:13px;color:var(--text-muted);max-width:220px;line-height:1.6;">Free movies, no strings attached.</p>
-    </div>
-    <div style="display:flex;gap:40px;flex-wrap:wrap;">
-      <div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:14px;">Browse</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <a href="browse.html" style="font-size:13px;color:var(--text-dim);">All Films</a>
-          <a href="browse.html?genre=action" style="font-size:13px;color:var(--text-dim);">Action</a>
-          <a href="browse.html?genre=drama" style="font-size:13px;color:var(--text-dim);">Drama</a>
-          <a href="browse.html?genre=thriller" style="font-size:13px;color:var(--text-dim);">Thriller</a>
-        </div>
-      </div>
-      <div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:var(--text-muted);margin-bottom:14px;">Info</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <a href="#" style="font-size:13px;color:var(--text-dim);">About</a>
-          <a href="#" style="font-size:13px;color:var(--text-dim);">Privacy Policy</a>
-          <a href="#" style="font-size:13px;color:var(--text-dim);">Terms of Use</a>
-          <a href="#" style="font-size:13px;color:var(--text-dim);">DMCA</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div style="max-width:1400px;margin:24px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-    <p style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);">© 2025 MOVXIO. Free streaming platform.</p>
-    <p style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);">No account required · No subscription · No cost</p>
-  </div>
-</footer>
-
-<!-- ── BOTTOM NAV ── -->
-<nav class="bottom-nav">
-  <a href="index.html" class="bottom-nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    Home
-  </a>
-  <a href="browse.html" class="bottom-nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
     Browse
   </a>
-  <a href="browse.html?watchlist=1" class="bottom-nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-    Watchlist
-  </a>
-  <a href="admin.html" class="bottom-nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    Admin
-  </a>
 </nav>
 
-<!-- ── SHARE MODAL ── -->
-<div class="share-modal" id="shareModal">
-  <div class="share-backdrop" onclick="closeShare()"></div>
-  <div class="share-box">
-    <button class="share-close" onclick="closeShare()">✕</button>
-    <div class="share-title">Share this film</div>
-    <div class="share-sub" id="shareFilmTitle"></div>
-    <div class="share-btns">
-      <div class="share-option" onclick="shareWhatsApp()">
-        <div class="share-option-icon" style="background:rgba(37,211,102,0.15);">💬</div>
-        <div><div class="share-option-label">WhatsApp</div><div class="share-option-desc">Send to a contact or group</div></div>
+<!-- ══ PLAYER ══ -->
+<div class="player-section">
+  <div id="playerContainer">
+
+    <!-- Loading -->
+    <div id="playerLoading">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading stream...</div>
+    </div>
+
+    <!-- No video state -->
+    <div id="noVideo">
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;">
+        <div style="position:absolute;width:96px;height:96px;border-radius:50%;background:rgba(232,71,63,0.08);animation:noVideoPulse 2.4s ease-in-out infinite;"></div>
+        <div style="position:absolute;width:76px;height:76px;border-radius:50%;background:rgba(232,71,63,0.12);animation:noVideoPulse 2.4s ease-in-out 0.4s infinite;"></div>
+        <div style="width:64px;height:64px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0 rgba(232,71,63,0.3),0 8px 32px rgba(232,71,63,0.4);position:relative;z-index:1;">
+          <svg width="22" viewBox="0 0 16 16" fill="#fff" style="margin-left:3px;"><path d="M4 2l10 6-10 6V2z"/></svg>
+        </div>
       </div>
-      <div class="share-option" onclick="shareTwitter()">
-        <div class="share-option-icon" style="background:rgba(29,161,242,0.15);">𝕏</div>
-        <div><div class="share-option-label">Twitter / X</div><div class="share-option-desc">Post to your followers</div></div>
-      </div>
-      <div class="share-option" onclick="shareFacebook()">
-        <div class="share-option-icon" style="background:rgba(24,119,242,0.15);">f</div>
-        <div><div class="share-option-label">Facebook</div><div class="share-option-desc">Share on your timeline</div></div>
+      <p style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:24px;">Video coming soon</p>
+    </div>
+
+    <!-- Buffering indicator (mid-play) -->
+    <div id="bufferingIndicator" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:7;pointer-events:none;">
+      <div style="width:52px;height:52px;position:relative;">
+        <div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(232,71,63,0.12);"></div>
+        <div style="position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:rgba(232,71,63,0.85);border-right-color:rgba(232,71,63,0.35);animation:spinPremium 0.9s cubic-bezier(0.4,0,0.2,1) infinite;box-shadow:0 0 20px rgba(232,71,63,0.2);"></div>
       </div>
     </div>
-    <div class="share-link-wrap">
-      <input type="text" id="shareLinkInput" readonly>
-      <button onclick="copyShareLink()">Copy Link</button>
+
+    <!-- Video element (Video.js attaches here) -->
+    <video id="movxioPlayer" class="video-js" playsinline preload="metadata"></video>
+
+    <!-- Click overlay -->
+    <div id="clickOverlay"></div>
+
+    <!-- Gradients -->
+    <div class="top-gradient"></div>
+    <div class="ctrl-gradient"></div>
+
+    <!-- Title bar -->
+    <div id="playerTitleBar">
+      <div id="playerTitleText"></div>
     </div>
+
+    <!-- Center indicator -->
+    <div id="centerIndicator">
+      <svg id="centerIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+
+    <!-- Skip indicators -->
+    <div class="skip-indicator left" id="skipBack">
+      <div class="skip-ripple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.74"/></svg>
+      </div>
+      <span class="skip-label">-10s</span>
+    </div>
+    <div class="skip-indicator right" id="skipFwd">
+      <div class="skip-ripple">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-4.74"/></svg>
+      </div>
+      <span class="skip-label">+10s</span>
+    </div>
+
+    <!-- Key hint -->
+    <div id="keyHint"></div>
+
+    <!-- Resume banner -->
+    <div id="resumeBanner">
+      <span>Continue from <strong id="resumeTime">0:00</strong>?</span>
+      <button class="resume-btn" id="resumeBtn">Resume</button>
+      <button class="resume-dismiss" id="resumeDismiss">✕</button>
+    </div>
+
+    <!-- Custom Controls -->
+    <div id="customControls">
+
+      <!-- Progress bar -->
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-track" id="progressTrack">
+          <div class="progress-buffer" id="progressBuffer" style="width:0%"></div>
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+          <div class="progress-thumb" id="progressThumb" style="left:0%"></div>
+        </div>
+        <div class="progress-tooltip" id="progressTooltip">0:00</div>
+      </div>
+
+      <!-- Controls row -->
+      <div class="ctrl-row">
+        <div class="ctrl-left">
+          <!-- Play/Pause -->
+          <button class="ctrl-btn" id="btnPlayPause" title="Play/Pause (Space)">
+            <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+
+          <!-- Skip back -->
+          <button class="ctrl-btn ctrl-btn-skip" id="btnBack" title="Back 10s (←)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.74"/></svg>
+            <span class="skip-num">10</span>
+          </button>
+
+          <!-- Skip forward -->
+          <button class="ctrl-btn ctrl-btn-skip" id="btnFwd" title="Forward 10s (→)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-4.74"/></svg>
+            <span class="skip-num">10</span>
+          </button>
+
+          <!-- Volume -->
+          <div class="volume-wrap">
+            <button class="ctrl-btn" id="btnMute" title="Mute (M)">
+              <svg id="iconVol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <svg id="iconMute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            </button>
+            <div class="volume-slider-wrap">
+              <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100">
+            </div>
+          </div>
+
+          <!-- Time -->
+          <div class="ctrl-time">
+            <strong id="timeNow">0:00</strong> / <span id="timeDur">0:00</span>
+          </div>
+        </div>
+
+        <div class="ctrl-right">
+          <!-- CC/Subtitles -->
+          <div style="position:relative;">
+            <button class="ctrl-btn" id="btnCC" title="Subtitles (C)" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M7 13h4M15 13h2M7 9h2M13 9h4"/></svg>
+            </button>
+            <div class="menu-popup" id="ccMenu">
+              <div class="menu-label">Subtitles</div>
+              <div id="ccList"></div>
+            </div>
+          </div>
+
+          <!-- Settings (speed) -->
+          <div style="position:relative;">
+            <button class="ctrl-btn" id="btnSettings" title="Settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            </button>
+            <div class="settings-popup" id="settingsMenu">
+              <div class="menu-label">Playback Speed</div>
+              <div id="speedList"></div>
+            </div>
+          </div>
+
+          <!-- Fullscreen -->
+          <button class="ctrl-btn" id="btnFullscreen" title="Fullscreen (F)">
+            <svg id="iconExpand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            <svg id="iconCompress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div><!-- /customControls -->
+
+  </div><!-- /playerContainer -->
+</div><!-- /player-section -->
+
+<div class="ad-slot">Advertisement</div>
+
+<!-- Film action bar -->
+<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  <div id="infoTitleBar" style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%;"></div>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button class="reaction-btn" id="likeBtn" onclick="react('like')" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">
+      <svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+      <span id="likeCount">0</span>
+    </button>
+    <button class="reaction-btn" id="dislikeBtn" onclick="react('dislike')" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">
+      <svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+      <span id="dislikeCount">0</span>
+    </button>
+    <button onclick="openShare()" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">
+      <svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share
+    </button>
   </div>
 </div>
 
+<!-- MAIN CONTENT -->
+<div class="content-outer">
+  <div class="film-info">
+    <div class="film-hero">
+      <!-- Poster -->
+      <div class="film-poster-wrap" id="filmPosterWrap">
+        <div class="film-poster-ph" id="filmPosterPh">🎬</div>
+        <div class="film-poster-badge">Free</div>
+      </div>
+
+      <!-- Details -->
+      <div class="film-details">
+        <div class="film-eyebrow" id="filmEyebrow">Now Streaming</div>
+        <h1 class="film-title" id="filmTitle">Loading...</h1>
+        <p class="film-desc" id="filmDesc" style="-webkit-line-clamp:3;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;"></p>
+        <button id="expandDescBtn" onclick="toggleDesc()" style="display:none;background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;margin-bottom:14px;">Show more ↓</button>
+
+        <!-- Meta table -->
+        <div class="meta-table" id="filmMetaTable">
+          <!-- Populated by renderInfo() -->
+        </div>
+
+        <!-- Actions -->
+        <div class="action-row">
+          <button class="action-btn action-btn-primary" onclick="document.getElementById('playerContainer').scrollIntoView({behavior:'smooth'})">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Watch Now
+          </button>
+          <button class="action-btn" id="shareBtn" onclick="copyLink()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+          <a class="action-btn" href="browse.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m7 2 0 20M17 2v20M2 12h20"/></svg>
+            Browse All
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-title">Up Next</div>
+    <div id="relatedList"></div>
+  </div>
+</div>
+
+<div class="more-section" id="moreSection" style="display:none;">
+  <div class="more-title">More to Watch</div>
+  <div class="film-grid" id="moreGrid"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">MOV<span>X</span>IO</div>
+      <p>Free movies, no strings attached. Watch anything, anytime, without a subscription.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Browse</h4>
+        <ul>
+          <li><a href="browse.html">All Films</a></li>
+          <li><a href="browse.html?genre=action">Action</a></li>
+          <li><a href="browse.html?genre=drama">Drama</a></li>
+          <li><a href="browse.html?genre=comedy">Comedy</a></li>
+          <li><a href="browse.html?genre=thriller">Thriller</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Info</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+          <li><a href="#">DMCA</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 MOVXIO. Free streaming platform.</p>
+    <p>No account required · No subscription · No cost</p>
+  </div>
+</footer>
+
 <script>
-// ── CONFIG ────────────────────────────────────────────────────
 const CONFIG = {
   SUPABASE_URL:  localStorage.getItem('cv_url')    || 'https://kncqgatjjcezlnwwikqm.supabase.co',
   SUPABASE_KEY:  localStorage.getItem('cv_key')    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc',
-  WORKER_URL:    localStorage.getItem('cv_worker') || '',
+  WORKER_URL:    localStorage.getItem('cv_worker') || 'https://worker.movxio.com',
   SAVE_INTERVAL: 10,
 };
+
 const DEMO = [
-  { id:'demo1', title:'The Open Road',   year:2023, genre:'drama',       language:'English', country:'United States', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80', description:'A breathtaking road trip that changes the lives of two strangers forever. When an unlikely pair hit the open highway, they discover that the journey itself holds more meaning than any destination.', hls_url:null, subtitles:[], views:142, imdb_rating:7.2, director:'Alex Rivers', actors:'Tom Bradley, Sara Kim', country:'United States', content_rating:'PG-13' },
-  { id:'demo2', title:'City Lights',     year:2022, genre:'romance',     language:'English', country:'United Kingdom', thumbnail_url:'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=80', description:'Love found in unexpected places amid the neon glow of the city.', hls_url:null, subtitles:[], views:98, imdb_rating:6.8 },
-  { id:'demo3', title:'Deep Waters',     year:2023, genre:'thriller',    language:'English', country:'United States', thumbnail_url:'https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=800&q=80', description:'Nothing is as it seems beneath the surface.', hls_url:null, subtitles:[], views:210, imdb_rating:7.8 },
-  { id:'demo4', title:'Into The Wild',   year:2021, genre:'documentary', language:'English', country:'Canada',        thumbnail_url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80', description:'Nature at its most raw and untamed.', hls_url:null, subtitles:[], views:54,  imdb_rating:8.1 },
+  { id:'demo1', title:'The Open Road',   year:2023, genre:'Drama,Thriller', language:'English', country:'United States', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80', description:'A breathtaking road trip that changes the lives of two strangers forever. When an unlikely pair hit the open highway, they discover the journey itself holds more meaning than any destination.', hls_url:null, subtitles:[], views:142, imdb_rating:7.2, director:'Alex Rivers', actors:'Tom Bradley, Sara Kim', content_rating:'PG-13' },
+  { id:'demo2', title:'City Lights',     year:2022, genre:'Romance',        language:'English', country:'United Kingdom', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=80', description:'Love found in unexpected places amid the neon glow of the city. Two strangers, one chance encounter, a story that will stay with you forever.', hls_url:null, subtitles:[], views:98,  imdb_rating:6.8, content_rating:'PG' },
+  { id:'demo3', title:'Deep Waters',     year:2023, genre:'Thriller',       language:'English', country:'United States', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=800&q=80', description:'Nothing is as it seems beneath the surface. A marine biologist uncovers a conspiracy that puts her life in danger.', hls_url:null, subtitles:[], views:210, imdb_rating:7.8, content_rating:'R' },
+  { id:'demo4', title:'Into The Wild',   year:2021, genre:'Documentary',    language:'English', country:'Canada',        featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80', description:'Nature at its most raw and untamed. An extraordinary journey through the worlds most remote wilderness areas.', hls_url:null, subtitles:[], views:54,  imdb_rating:8.1, content_rating:'PG' },
 ];
 const PLACEHOLDERS = ['placeholder-1','placeholder-2','placeholder-3','placeholder-4'];
 
-// ── UTILS ─────────────────────────────────────────────────────
-function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function formatDur(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h>0?`${h}h ${m}m`:`${m}m`;}
-function formatTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=Math.floor(s%60);if(h>0)return`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;return`${m}:${String(sec).padStart(2,'0')}`;}
+function esc(s) { if(!s)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function formatDur(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); return h>0?`${h}h ${m}m`:`${m}m`; }
+function formatTime(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=Math.floor(s%60); if(h>0)return`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; return`${m}:${String(sec).padStart(2,'0')}`; }
 
-// Fingerprint for anonymous reactions
-function getFingerprint() {
-  let fp = localStorage.getItem('mvx_fp');
-  if (!fp) { fp = 'fp_' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('mvx_fp', fp); }
-  return fp;
-}
-
-// ── WATCHLIST ─────────────────────────────────────────────────
-function getWatchlist(){try{return JSON.parse(localStorage.getItem('mvx_watchlist')||'[]');}catch{return[];}}
-function setWatchlist(l){localStorage.setItem('mvx_watchlist',JSON.stringify(l));}
-function isInWatchlist(id){return getWatchlist().includes(id);}
-function toggleNavWatchlist() {
-  if (!currentFilm) return;
-  const id = currentFilm.id;
-  let l = getWatchlist();
-  if (l.includes(id)) l = l.filter(i => i !== id);
-  else l.unshift(id);
-  setWatchlist(l);
-  updateNavWlBtn(l.includes(id));
-}
-function updateNavWlBtn(saved) {
-  const btn = document.getElementById('navWlBtn');
-  const txt = document.getElementById('navWlText');
-  if (!btn) return;
-  btn.classList.toggle('saved', saved);
-  txt.textContent = saved ? 'Saved ✓' : 'Watchlist';
-}
-
-// ── STATE ─────────────────────────────────────────────────────
 const filmId = new URLSearchParams(location.search).get('id');
-console.log('watch.html loaded. URL:', location.href, '| filmId:', JSON.stringify(filmId));
+console.log('[MOVXIO] watch.html | URL:', location.href, '| filmId:', filmId);
 let player = null;
 let currentFilm = null;
 let controlsTimer = null;
 let isDragging = false;
 
-// ── FETCH ─────────────────────────────────────────────────────
+// ── Fetch ─────────────────────────────────────────────────────
 async function fetchFilms() {
-  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) {
-    console.warn('No Supabase config, using demo data');
-    return DEMO;
-  }
+  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) return DEMO;
   try {
-    const url = `${CONFIG.SUPABASE_URL}/rest/v1/films?select=*`;
-    console.log('Fetching from:', url);
-    const res = await fetch(url, {
-      headers: {
-        'apikey': CONFIG.SUPABASE_KEY,
-        'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`
-      }
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/films?select=*`, {
+      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
     });
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('Supabase error:', res.status, errText);
-      return DEMO;
-    }
-    const data = await res.json();
-    console.log('Supabase returned', data.length, 'films');
-    return (Array.isArray(data) && data.length) ? data : DEMO;
-  } catch(e) {
-    console.error('fetchFilms error:', e.message, e);
-    return DEMO;
-  }
+    return res.ok ? await res.json() : DEMO;
+  } catch { return DEMO; }
 }
 
 async function getSignedUrl(slug) {
@@ -795,216 +1059,321 @@ function slugFromUrl(url) {
   return m ? m[1] : null;
 }
 
-// ── CONTROLS VISIBILITY ───────────────────────────────────────
+// ── Controls visibility ───────────────────────────────────────
 const playerContainer = document.getElementById('playerContainer');
+
 function showControls() {
   playerContainer.classList.add('controls-visible');
   clearTimeout(controlsTimer);
-  if (player && !player.paused()) controlsTimer = setTimeout(hideControls, 3000);
+  if (player && !player.paused()) {
+    controlsTimer = setTimeout(hideControls, 3000);
+  }
 }
-function hideControls() { if (!isDragging) playerContainer.classList.remove('controls-visible'); }
+
+function hideControls() {
+  if (isDragging) return;
+  playerContainer.classList.remove('controls-visible');
+}
+
 playerContainer.addEventListener('mousemove', showControls);
 playerContainer.addEventListener('touchstart', showControls, { passive: true });
 
-// ── CLICK OVERLAY ─────────────────────────────────────────────
+// ── Click overlay: play/pause + double-tap skip ───────────────
 let lastTap = 0, lastTapSide = null;
 const clickOverlay = document.getElementById('clickOverlay');
+
 clickOverlay.addEventListener('click', (e) => {
   if (!player) return;
   const rect = clickOverlay.getBoundingClientRect();
   const x = e.clientX - rect.left;
-  const side = x < rect.width/3 ? 'left' : x > rect.width*2/3 ? 'right' : 'center';
+  const side = x < rect.width / 3 ? 'left' : x > rect.width * 2/3 ? 'right' : 'center';
   const now = Date.now();
+
   if (now - lastTap < 300 && lastTapSide === side) {
+    // Double click/tap
     if (side === 'left') { seek(-10); showSkipIndicator('back'); }
     else if (side === 'right') { seek(10); showSkipIndicator('fwd'); }
-    else { toggleFullscreen(); }
-    lastTap = 0; return;
+    else { toggleFullscreen(); } // double-click center = fullscreen
+    lastTap = 0;
+    return;
   }
-  lastTap = now; lastTapSide = side;
-  setTimeout(() => { if (Date.now() - lastTap >= 280) togglePlay(); }, 300);
+  lastTap = now;
+  lastTapSide = side;
+
+  // Single click — play/pause (with delay to allow double tap)
+  setTimeout(() => {
+    if (Date.now() - lastTap >= 280) togglePlay();
+  }, 300);
 });
 
+// Touch double-tap support
 let touchTimer = null;
 clickOverlay.addEventListener('touchend', (e) => {
   if (!player) return;
   const touch = e.changedTouches[0];
   const rect = clickOverlay.getBoundingClientRect();
   const x = touch.clientX - rect.left;
-  const side = x < rect.width/3 ? 'left' : x > rect.width*2/3 ? 'right' : 'center';
+  const side = x < rect.width / 3 ? 'left' : x > rect.width * 2/3 ? 'right' : 'center';
   const now = Date.now();
+
   if (now - lastTap < 300 && lastTapSide === side) {
     clearTimeout(touchTimer);
     if (side === 'left') { seek(-10); showSkipIndicator('back'); }
     else if (side === 'right') { seek(10); showSkipIndicator('fwd'); }
-    else { toggleFullscreen(); }
-    lastTap = 0; return;
+    else { toggleFullscreen(); } // double-tap center = fullscreen
+    lastTap = 0;
+    return;
   }
-  lastTap = now; lastTapSide = side;
-  touchTimer = setTimeout(() => { if (Date.now() - lastTap >= 280) togglePlay(); }, 300);
+  lastTap = now;
+  lastTapSide = side;
+  touchTimer = setTimeout(() => {
+    if (Date.now() - lastTap >= 280) togglePlay();
+  }, 300);
 });
 
-// ── PLAYER CONTROLS ───────────────────────────────────────────
+// ── Player controls ───────────────────────────────────────────
 function togglePlay() {
   if (!player) return;
   if (player.paused()) { player.play(); showCenterIndicator('play'); }
   else { player.pause(); showCenterIndicator('pause'); clearTimeout(controlsTimer); showControls(); }
 }
+
 function seek(delta) {
   if (!player) return;
-  player.currentTime(Math.max(0, Math.min(player.duration()||0, player.currentTime()+delta)));
+  player.currentTime(Math.max(0, Math.min(player.duration() || 0, player.currentTime() + delta)));
 }
+
 function showCenterIndicator(type) {
   const el = document.getElementById('centerIndicator');
   const icon = document.getElementById('centerIcon');
-  icon.innerHTML = type === 'play' ? '<path d="M8 5v14l11-7z"/>' : '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
-  el.classList.remove('hide'); el.classList.add('show');
+  icon.innerHTML = type === 'play'
+    ? '<path d="M8 5v14l11-7z"/>'
+    : '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+  el.classList.remove('hide');
+  el.classList.add('show');
   setTimeout(() => { el.classList.remove('show'); el.classList.add('hide'); }, 600);
 }
+
 function showSkipIndicator(dir) {
-  const el = document.getElementById(dir==='back'?'skipBack':'skipFwd');
-  el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 700);
-}
-function showKeyHint(msg) {
-  const el = document.getElementById('keyHint');
-  el.textContent = msg; el.classList.add('show');
-  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 1200);
+  const el = document.getElementById(dir === 'back' ? 'skipBack' : 'skipFwd');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 700);
 }
 
+function showKeyHint(msg) {
+  const el = document.getElementById('keyHint');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 1200);
+}
+
+// ── Play/Pause button ─────────────────────────────────────────
 document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
 document.getElementById('btnBack').addEventListener('click', () => { seek(-10); showSkipIndicator('back'); });
 document.getElementById('btnFwd').addEventListener('click', () => { seek(10); showSkipIndicator('fwd'); });
 
-// Volume
-document.getElementById('btnMute').addEventListener('click', () => { if(!player)return; player.muted(!player.muted()); updateVolumeUI(); });
-document.getElementById('volumeSlider').addEventListener('input', (e) => { if(!player)return; player.volume(e.target.value/100); player.muted(false); updateVolumeUI(); });
+// ── Volume ────────────────────────────────────────────────────
+document.getElementById('btnMute').addEventListener('click', () => {
+  if (!player) return;
+  player.muted(!player.muted());
+  updateVolumeUI();
+});
+document.getElementById('volumeSlider').addEventListener('input', (e) => {
+  if (!player) return;
+  player.volume(e.target.value / 100);
+  player.muted(false);
+  updateVolumeUI();
+});
 function updateVolumeUI() {
-  if(!player)return;
-  const muted = player.muted()||player.volume()===0;
-  document.getElementById('iconVol').style.display = muted?'none':'';
-  document.getElementById('iconMute').style.display = muted?'':'none';
-  document.getElementById('volumeSlider').value = muted?0:Math.round(player.volume()*100);
+  if (!player) return;
+  const muted = player.muted() || player.volume() === 0;
+  document.getElementById('iconVol').style.display = muted ? 'none' : '';
+  document.getElementById('iconMute').style.display = muted ? '' : 'none';
+  document.getElementById('volumeSlider').value = muted ? 0 : Math.round(player.volume() * 100);
 }
 
-// Fullscreen
+// ── Fullscreen ────────────────────────────────────────────────
 document.getElementById('btnFullscreen').addEventListener('click', toggleFullscreen);
 function toggleFullscreen() {
+  // iOS Safari: use video element native fullscreen
   const vid = player ? player.el().querySelector('video') : null;
-  if (videojs.browser.IS_IOS && vid && vid.webkitEnterFullscreen) { vid.webkitEnterFullscreen(); return; }
+  if (videojs.browser.IS_IOS && vid) {
+    if (vid.webkitEnterFullscreen) { vid.webkitEnterFullscreen(); return; }
+  }
   if (!document.fullscreenElement && !document.webkitFullscreenElement) {
     const el = playerContainer;
-    (el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen).call(el);
+    (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen).call(el);
   } else {
-    (document.exitFullscreen||document.webkitExitFullscreen||document.mozCancelFullScreen||document.msExitFullscreen).call(document);
+    (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen).call(document);
   }
 }
 function updateFullscreenUI() {
-  const fs = !!(document.fullscreenElement||document.webkitFullscreenElement);
-  document.getElementById('iconExpand').style.display = fs?'none':'';
-  document.getElementById('iconCompress').style.display = fs?'':'none';
+  const fs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  document.getElementById('iconExpand').style.display = fs ? 'none' : '';
+  document.getElementById('iconCompress').style.display = fs ? '' : 'none';
 }
 document.addEventListener('fullscreenchange', updateFullscreenUI);
 document.addEventListener('webkitfullscreenchange', updateFullscreenUI);
 
-// ── PROGRESS BAR ─────────────────────────────────────────────
-const progressWrap   = document.getElementById('progressWrap');
-const progressFill   = document.getElementById('progressFill');
-const progressThumb  = document.getElementById('progressThumb');
+// ── Progress bar ──────────────────────────────────────────────
+const progressWrap = document.getElementById('progressWrap');
+const progressFill = document.getElementById('progressFill');
+const progressThumb = document.getElementById('progressThumb');
 const progressBuffer = document.getElementById('progressBuffer');
-const progressTooltip= document.getElementById('progressTooltip');
-function getPct(e){const r=progressWrap.getBoundingClientRect();return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));}
-progressWrap.addEventListener('mousemove',(e)=>{
-  const pct=getPct(e);const dur=player?(player.duration()||0):0;
-  progressTooltip.textContent=formatTime(pct*dur);progressTooltip.style.left=`${pct*100}%`;
-  if(isDragging){progressFill.style.width=`${pct*100}%`;progressThumb.style.left=`${pct*100}%`;}
-});
-progressWrap.addEventListener('mousedown',(e)=>{isDragging=true;const pct=getPct(e);progressFill.style.width=`${pct*100}%`;progressThumb.style.left=`${pct*100}%`;});
-document.addEventListener('mouseup',(e)=>{
-  if(!isDragging)return;isDragging=false;
-  if(player){const r=progressWrap.getBoundingClientRect();const pct=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));player.currentTime(pct*(player.duration()||0));}
-});
-progressWrap.addEventListener('click',(e)=>{if(!player)return;const pct=getPct(e);player.currentTime(pct*(player.duration()||0));});
-progressWrap.addEventListener('touchstart',(e)=>{isDragging=true;e.preventDefault();},{passive:false});
-progressWrap.addEventListener('touchmove',(e)=>{
-  if(!isDragging||!player)return;const touch=e.touches[0];const r=progressWrap.getBoundingClientRect();
-  const pct=Math.max(0,Math.min(1,(touch.clientX-r.left)/r.width));
-  progressFill.style.width=`${pct*100}%`;progressThumb.style.left=`${pct*100}%`;
-  progressTooltip.textContent=formatTime(pct*(player.duration()||0));progressTooltip.style.left=`${pct*100}%`;
-},{passive:true});
-progressWrap.addEventListener('touchend',(e)=>{
-  if(!isDragging||!player)return;isDragging=false;const touch=e.changedTouches[0];const r=progressWrap.getBoundingClientRect();
-  const pct=Math.max(0,Math.min(1,(touch.clientX-r.left)/r.width));player.currentTime(pct*(player.duration()||0));
-});
+const progressTooltip = document.getElementById('progressTooltip');
 
-// ── KEYBOARD ──────────────────────────────────────────────────
-document.addEventListener('keydown',(e)=>{
-  if(!player||e.target.tagName==='INPUT')return;
-  switch(e.key){
-    case ' ':case 'k':e.preventDefault();togglePlay();break;
-    case 'ArrowLeft':e.preventDefault();seek(-10);showSkipIndicator('back');showKeyHint('◀ 10s');break;
-    case 'ArrowRight':e.preventDefault();seek(10);showSkipIndicator('fwd');showKeyHint('10s ▶');break;
-    case 'ArrowUp':e.preventDefault();{const v=Math.min(1,player.volume()+0.1);player.volume(v);player.muted(false);updateVolumeUI();showKeyHint(`🔊 ${Math.round(v*100)}%`);}break;
-    case 'ArrowDown':e.preventDefault();{const v=Math.max(0,player.volume()-0.1);player.volume(v);updateVolumeUI();showKeyHint(`🔉 ${Math.round(v*100)}%`);}break;
-    case 'm':case 'M':player.muted(!player.muted());updateVolumeUI();showKeyHint(player.muted()?'🔇 Muted':'🔊 Unmuted');break;
-    case 'f':case 'F':toggleFullscreen();break;
-    case 'c':case 'C':document.getElementById('btnCC').click();break;
+function getPct(e) {
+  const rect = progressWrap.getBoundingClientRect();
+  return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+}
+
+progressWrap.addEventListener('mousemove', (e) => {
+  const pct = getPct(e);
+  const dur = player ? (player.duration() || 0) : 0;
+  progressTooltip.textContent = formatTime(pct * dur);
+  progressTooltip.style.left = `${pct * 100}%`;
+  if (isDragging) {
+    progressFill.style.width = `${pct * 100}%`;
+    progressThumb.style.left = `${pct * 100}%`;
   }
 });
 
-// ── CC MENU ───────────────────────────────────────────────────
-document.getElementById('btnCC').addEventListener('click',(e)=>{
-  e.stopPropagation();
-  const menu=document.getElementById('ccMenu'),s=document.getElementById('settingsMenu');
-  s.classList.remove('open');menu.classList.toggle('open');
+progressWrap.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  const pct = getPct(e);
+  progressFill.style.width = `${pct * 100}%`;
+  progressThumb.style.left = `${pct * 100}%`;
 });
 
-// ── SPEED LIST ────────────────────────────────────────────────
-(function(){
-  const speeds=[0.5,0.75,1,1.25,1.5,2];
-  const list=document.getElementById('speedList');
-  speeds.forEach(s=>{
-    const div=document.createElement('div');
-    div.className='menu-item speed-item'+(s===1?' active':'');
-    div.dataset.speed=s;
-    div.innerHTML='<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> '+(s===1?'Normal':s+'×');
+document.addEventListener('mouseup', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+  if (player) {
+    const rect = progressWrap.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    player.currentTime(pct * (player.duration() || 0));
+  }
+});
+
+progressWrap.addEventListener('click', (e) => {
+  if (!player) return;
+  const pct = getPct(e);
+  player.currentTime(pct * (player.duration() || 0));
+});
+
+// Touch scrubbing
+progressWrap.addEventListener('touchstart', (e) => {
+  isDragging = true;
+  e.preventDefault();
+}, { passive: false });
+progressWrap.addEventListener('touchmove', (e) => {
+  if (!isDragging || !player) return;
+  const touch = e.touches[0];
+  const rect = progressWrap.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+  progressFill.style.width = `${pct * 100}%`;
+  progressThumb.style.left = `${pct * 100}%`;
+  progressTooltip.textContent = formatTime(pct * (player.duration() || 0));
+  progressTooltip.style.left = `${pct * 100}%`;
+}, { passive: true });
+progressWrap.addEventListener('touchend', (e) => {
+  if (!isDragging || !player) return;
+  isDragging = false;
+  const touch = e.changedTouches[0];
+  const rect = progressWrap.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+  player.currentTime(pct * (player.duration() || 0));
+});
+
+// ── Keyboard controls ─────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (!player || e.target.tagName === 'INPUT') return;
+  switch(e.key) {
+    case ' ': case 'k': e.preventDefault(); togglePlay(); break;
+    case 'ArrowLeft':  e.preventDefault(); seek(-10); showSkipIndicator('back'); showKeyHint('◀ 10s'); break;
+    case 'ArrowRight': e.preventDefault(); seek(10); showSkipIndicator('fwd'); showKeyHint('10s ▶'); break;
+    case 'ArrowUp':    e.preventDefault(); { const v=Math.min(1,player.volume()+0.1); player.volume(v); player.muted(false); updateVolumeUI(); showKeyHint(`🔊 ${Math.round(v*100)}%`); } break;
+    case 'ArrowDown':  e.preventDefault(); { const v=Math.max(0,player.volume()-0.1); player.volume(v); updateVolumeUI(); showKeyHint(`🔉 ${Math.round(v*100)}%`); } break;
+    case 'm': case 'M': player.muted(!player.muted()); updateVolumeUI(); showKeyHint(player.muted()?'🔇 Muted':'🔊 Unmuted'); break;
+    case 'f': case 'F': toggleFullscreen(); break;
+    case 'c': case 'C': document.getElementById('btnCC').click(); break;
+  }
+});
+
+// ── CC Menu ───────────────────────────────────────────────────
+document.getElementById('btnCC').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const menu = document.getElementById('ccMenu');
+  const settings = document.getElementById('settingsMenu');
+  settings.classList.remove('open');
+  menu.classList.toggle('open');
+});
+
+// ── Build speed list ─────────────────────────────────────────
+(function() {
+  const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+  const list = document.getElementById('speedList');
+  speeds.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'menu-item speed-item' + (s === 1 ? ' active' : '');
+    div.dataset.speed = s;
+    div.innerHTML = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ' + (s === 1 ? 'Normal' : s + '×');
     list.appendChild(div);
   });
 })();
-document.getElementById('btnSettings').addEventListener('click',(e)=>{
+
+// ── Settings Menu ─────────────────────────────────────────────
+document.getElementById('btnSettings').addEventListener('click', (e) => {
   e.stopPropagation();
-  const menu=document.getElementById('settingsMenu'),cc=document.getElementById('ccMenu');
-  cc.classList.remove('open');menu.classList.toggle('open');
+  const menu = document.getElementById('settingsMenu');
+  const cc = document.getElementById('ccMenu');
+  cc.classList.remove('open');
+  menu.classList.toggle('open');
 });
-document.getElementById('speedList').addEventListener('click',(e)=>{
-  const item=e.target.closest('.speed-item');if(!item||!player)return;
-  const speed=parseFloat(item.dataset.speed);player.playbackRate(speed);
-  document.querySelectorAll('.speed-item').forEach(i=>i.classList.remove('active'));item.classList.add('active');
-  showKeyHint(`${speed===1?'Normal':speed+'×'} speed`);document.getElementById('settingsMenu').classList.remove('open');
+
+document.getElementById('speedList').addEventListener('click', (e) => {
+  const item = e.target.closest('.speed-item');
+  if (!item || !player) return;
+  const speed = parseFloat(item.dataset.speed);
+  player.playbackRate(speed);
+  document.querySelectorAll('.speed-item').forEach(i => i.classList.remove('active'));
+  item.classList.add('active');
+  showKeyHint(`${speed === 1 ? 'Normal' : speed+'×'} speed`);
+  document.getElementById('settingsMenu').classList.remove('open');
 });
-document.addEventListener('click',()=>{
+
+// Close menus on outside click
+document.addEventListener('click', () => {
   document.getElementById('ccMenu').classList.remove('open');
   document.getElementById('settingsMenu').classList.remove('open');
 });
 
-// ── RESUME ────────────────────────────────────────────────────
-document.getElementById('resumeBtn').addEventListener('click',()=>{
-  const pos=parseInt(document.getElementById('resumeBtn').dataset.pos);
-  if(player&&pos){player.currentTime(pos);player.play();}
+// ── Resume banner ─────────────────────────────────────────────
+document.getElementById('resumeBtn').addEventListener('click', () => {
+  const pos = parseInt(document.getElementById('resumeBtn').dataset.pos);
+  if (player && pos) { player.currentTime(pos); player.play(); }
   document.getElementById('resumeBanner').classList.remove('show');
 });
-document.getElementById('resumeDismiss').addEventListener('click',()=>document.getElementById('resumeBanner').classList.remove('show'));
+document.getElementById('resumeDismiss').addEventListener('click', () => {
+  document.getElementById('resumeBanner').classList.remove('show');
+});
 
-// ── LOCALSTORAGE ──────────────────────────────────────────────
-function savePosition(fid,pos,dur){try{localStorage.setItem(`mvx_pos_${fid}`,JSON.stringify({pos,dur,ts:Date.now()}));}catch{}}
-function getSavedPosition(fid){
-  try{
-    const d=JSON.parse(localStorage.getItem(`mvx_pos_${fid}`)||'null');
-    if(!d)return null;if(Date.now()-d.ts>30*24*60*60*1000)return null;
-    if(d.dur&&d.pos>=d.dur-120)return null;return d.pos;
-  }catch{return null;}
+// ── localStorage ──────────────────────────────────────────────
+function savePosition(fid, pos, dur) {
+  try { localStorage.setItem(`mvx_pos_${fid}`, JSON.stringify({ pos, dur, ts: Date.now() })); } catch {}
+}
+function getSavedPosition(fid) {
+  try {
+    const d = JSON.parse(localStorage.getItem(`mvx_pos_${fid}`) || 'null');
+    if (!d) return null;
+    if (Date.now() - d.ts > 30*24*60*60*1000) return null;
+    if (d.dur && d.pos >= d.dur - 120) return null;
+    return d.pos;
+  } catch { return null; }
 }
 
-// ── VIEWS ─────────────────────────────────────────────────────
+// ── Views ─────────────────────────────────────────────────────
 async function incrementViews(fid) {
   if (!CONFIG.SUPABASE_URL) return;
   try {
@@ -1016,167 +1385,106 @@ async function incrementViews(fid) {
   } catch {}
 }
 
-// ── REACTIONS ─────────────────────────────────────────────────
-let currentReaction = null;
-let likesCount = 0;
-let dislikesCount = 0;
-
-async function loadReactions(filmId) {
-  const fp = getFingerprint();
-  try {
-    // Get counts
-    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reactions?film_id=eq.${filmId}&select=reaction`, {
-      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
-    });
-    if (!res.ok) return;
-    const data = await res.json();
-    likesCount = data.filter(r => r.reaction === 'like').length;
-    dislikesCount = data.filter(r => r.reaction === 'dislike').length;
-
-    // Get user's reaction
-    const myRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reactions?film_id=eq.${filmId}&fingerprint=eq.${encodeURIComponent(fp)}&select=reaction`, {
-      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
-    });
-    if (myRes.ok) {
-      const myData = await myRes.json();
-      currentReaction = myData.length ? myData[0].reaction : null;
-    }
-    updateReactionUI();
-  } catch {}
-}
-
-async function react(type) {
-  const film = currentFilm; if (!film) return;
-  const fp = getFingerprint();
-
-  if (currentReaction === type) {
-    // Remove reaction
-    try {
-      await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reactions?film_id=eq.${film.id}&fingerprint=eq.${encodeURIComponent(fp)}`, {
-        method: 'DELETE',
-        headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
-      });
-      if (type === 'like') likesCount = Math.max(0, likesCount - 1);
-      else dislikesCount = Math.max(0, dislikesCount - 1);
-      currentReaction = null;
-    } catch {}
-  } else {
-    // Upsert reaction
-    try {
-      if (currentReaction) {
-        if (currentReaction === 'like') likesCount = Math.max(0, likesCount - 1);
-        else dislikesCount = Math.max(0, dislikesCount - 1);
-      }
-      await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reactions`, {
-        method: 'POST',
-        headers: {
-          'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`,
-          'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify({ film_id: film.id, fingerprint: fp, reaction: type })
-      });
-      if (type === 'like') likesCount++;
-      else dislikesCount++;
-      currentReaction = type;
-    } catch {}
-  }
-  updateReactionUI();
-}
-
-function updateReactionUI() {
-  document.getElementById('likeCount').textContent = likesCount;
-  document.getElementById('dislikeCount').textContent = dislikesCount;
-  document.getElementById('likeBtn').classList.toggle('liked', currentReaction === 'like');
-  document.getElementById('dislikeBtn').classList.toggle('disliked', currentReaction === 'dislike');
-}
-
-// ── SHARE ─────────────────────────────────────────────────────
-function openShare() {
-  const film = currentFilm;
-  document.getElementById('shareFilmTitle').textContent = film ? film.title : '';
-  document.getElementById('shareLinkInput').value = location.href;
-  document.getElementById('shareModal').classList.add('open');
-}
-function closeShare() { document.getElementById('shareModal').classList.remove('open'); }
-function shareWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent((currentFilm?currentFilm.title+' — ':'')+'Watch free on MOVXIO: '+location.href)}`,'_blank'); }
-function shareTwitter()  { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent((currentFilm?'Watching '+currentFilm.title+' on MOVXIO — free! ':'')+location.href)}`,'_blank'); }
-function shareFacebook() { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}`,'_blank'); }
-function copyShareLink() {
-  navigator.clipboard.writeText(location.href).then(()=>{
-    const btn = document.querySelector('.share-link-wrap button');
-    btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy Link',2000);
-  });
-}
-
-// ── INIT PLAYER ───────────────────────────────────────────────
+// ── Init Player ───────────────────────────────────────────────
 function initPlayer(film, videoUrl) {
   currentFilm = film;
   document.getElementById('playerTitleText').textContent = film.title;
+
   const loading = document.getElementById('playerLoading');
   const noVideo = document.getElementById('noVideo');
 
   if (!videoUrl) {
     loading.style.display = 'none';
     noVideo.style.display = 'flex';
-    // Still show film info even with no video
     return;
   }
 
+  // Init Video.js (engine only, controls hidden)
   player = videojs('movxioPlayer', {
-    controls: false, autoplay: false, preload: 'metadata', responsive: true,
+    controls: false,
+    autoplay: false,
+    preload: 'metadata',
+    responsive: true,
     html5: { vhs: { overrideNative: !videojs.browser.IS_SAFARI, enableLowInitialPlaylist: true } },
   });
 
   if (film.thumbnail_url) player.poster(film.thumbnail_url);
 
-  // Subtitles
+  // Add subtitle tracks
   const subs = film.subtitles || [];
-  subs.forEach(sub => {
-    player.addRemoteTextTrack({ kind:'subtitles', src:sub.url, srclang:sub.lang.toLowerCase().slice(0,2), label:sub.lang, default:false }, false);
+  subs.forEach((sub, i) => {
+    player.addRemoteTextTrack({ kind:'subtitles', src:sub.url, srclang:sub.lang.toLowerCase().slice(0,2), label:sub.lang, default: false }, false);
   });
 
-  // CC button
+  // CC button — always visible
   const btnCC = document.getElementById('btnCC');
   btnCC.style.display = '';
   const ccList = document.getElementById('ccList');
   const checkSVG = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  // Show CC button if subtitles available
   if (subs.length > 0) {
     const offItem = document.createElement('div');
-    offItem.className = 'menu-item cc-item active'; offItem.dataset.lang = 'off';
-    offItem.innerHTML = checkSVG + ' Off'; ccList.appendChild(offItem);
+    offItem.className = 'menu-item cc-item active';
+    offItem.dataset.lang = 'off';
+    offItem.innerHTML = checkSVG + ' Off';
+    ccList.appendChild(offItem);
     subs.forEach(sub => {
       const item = document.createElement('div');
-      item.className = 'menu-item cc-item'; item.dataset.srclang = sub.lang.toLowerCase().slice(0,2); item.dataset.lang = sub.lang;
-      item.innerHTML = checkSVG + ' ' + sub.lang; ccList.appendChild(item);
+      item.className = 'menu-item cc-item';
+      item.dataset.srclang = sub.lang.toLowerCase().slice(0,2);
+      item.dataset.lang = sub.lang;
+      item.innerHTML = checkSVG + ' ' + sub.lang;
+      ccList.appendChild(item);
     });
+
     ccList.addEventListener('click', (e) => {
-      const item = e.target.closest('.cc-item'); if (!item) return;
+      const item = e.target.closest('.cc-item');
+      if (!item) return;
       document.querySelectorAll('.cc-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
-      const isOff = item.dataset.lang === 'off'; const targetLang = item.dataset.srclang || '';
+      const isOff = item.dataset.lang === 'off';
+      const targetLang = item.dataset.srclang || '';
+      // Disable all tracks first
       const tracks = player.textTracks();
       for (let i = 0; i < tracks.length; i++) {
-        tracks[i].mode = isOff ? 'disabled' : (tracks[i].language === targetLang ? 'showing' : 'disabled');
+        if (isOff) {
+          tracks[i].mode = 'disabled';
+        } else {
+          tracks[i].mode = tracks[i].language === targetLang ? 'showing' : 'disabled';
+        }
       }
       document.getElementById('ccMenu').classList.remove('open');
       document.getElementById('btnCC').classList.toggle('active', !isOff);
     });
   } else {
+    // No subtitles — show placeholder
     const noSub = document.createElement('div');
-    noSub.style.cssText='padding:10px;font-size:12px;color:var(--text-muted);';
-    noSub.textContent='No subtitles available'; ccList.appendChild(noSub);
-    btnCC.style.opacity='0.45';
+    noSub.style.cssText = 'padding:10px 10px 8px;font-size:12px;color:var(--text-muted);font-family:"DM Sans",sans-serif;';
+    noSub.textContent = 'No subtitles available';
+    ccList.appendChild(noSub);
+    btnCC.style.opacity = '0.45';
   }
 
-  player.on('waiting', () => { document.getElementById('bufferingIndicator').style.display = 'flex'; });
-  player.on('playing', () => { document.getElementById('bufferingIndicator').style.display = 'none'; });
-  player.on('canplay', () => { document.getElementById('bufferingIndicator').style.display = 'none'; });
+  player.on('waiting', () => {
+    document.getElementById('bufferingIndicator').style.display = 'flex';
+  });
+  player.on('playing', () => {
+    document.getElementById('bufferingIndicator').style.display = 'none';
+  });
+  player.on('canplay', () => {
+    document.getElementById('bufferingIndicator').style.display = 'none';
+  });
+
   player.src({ type: 'application/x-mpegURL', src: videoUrl });
 
+  // Events
   player.on('loadedmetadata', () => {
     loading.style.display = 'none';
     document.getElementById('timeDur').textContent = formatTime(player.duration());
     showControls();
+
+    // Resume banner
     const saved = getSavedPosition(film.id);
     if (saved && saved > 30) {
       document.getElementById('resumeTime').textContent = formatTime(saved);
@@ -1184,119 +1492,121 @@ function initPlayer(film, videoUrl) {
       document.getElementById('resumeBanner').classList.add('show');
     }
   });
-  player.on('play', () => { document.getElementById('iconPlay').style.display='none'; document.getElementById('iconPause').style.display=''; showControls(); });
-  player.on('pause', () => { document.getElementById('iconPlay').style.display=''; document.getElementById('iconPause').style.display='none'; showControls(); });
+
+  player.on('play', () => {
+    document.getElementById('iconPlay').style.display = 'none';
+    document.getElementById('iconPause').style.display = '';
+    showControls();
+  });
+
+  player.on('pause', () => {
+    document.getElementById('iconPlay').style.display = '';
+    document.getElementById('iconPause').style.display = 'none';
+    showControls();
+  });
+
   player.on('timeupdate', () => {
     if (isDragging) return;
-    const t = player.currentTime(), d = player.duration()||0, pct = d>0?(t/d*100):0;
-    progressFill.style.width=`${pct}%`; progressThumb.style.left=`${pct}%`;
+    const t = player.currentTime();
+    const d = player.duration() || 0;
+    const pct = d > 0 ? (t / d * 100) : 0;
+    progressFill.style.width = `${pct}%`;
+    progressThumb.style.left = `${pct}%`;
     document.getElementById('timeNow').textContent = formatTime(t);
   });
+
   player.on('progress', () => {
-    const b = player.bufferedEnd(), d = player.duration()||0;
+    const b = player.bufferedEnd();
+    const d = player.duration() || 0;
     if (d > 0) progressBuffer.style.width = `${b/d*100}%`;
   });
+
   player.on('volumechange', updateVolumeUI);
 
+  // Throttled save
   let lastSave = 0;
   player.on('timeupdate', () => {
     if (!player || player.paused()) return;
     const now = Date.now();
     if (now - lastSave < CONFIG.SAVE_INTERVAL * 1000) return;
     lastSave = now;
-    const pos = Math.floor(player.currentTime()), dur = Math.floor(player.duration()||0);
+    const pos = Math.floor(player.currentTime());
+    const dur = Math.floor(player.duration() || 0);
     if (pos > 0) savePosition(film.id, pos, dur);
   });
+
   player.one('play', () => incrementViews(film.id));
 }
 
-// ── RENDER INFO ───────────────────────────────────────────────
+// ── Render film info ──────────────────────────────────────────
 function renderInfo(film) {
-  // Dynamic SEO — safe null-checks on all querySelector calls
+  // Dynamic SEO — safe null checks on every querySelector
   document.title = `${film.title} — Watch Free on MOVXIO`;
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute('content', `Watch ${film.title} free on MOVXIO. No account needed.`);
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) ogTitle.setAttribute('content', `${film.title} — MOVXIO`);
-  const ogDesc = document.querySelector('meta[property="og:description"]');
-  if (ogDesc) ogDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
-  const ogImg = document.querySelector('meta[property="og:image"]');
-  if (ogImg && film.thumbnail_url) ogImg.setAttribute('content', film.thumbnail_url);
-  const twTitle = document.querySelector('meta[name="twitter:title"]');
-  if (twTitle) twTitle.setAttribute('content', `${film.title} — Watch Free`);
-  const twDesc = document.querySelector('meta[name="twitter:description"]');
-  if (twDesc) twDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
+  const _metaDesc = document.querySelector('meta[name="description"]');
+  if (_metaDesc) _metaDesc.setAttribute('content', `Watch ${film.title} free on MOVXIO. No account needed.`);
+  const _ogTitle  = document.querySelector('meta[property="og:title"]');
+  if (_ogTitle)  _ogTitle.setAttribute('content', `${film.title} — MOVXIO`);
+  const _ogDesc   = document.querySelector('meta[property="og:description"]');
+  if (_ogDesc)   _ogDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
+  const _ogImg    = document.querySelector('meta[property="og:image"]');
+  if (_ogImg && film.thumbnail_url) _ogImg.setAttribute('content', film.thumbnail_url);
+  const _twTitle  = document.querySelector('meta[name="twitter:title"]');
+  if (_twTitle)  _twTitle.setAttribute('content', `${film.title} — Watch Free`);
 
   const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
+
   document.getElementById('filmEyebrow').textContent = genres[0] || 'Now Streaming';
   document.getElementById('filmTitle').textContent = film.title;
-  document.getElementById('infoTitle').textContent = film.title;
+  // Info title bar
+  const infoTitleBar = document.getElementById('infoTitleBar');
+  if (infoTitleBar) infoTitleBar.textContent = film.title;
 
-  // Description with expand
-  const desc = film.description || '';
+  // Description
   const descEl = document.getElementById('filmDesc');
   const expandBtn = document.getElementById('expandDescBtn');
+  const desc = film.description || '';
   descEl.textContent = desc;
-  if (desc.length > 200) {
-    expandBtn.style.display = 'inline-block';
-    descEl.classList.remove('expanded');
-  }
+  if (expandBtn) expandBtn.style.display = desc.length > 200 ? 'inline-block' : 'none';
 
   // Poster
   const ph = document.getElementById('filmPosterPh');
   const wrap = document.getElementById('filmPosterWrap');
   if (film.thumbnail_url) {
     const img = document.createElement('img');
-    img.src = film.thumbnail_url; img.alt = film.title;
+    img.src = film.thumbnail_url;
+    img.alt = film.title;
     img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
-    wrap.insertBefore(img, ph); ph.style.display = 'none';
+    wrap.insertBefore(img, ph);
+    ph.style.display = 'none';
   }
 
-  // Info bar meta tags
-  const metaTags = [];
-  if (film.year) metaTags.push(`<span class="meta-tag">${film.year}</span>`);
-  if (film.imdb_rating) metaTags.push(`<span class="meta-tag imdb">★ ${film.imdb_rating}/10</span>`);
-  if (film.content_rating) metaTags.push(`<span class="meta-tag rating">${film.content_rating}</span>`);
-  if (film.duration_secs) metaTags.push(`<span class="meta-tag">${formatDur(film.duration_secs)}</span>`);
-  if (film.language) metaTags.push(`<span class="meta-tag">${film.language}</span>`);
-  document.getElementById('infoMeta').innerHTML = metaTags.join('');
-
-  // Meta table
+  // Meta table rows — all original fields + new fields
   const rows = [];
-  if (genres.length) rows.push({ key:'Genre', val: genres.map(g=>`<a class="genre-link" href="browse.html?genre=${encodeURIComponent(g)}">${esc(g)}</a>`).join('') });
-  if (film.director) rows.push({ key:'Director', val: esc(film.director) });
-  if (film.actors) rows.push({ key:'Cast', val: esc(film.actors) });
-  if (film.country) rows.push({ key:'Country', val: `<a class="genre-link" href="browse.html?country=${encodeURIComponent(film.country)}">${esc(film.country)}</a>` });
-  if (film.language) rows.push({ key:'Language', val: esc(film.language) });
-  if (film.duration_secs) rows.push({ key:'Duration', val: formatDur(film.duration_secs) });
-  if (film.year) rows.push({ key:'Release', val: `<span style="color:var(--accent);">${film.year}</span>` });
-  if (film.imdb_rating) rows.push({ key:'IMDb', val: `<span style="color:var(--gold);">★ ${film.imdb_rating}/10</span>` });
-  if (film.content_rating) rows.push({ key:'Rating', val: `<span class="meta-badge rating" style="background:rgba(255,255,255,0.08);color:var(--text-dim);">${esc(film.content_rating)}</span>` });
-  rows.push({ key:'Quality', val: '<span class="meta-badge hd">HD</span>&nbsp;&nbsp;<span class="meta-badge free">Free</span>' });
-  if (film.views) rows.push({ key:'Views', val: `<span style="color:var(--text-muted);font-family:'Space Mono',monospace;font-size:12px;">👁 ${Number(film.views).toLocaleString()}</span>` });
+  if (genres.length) {
+    rows.push({ key: 'Genre', val: genres.map(g => `<a class="meta-link" href="browse.html?genre=${encodeURIComponent(g)}" style="display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--text-dim);margin:1px 2px 1px 0;text-decoration:none;">${esc(g)}</a>`).join('') });
+  }
+  if (film.director)      rows.push({ key: 'Director', val: esc(film.director) });
+  if (film.actors)        rows.push({ key: 'Cast',     val: esc(film.actors) });
+  if (film.country)       rows.push({ key: 'Country',  val: esc(film.country) });
+  if (film.language)      rows.push({ key: 'Language', val: esc(film.language) });
+  if (film.duration_secs) rows.push({ key: 'Duration', val: formatDur(film.duration_secs) });
+  if (film.year)          rows.push({ key: 'Release',  val: `<span style="color:var(--accent)">${esc(String(film.year))}</span>` });
+  if (film.imdb_rating)   rows.push({ key: 'IMDb',     val: `<span class="meta-imdb"><span class="star">★</span> ${esc(String(film.imdb_rating))}/10</span>` });
+  if (film.content_rating)rows.push({ key: 'Rating',   val: `<span class="meta-badge" style="background:rgba(255,255,255,0.08);color:var(--text-dim);">${esc(film.content_rating)}</span>` });
+  rows.push({ key: 'Quality', val: '<span class="meta-badge hd">HD</span>&nbsp;&nbsp;<span class="meta-badge free">Free</span>' });
+  if (film.views)         rows.push({ key: 'Views',    val: `<span class="meta-views-badge">${Number(film.views).toLocaleString()}</span>` });
 
   document.getElementById('filmMetaTable').innerHTML = rows.map(r =>
     `<div class="meta-row"><span class="meta-key">${r.key}</span><span class="meta-val">${r.val}</span></div>`
   ).join('');
 
-  // Watchlist btn
+  // Watchlist nav button
   updateNavWlBtn(isInWatchlist(film.id));
-
-  // Share modal film name
-  document.getElementById('shareLinkInput').value = location.href;
 }
 
-// ── TOGGLE DESC ───────────────────────────────────────────────
-function toggleDesc() {
-  const descEl = document.getElementById('filmDesc');
-  const btn = document.getElementById('expandDescBtn');
-  const expanded = descEl.classList.toggle('expanded');
-  btn.textContent = expanded ? 'Show less ↑' : 'Show more ↓';
-}
-
-// ── RENDER RELATED (by genre) ─────────────────────────────────
+// ── Render related — sorted by matching genre ─────────────────
 function renderRelated(films, currentId, currentGenres) {
-  // Sort: same genre first, then rest
+  currentGenres = currentGenres || [];
   const others = films
     .filter(f => f.id !== currentId)
     .sort((a, b) => {
@@ -1315,27 +1625,59 @@ function renderRelated(films, currentId, currentGenres) {
         : `<div class="related-thumb-ph">🎬</div>`}
       <div class="related-info">
         <div class="r-title">${esc(f.title)}</div>
-        <div class="r-meta">${f.year||''}${f.imdb_rating?` · <span class="r-imdb">★${f.imdb_rating}</span>`:''}</div>
-        <div class="r-genre">${(f.genre||'').split(',').slice(0,2).map(g=>g.trim()).filter(Boolean).join(', ')}</div>
+        <div class="r-meta">${f.year||''}${f.imdb_rating ? ' · ★'+f.imdb_rating : ''}</div>
+        <div class="r-genre">${(f.genre||'').split(',').slice(0,2).map(g=>g.trim()).join(', ')}</div>
       </div>
     </a>`).join('');
 
-  // Mobile more grid
   if (others.length) {
     document.getElementById('moreSection').style.display = 'block';
-    document.getElementById('moreGrid').innerHTML = others.slice(0,6).map(f => {
+    document.getElementById('moreGrid').innerHTML = others.slice(0,4).map((f,i) => {
+      const ph = PLACEHOLDERS[i%4];
       const thumb = f.thumbnail_url
-        ? `<img class="more-thumb" src="${esc(f.thumbnail_url)}" alt="${esc(f.title)}" loading="lazy">`
-        : `<div class="more-thumb-ph">🎬</div>`;
-      return `<div class="more-card" onclick="window.location.href='watch.html?id=${esc(f.id)}'">
-        ${thumb}
-        <div class="more-overlay"><div class="more-title-text">${esc(f.title)}</div></div>
-      </div>`;
+        ? `<img src="${esc(f.thumbnail_url)}" alt="${esc(f.title)}" loading="lazy">`
+        : `<div class="card-thumb-placeholder ${ph}"><span class="placeholder-icon">🎬</span></div>`;
+      return `<div class="film-card" onclick="window.location.href='watch.html?id=${esc(f.id)}'">
+        <div class="card-thumb">${thumb}
+          <div class="card-overlay"><div class="card-play"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div>
+          <div class="card-overlay-title">${esc(f.title)}</div></div>
+        </div></div>`;
     }).join('');
   }
 }
 
-// ── TRACK HISTORY ─────────────────────────────────────────────
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const btn = document.getElementById('shareBtn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2500);
+  });
+}
+
+
+// ── Watchlist ──────────────────────────────────────────────────
+function getWatchlist() { try { return JSON.parse(localStorage.getItem('mvx_watchlist')||'[]'); } catch { return []; } }
+function setWatchlist(l) { localStorage.setItem('mvx_watchlist', JSON.stringify(l)); }
+function isInWatchlist(id) { return getWatchlist().includes(id); }
+function toggleNavWatchlist() {
+  if (!currentFilm) return;
+  let l = getWatchlist();
+  if (l.includes(currentFilm.id)) l = l.filter(i => i !== currentFilm.id);
+  else l.unshift(currentFilm.id);
+  setWatchlist(l);
+  updateNavWlBtn(l.includes(currentFilm.id));
+}
+function updateNavWlBtn(saved) {
+  const btn = document.getElementById('navWlBtn');
+  const txt = document.getElementById('navWlText');
+  if (!btn || !txt) return;
+  btn.className = saved ? 'nav-btn saved' : 'nav-btn';
+  txt.textContent = saved ? 'Saved ✓' : 'Watchlist';
+}
+
+// ── Track history ──────────────────────────────────────────────
 function trackHistory(id) {
   try {
     let h = JSON.parse(localStorage.getItem('mvx_history')||'[]');
@@ -1344,15 +1686,129 @@ function trackHistory(id) {
   } catch(e) {}
 }
 
-// ── MAIN ──────────────────────────────────────────────────────
+// ── Fingerprint for anonymous reactions ────────────────────────
+function getFingerprint() {
+  let fp = localStorage.getItem('mvx_fp');
+  if (!fp) { fp = 'fp_' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('mvx_fp', fp); }
+  return fp;
+}
+
+// ── Reactions (likes/dislikes) ─────────────────────────────────
+let currentReaction = null;
+let likesCount = 0;
+let dislikesCount = 0;
+
+async function loadReactions(fid) {
+  try {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reactions?film_id=eq.${fid}&select=reaction`, {
+      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    likesCount    = data.filter(r => r.reaction === 'like').length;
+    dislikesCount = data.filter(r => r.reaction === 'dislike').length;
+    const fp = getFingerprint();
+    const mine = data.find(r => r.fingerprint === fp);
+    currentReaction = mine ? mine.reaction : null;
+    updateReactionUI();
+  } catch(e) {}
+}
+
+async function react(type) {
+  if (!currentFilm) return;
+  const fp = getFingerprint();
+  const fid = currentFilm.id;
+  try {
+    if (currentReaction === type) {
+      await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reactions?film_id=eq.${fid}&fingerprint=eq.${encodeURIComponent(fp)}`, {
+        method: 'DELETE',
+        headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
+      });
+      if (type === 'like') likesCount = Math.max(0, likesCount - 1);
+      else dislikesCount = Math.max(0, dislikesCount - 1);
+      currentReaction = null;
+    } else {
+      if (currentReaction) {
+        if (currentReaction === 'like') likesCount = Math.max(0, likesCount - 1);
+        else dislikesCount = Math.max(0, dislikesCount - 1);
+      }
+      await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/reactions`, {
+        method: 'POST',
+        headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({ film_id: fid, fingerprint: fp, reaction: type })
+      });
+      if (type === 'like') likesCount++;
+      else dislikesCount++;
+      currentReaction = type;
+    }
+  } catch(e) {
+    // Optimistic UI even if Supabase fails
+    if (currentReaction === type) {
+      if (type === 'like') likesCount = Math.max(0, likesCount - 1);
+      else dislikesCount = Math.max(0, dislikesCount - 1);
+      currentReaction = null;
+    } else {
+      if (type === 'like') likesCount++;
+      else dislikesCount++;
+      currentReaction = type;
+    }
+  }
+  updateReactionUI();
+}
+
+function updateReactionUI() {
+  const lc = document.getElementById('likeCount');
+  const dc = document.getElementById('dislikeCount');
+  const lb = document.getElementById('likeBtn');
+  const db = document.getElementById('dislikeBtn');
+  if (lc) lc.textContent = likesCount;
+  if (dc) dc.textContent = dislikesCount;
+  if (lb) lb.className = 'reaction-btn' + (currentReaction === 'like' ? ' liked' : '');
+  if (db) db.className = 'reaction-btn' + (currentReaction === 'dislike' ? ' disliked' : '');
+}
+
+// ── Share ──────────────────────────────────────────────────────
+function openShare() {
+  const modal = document.getElementById('shareModal');
+  const filmTitleEl = document.getElementById('shareFilmTitle');
+  const linkInput = document.getElementById('shareLinkInput');
+  if (filmTitleEl) filmTitleEl.textContent = currentFilm ? currentFilm.title : '';
+  if (linkInput) linkInput.value = location.href;
+  if (modal) modal.classList.add('open');
+}
+function closeShare() {
+  const modal = document.getElementById('shareModal');
+  if (modal) modal.classList.remove('open');
+}
+function shareWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent((currentFilm ? currentFilm.title + ' — ' : '') + 'Watch free on MOVXIO: ' + location.href)}`, '_blank'); }
+function shareTwitter()  { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent((currentFilm ? 'Watching ' + currentFilm.title + ' on MOVXIO — free! ' : '') + location.href)}`, '_blank'); }
+function shareFacebook() { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}`, '_blank'); }
+function copyShareLink() {
+  const linkInput = document.getElementById('shareLinkInput');
+  if (!linkInput) return;
+  navigator.clipboard.writeText(location.href).then(() => {
+    const btn = document.querySelector('.share-link-wrap button');
+    if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy Link', 2000); }
+  });
+}
+function toggleDesc() {
+  const d = document.getElementById('filmDesc');
+  const b = document.getElementById('expandDescBtn');
+  if (!d || !b) return;
+  const expanded = d.classList.toggle('expanded');
+  b.textContent = expanded ? 'Show less ↑' : 'Show more ↓';
+}
+
+// ── Main ──────────────────────────────────────────────────────
 async function init() {
   try {
     const films = await fetchFilms();
-    console.log('Films fetched:', films.length, '| filmId from URL:', JSON.stringify(filmId));
-    if (!filmId) console.warn('No film ID in URL — showing first film as fallback');
+    console.log('[MOVXIO] Films loaded:', films.length, '| filmId:', filmId);
 
-    // Match by id — works for both UUIDs and demo IDs
-    const film = filmId ? (films.find(f => String(f.id) === String(filmId)) || films[0]) : films[0];
+    // Safe film lookup — String cast handles UUID vs string mismatches
+    const film = filmId
+      ? (films.find(f => String(f.id) === String(filmId)) || films[0])
+      : films[0];
 
     if (!film) {
       document.getElementById('playerLoading').style.display = 'none';
@@ -1361,7 +1817,7 @@ async function init() {
       return;
     }
 
-    console.log('Rendering film:', film.title, '| hls_url:', film.hls_url);
+    console.log('[MOVXIO] Rendering:', film.title, '| hls_url:', film.hls_url || 'none');
 
     trackHistory(film.id);
     renderInfo(film);
@@ -1372,15 +1828,15 @@ async function init() {
 
     let videoUrl = film.hls_url || null;
     if (videoUrl && slugFromUrl(videoUrl)) {
-      document.getElementById('loadingText').textContent = 'Preparing stream...';
+      const ltEl = document.getElementById('loadingText');
+      if (ltEl) ltEl.textContent = 'Preparing stream...';
       const signed = await getSignedUrl(slugFromUrl(videoUrl));
       if (signed) videoUrl = signed;
     }
 
     initPlayer(film, videoUrl);
   } catch(e) {
-    console.error('watch.html init() error:', e);
-    // Still try to hide loading and show no-video
+    console.error('[MOVXIO] init() error:', e);
     document.getElementById('playerLoading').style.display = 'none';
     document.getElementById('noVideo').style.display = 'flex';
   }
@@ -1388,5 +1844,57 @@ async function init() {
 
 init();
 </script>
+
+<!-- Share Modal -->
+<div id="shareModal" style="position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;padding:20px;">
+  <div onclick="closeShare()" style="position:absolute;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);"></div>
+  <div style="position:relative;z-index:1;background:var(--surface);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;width:100%;max-width:400px;">
+    <button onclick="closeShare()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;">✕</button>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:4px;">Share this film</div>
+    <div id="shareFilmTitle" style="font-size:13px;color:var(--text-muted);margin-bottom:20px;"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div onclick="shareWhatsApp()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:8px;background:rgba(37,211,102,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💬</div>
+        <div><div style="font-size:14px;font-weight:600;">WhatsApp</div><div style="font-size:12px;color:var(--text-muted);">Send to a contact or group</div></div>
+      </div>
+      <div onclick="shareTwitter()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:8px;background:rgba(29,161,242,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;flex-shrink:0;">𝕏</div>
+        <div><div style="font-size:14px;font-weight:600;">Twitter / X</div><div style="font-size:12px;color:var(--text-muted);">Post to your followers</div></div>
+      </div>
+      <div onclick="shareFacebook()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:8px;background:rgba(24,119,242,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;flex-shrink:0;">f</div>
+        <div><div style="font-size:14px;font-weight:600;">Facebook</div><div style="font-size:12px;color:var(--text-muted);">Share on your timeline</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <input type="text" id="shareLinkInput" readonly style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;">
+      <button onclick="copyShareLink()" style="background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Copy Link</button>
+    </div>
+  </div>
+</div>
+<style>
+#shareModal.open { display: flex !important; }
+.reaction-btn.liked { background: rgba(45,212,160,0.1) !important; border-color: rgba(45,212,160,0.3) !important; color: #2dd4a0 !important; }
+.reaction-btn.disliked { background: rgba(232,71,63,0.1) !important; border-color: rgba(232,71,63,0.3) !important; color: var(--accent) !important; }
+.nav-btn.saved { color: var(--gold) !important; border-color: rgba(232,184,75,0.4) !important; background: rgba(232,184,75,0.08) !important; }
+#filmDesc.expanded { -webkit-line-clamp: unset !important; display: block !important; }
+</style>
+
+<!-- Bottom Nav (mobile) -->
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:200;height:64px;background:rgba(8,8,16,0.97);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:stretch;" class="mv-bottom-nav">
+  <a href="index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
+    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+  <a href="browse.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
+    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Browse</a>
+  <a href="browse.html?watchlist=1" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
+    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Watchlist</a>
+  <a href="admin.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
+    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Admin</a>
+</nav>
+<style>
+@media (min-width: 768px) { .mv-bottom-nav { display: none !important; } }
+body { padding-bottom: 64px; }
+@media (min-width: 768px) { body { padding-bottom: 0; } }
+</style>
 </body>
 </html>
