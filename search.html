@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search — MOVXIO</title>
+<meta name="description" content="Search thousands of free movies on MOVXIO. Find by title, director, actor or genre.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://movxio.com/search.html">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#080810">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810; --surface: #0e0e1a; --surface2: #13131f;
+  --border: rgba(255,255,255,0.06); --text: #f0eee8;
+  --text-muted: #6b6980; --text-dim: #9997b0;
+  --accent: #e8473f; --accent2: #ff6b35;
+  --gold: #f5c842; --green: #2dd4a0; --blue: #3d7fff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; padding-bottom: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ── NAV ── */
+nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 12px; padding: 0 32px; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.04); }
+.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.nav-logo span { color: var(--accent); }
+.back-btn { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 13px; padding: 6px 12px; border-radius: 40px; transition: all 0.2s; flex-shrink: 0; }
+.back-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.back-btn svg { width: 14px; }
+
+/* ── SEARCH BAR (hero) ── */
+.search-hero { padding: 32px 32px 0; max-width: 860px; margin: 0 auto; }
+.search-input-wrap { position: relative; }
+.search-input-wrap svg.search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 20px; color: var(--text-muted); pointer-events: none; transition: color 0.2s; }
+.search-input-wrap:focus-within svg.search-icon { color: var(--accent); }
+#mainSearch {
+  width: 100%; background: var(--surface); border: 1.5px solid var(--border);
+  color: var(--text); padding: 18px 56px 18px 52px;
+  border-radius: 12px; font-size: 18px; font-family: 'DM Sans', sans-serif;
+  outline: none; transition: border 0.2s, box-shadow 0.2s;
+  min-height: 60px;
+}
+#mainSearch:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,71,63,0.12); }
+#mainSearch::placeholder { color: var(--text-muted); }
+.search-clear { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.07); border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; display: none; align-items: center; justify-content: center; transition: all 0.2s; }
+.search-clear:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+.search-clear.show { display: flex; }
+
+/* ── FILTERS ROW ── */
+.filters-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.filter-chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 40px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; white-space: nowrap; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b6980' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+.filter-chip:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+.filter-chip.active { background: rgba(232,71,63,0.12); border-color: rgba(232,71,63,0.3); color: #ff8a82; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ff8a82' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); }
+.filter-clear-all { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 7px 4px; transition: color 0.15s; display: none; }
+.filter-clear-all:hover { color: var(--accent); }
+.filter-clear-all.show { display: inline-block; }
+
+/* ── MAIN CONTENT ── */
+.search-main { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+
+/* ── RECENT SEARCHES ── */
+.recent-wrap { padding: 24px 0 0; }
+.section-label { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+.recent-list { display: flex; flex-wrap: wrap; gap: 7px; }
+.recent-tag { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 40px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; color: var(--text-dim); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.recent-tag:hover { border-color: rgba(255,255,255,0.15); color: var(--text); background: var(--surface2); }
+.recent-tag svg { width: 12px; color: var(--text-muted); flex-shrink: 0; }
+.recent-tag .rm { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
+.recent-tag:hover .rm { opacity: 1; }
+
+/* ── SUGGESTIONS DROPDOWN ── */
+.suggestions-wrap { position: relative; }
+.suggestions-list { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; background: var(--surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; margin-top: 6px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.6); display: none; }
+.suggestions-list.open { display: block; animation: suggestIn 0.15s ease; }
+@keyframes suggestIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.suggestion-item { display: flex; align-items: center; gap: 12px; padding: 11px 16px; cursor: pointer; transition: background 0.12s; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover, .suggestion-item.focused { background: rgba(255,255,255,0.05); }
+.suggestion-thumb { width: 36px; height: 54px; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: var(--surface2); }
+.suggestion-thumb-ph { width: 36px; height: 54px; border-radius: 4px; flex-shrink: 0; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.suggestion-info { flex: 1; min-width: 0; }
+.suggestion-title { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.suggestion-title mark { background: none; color: var(--accent); font-weight: 700; }
+.suggestion-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-family: 'Space Mono', monospace; }
+.suggestion-arrow { width: 14px; color: var(--text-muted); flex-shrink: 0; }
+
+/* ── RESULTS ── */
+.results-header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 28px 0 16px; }
+.results-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+.results-count { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); }
+.results-count span { color: var(--accent); }
+
+/* ── RESULT CARD (horizontal) ── */
+.result-card { display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit; }
+.result-card:hover { border-color: rgba(255,255,255,0.12); background: var(--surface2); transform: translateX(4px); }
+.result-card:hover .result-play { opacity: 1; }
+.result-poster-wrap { position: relative; width: 70px; height: 105px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background: var(--surface2); }
+.result-poster-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.result-poster-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 24px; opacity: 0.2; }
+.result-play { position: absolute; inset: 0; background: rgba(8,8,16,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+.result-play svg { width: 22px; fill: #fff; }
+.result-info { flex: 1; min-width: 0; padding-top: 2px; }
+.result-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; color: var(--text); margin-bottom: 6px; }
+.result-title mark { background: none; color: var(--accent); font-weight: 800; }
+.result-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
+.result-badge { padding: 2px 7px; border-radius: 4px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.result-badge.imdb { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.2); }
+.result-badge.genre { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); }
+.result-badge.year { color: var(--text-muted); }
+.result-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.result-match { font-size: 11px; color: var(--text-dim); margin-top: 6px; font-family: 'Space Mono', monospace; }
+.result-match mark { background: none; color: var(--accent); font-weight: 700; }
+.result-watch-btn { flex-shrink: 0; display: flex; align-items: center; gap: 6px; background: rgba(232,71,63,0.1); border: 1px solid rgba(232,71,63,0.2); color: #ff8a82; padding: 8px 14px; border-radius: 40px; font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif; white-space: nowrap; transition: all 0.2s; margin-top: 4px; }
+.result-watch-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.result-watch-btn svg { width: 12px; fill: currentColor; }
+
+/* ── EMPTY / ZERO STATE ── */
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-icon { font-size: 52px; margin-bottom: 16px; opacity: 0.4; }
+.empty-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; }
+.empty-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+.empty-suggestions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.empty-pill { padding: 8px 16px; border-radius: 40px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; color: var(--text-dim); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.empty-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── INITIAL STATE (no query) ── */
+.initial-state { padding: 28px 0 0; }
+.trending-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
+.trending-card { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--surface); aspect-ratio: 2/3; transition: transform 0.2s; }
+.trending-card:hover { transform: translateY(-3px); }
+.trending-card img { width: 100%; height: 100%; object-fit: cover; }
+.trending-card-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 28px; opacity: 0.2; }
+.trending-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,16,0.95) 0%, transparent 60%); display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; }
+.trending-card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--text); line-height: 1.2; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: stretch; }
+.bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; border: none; background: none; cursor: pointer; }
+.bottom-nav-item svg { width: 20px; height: 20px; }
+.bottom-nav-item.active { color: var(--accent); }
+@media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  nav { padding: 0 16px; height: 56px; }
+  .nav-logo { font-size: 18px; }
+  .search-hero { padding: 20px 16px 0; }
+  .search-main { padding: 0 16px; }
+  #mainSearch { font-size: 16px; padding: 15px 48px 15px 46px; min-height: 52px; }
+  .result-card { flex-wrap: wrap; gap: 12px; }
+  .result-poster-wrap { width: 56px; height: 84px; }
+  .result-title { font-size: 14px; }
+  .result-watch-btn { display: none; }
+  .trending-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="index.html" class="nav-logo">MOV<span>X</span>IO</a>
+  <a href="javascript:history.back()" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back
+  </a>
+</nav>
+
+<!-- ── SEARCH HERO ── -->
+<div class="search-hero">
+  <div class="suggestions-wrap">
+    <div class="search-input-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="mainSearch" placeholder="Search films, directors, actors..." autocomplete="off" spellcheck="false" autofocus>
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+    </div>
+    <!-- Live suggestions dropdown -->
+    <div class="suggestions-list" id="suggestionsList"></div>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="filters-row" id="filtersRow">
+    <select class="filter-chip" id="filterGenre" onchange="applyFilters()">
+      <option value="">All Genres</option>
+      <option value="action">💥 Action</option>
+      <option value="adventure">🌍 Adventure</option>
+      <option value="animation">🎨 Animation</option>
+      <option value="comedy">😄 Comedy</option>
+      <option value="crime">🔫 Crime</option>
+      <option value="documentary">📽️ Documentary</option>
+      <option value="drama">🎭 Drama</option>
+      <option value="fantasy">🧙 Fantasy</option>
+      <option value="horror">👻 Horror</option>
+      <option value="mystery">🔍 Mystery</option>
+      <option value="romance">💖 Romance</option>
+      <option value="sci-fi">🚀 Sci-Fi</option>
+      <option value="thriller">🔪 Thriller</option>
+      <option value="war">💣 War</option>
+      <option value="sinhala">🇱🇰 සිංහල</option>
+      <option value="tamil">🇱🇰 தமிழ்</option>
+      <option value="hindi">🇮🇳 Hindi</option>
+      <option value="korean">🇰🇷 Korean</option>
+    </select>
+    <select class="filter-chip" id="filterYear" onchange="applyFilters()">
+      <option value="">All Years</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+      <option value="2021">2021</option>
+      <option value="2020">2020</option>
+      <option value="older">Before 2020</option>
+    </select>
+    <select class="filter-chip" id="filterCountry" onchange="applyFilters()">
+      <option value="">All Countries</option>
+      <option>United States</option><option>United Kingdom</option>
+      <option>Canada</option><option>Australia</option>
+      <option>France</option><option>Germany</option>
+      <option>Japan</option><option>South Korea</option>
+      <option>India</option><option>Sri Lanka</option>
+    </select>
+    <select class="filter-chip" id="filterSort" onchange="applyFilters()">
+      <option value="relevance">Sort: Relevance</option>
+      <option value="imdb">Sort: Top IMDb</option>
+      <option value="views">Sort: Most Viewed</option>
+      <option value="newest">Sort: Newest</option>
+      <option value="az">Sort: A → Z</option>
+    </select>
+    <button class="filter-clear-all" id="filterClearAll" onclick="clearFilters()">Clear filters ✕</button>
+  </div>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="search-main">
+
+  <!-- Recent searches (shown when input is empty) -->
+  <div id="recentWrap" class="recent-wrap" style="display:none;">
+    <div class="section-label">
+      Recent Searches
+      <button onclick="clearAllRecent()" style="background:none;border:none;color:var(--text-muted);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;">Clear all</button>
+    </div>
+    <div class="recent-list" id="recentList"></div>
+  </div>
+
+  <!-- Initial state — trending / featured films -->
+  <div id="initialState" class="initial-state">
+    <div class="section-label">Featured Films</div>
+    <div class="trending-grid" id="trendingGrid"></div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsWrap" style="display:none;">
+    <div class="results-header">
+      <div class="results-title" id="resultsTitle">Results</div>
+      <div class="results-count" id="resultsCount"></div>
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <!-- Empty state -->
+  <div id="emptyState" style="display:none;">
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <div class="empty-title" id="emptyTitle">No results found</div>
+      <div class="empty-sub" id="emptySub">Try a different search term</div>
+      <div class="empty-suggestions" id="emptySuggestions"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── BOTTOM NAV ── -->
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="browse.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m7 2 0 20M17 2v20M2 12h20"/></svg>
+    Browse
+  </a>
+  <button class="bottom-nav-item active" onclick="document.getElementById('mainSearch').focus()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Search
+  </button>
+  <a href="browse.html?watchlist=1" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    Watchlist
+  </a>
+</nav>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const SUPABASE_URL = localStorage.getItem('cv_url') || 'https://kncqgatjjcezlnwwikqm.supabase.co';
+const SUPABASE_KEY = localStorage.getItem('cv_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc';
+
+const DEMO = [
+  { id:'demo1', title:'The Open Road',   year:2023, genre:'drama,thriller', language:'English', country:'United States', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80', description:'A breathtaking road trip that changes the lives of two strangers forever.', hls_url:null, views:142, imdb_rating:7.2, director:'Alex Rivers', actors:'Tom Bradley, Sara Kim' },
+  { id:'demo2', title:'City Lights',     year:2022, genre:'romance',        language:'English', country:'United Kingdom', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80', description:'Love found in unexpected places amid the neon glow of the city.', hls_url:null, views:98,  imdb_rating:6.8 },
+  { id:'demo3', title:'Deep Waters',     year:2023, genre:'thriller',       language:'English', country:'United States', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=400&q=80', description:'Nothing is as it seems beneath the surface.', hls_url:null, views:210, imdb_rating:7.8 },
+  { id:'demo4', title:'Into The Wild',   year:2021, genre:'documentary',    language:'English', country:'Canada',        featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&q=80', description:'Nature at its most raw and untamed.', hls_url:null, views:54,  imdb_rating:8.1 },
+  { id:'demo5', title:'Neon Nights',     year:2022, genre:'action',         language:'English', country:'United States', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=400&q=80', description:'The city never sleeps.', hls_url:null, views:305, imdb_rating:6.5 },
+  { id:'demo6', title:'Midnight Fear',   year:2023, genre:'horror',         language:'English', country:'United States', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400&q=80', description:'The dark hides more than shadows.', hls_url:null, views:421, imdb_rating:7.4 },
+];
+
+// ── UTILS ─────────────────────────────────────────────────────
+function esc(s) { if(!s)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function formatDur(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); return h>0?`${h}h ${m}m`:`${m}m`; }
+
+// Highlight matching text
+function highlight(text, query) {
+  if (!query || !text) return esc(text||'');
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return esc(text).replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+// ── STATE ─────────────────────────────────────────────────────
+let allFilms = [];
+let currentQuery = '';
+let suggestionIndex = -1;
+let debounceTimer = null;
+
+// ── FETCH ─────────────────────────────────────────────────────
+async function sbFetch(table, params = '') {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return [];
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch { return []; }
+}
+
+// ── RECENT SEARCHES ───────────────────────────────────────────
+function getRecent() { try { return JSON.parse(localStorage.getItem('mvx_searches')||'[]'); } catch { return []; } }
+function saveRecent(q) {
+  if (!q || q.length < 2) return;
+  let r = getRecent();
+  r = [q, ...r.filter(x => x.toLowerCase() !== q.toLowerCase())].slice(0, 10);
+  localStorage.setItem('mvx_searches', JSON.stringify(r));
+}
+function removeRecent(q) {
+  let r = getRecent().filter(x => x !== q);
+  localStorage.setItem('mvx_searches', JSON.stringify(r));
+  renderRecent();
+}
+function clearAllRecent() {
+  localStorage.removeItem('mvx_searches');
+  renderRecent();
+}
+
+function renderRecent() {
+  const recent = getRecent();
+  const wrap = document.getElementById('recentWrap');
+  const list = document.getElementById('recentList');
+  if (!recent.length || currentQuery) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = recent.map(q => `
+    <div class="recent-tag" onclick="applyRecent('${esc(q)}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      ${esc(q)}
+      <button class="rm" onclick="event.stopPropagation();removeRecent('${esc(q)}')" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+function applyRecent(q) {
+  document.getElementById('mainSearch').value = q;
+  runSearch(q);
+}
+
+// ── TRENDING / FEATURED ───────────────────────────────────────
+function renderTrending() {
+  const featured = allFilms.filter(f => f.featured).slice(0, 12);
+  const films = featured.length >= 4 ? featured : allFilms.slice(0, 12);
+  document.getElementById('trendingGrid').innerHTML = films.map(f => `
+    <div class="trending-card" onclick="goFilm('${esc(f.id)}')">
+      ${f.thumbnail_url
+        ? `<img src="${esc(f.thumbnail_url)}" alt="${esc(f.title)}" loading="lazy">`
+        : `<div class="trending-card-ph">🎬</div>`}
+      <div class="trending-card-overlay">
+        <div class="trending-card-title">${esc(f.title)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── LIVE SUGGESTIONS ──────────────────────────────────────────
+function renderSuggestions(q) {
+  const list = document.getElementById('suggestionsList');
+  if (!q || q.length < 2) { list.classList.remove('open'); return; }
+
+  const matches = allFilms
+    .filter(f => f.title.toLowerCase().includes(q.toLowerCase()))
+    .slice(0, 6);
+
+  if (!matches.length) { list.classList.remove('open'); return; }
+
+  list.innerHTML = matches.map((f, i) => `
+    <div class="suggestion-item" data-idx="${i}" onclick="goFilm('${esc(f.id)}')">
+      ${f.thumbnail_url
+        ? `<img class="suggestion-thumb" src="${esc(f.thumbnail_url)}" alt="" loading="lazy">`
+        : `<div class="suggestion-thumb-ph">🎬</div>`}
+      <div class="suggestion-info">
+        <div class="suggestion-title">${highlight(f.title, q)}</div>
+        <div class="suggestion-meta">${f.year||''}${f.genre ? ' · ' + f.genre.split(',')[0].trim() : ''}</div>
+      </div>
+      <svg class="suggestion-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>`).join('');
+
+  list.classList.add('open');
+  suggestionIndex = -1;
+}
+
+// ── KEYBOARD NAVIGATION ───────────────────────────────────────
+document.getElementById('mainSearch').addEventListener('keydown', e => {
+  const list = document.getElementById('suggestionsList');
+  const items = list.querySelectorAll('.suggestion-item');
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    suggestionIndex = Math.min(suggestionIndex + 1, items.length - 1);
+    items.forEach((el, i) => el.classList.toggle('focused', i === suggestionIndex));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    suggestionIndex = Math.max(suggestionIndex - 1, -1);
+    items.forEach((el, i) => el.classList.toggle('focused', i === suggestionIndex));
+  } else if (e.key === 'Enter') {
+    if (suggestionIndex >= 0 && items[suggestionIndex]) {
+      items[suggestionIndex].click();
+    } else {
+      const q = document.getElementById('mainSearch').value.trim();
+      if (q) { runSearch(q); list.classList.remove('open'); }
+    }
+  } else if (e.key === 'Escape') {
+    list.classList.remove('open');
+    suggestionIndex = -1;
+  }
+});
+
+// Close suggestions on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.suggestions-wrap')) {
+    document.getElementById('suggestionsList').classList.remove('open');
+  }
+});
+
+// ── MAIN SEARCH INPUT ─────────────────────────────────────────
+document.getElementById('mainSearch').addEventListener('input', e => {
+  const q = e.target.value.trim();
+  currentQuery = q;
+
+  // Show/hide clear button
+  document.getElementById('searchClear').classList.toggle('show', q.length > 0);
+
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    renderSuggestions(q);
+    if (q.length >= 2) {
+      runSearch(q);
+    } else {
+      showInitialState();
+    }
+  }, 220);
+});
+
+// ── RUN SEARCH ────────────────────────────────────────────────
+function runSearch(q) {
+  currentQuery = q;
+  document.getElementById('mainSearch').value = q;
+  document.getElementById('searchClear').classList.toggle('show', q.length > 0);
+  document.getElementById('suggestionsList').classList.remove('open');
+
+  // Hide initial state + recent
+  document.getElementById('initialState').style.display = 'none';
+  document.getElementById('recentWrap').style.display = 'none';
+
+  if (!q) { showInitialState(); return; }
+
+  const genre   = document.getElementById('filterGenre').value;
+  const year    = document.getElementById('filterYear').value;
+  const country = document.getElementById('filterCountry').value;
+  const sort    = document.getElementById('filterSort').value;
+
+  // Match across multiple fields
+  const qLow = q.toLowerCase();
+  let results = allFilms.filter(f => {
+    const inTitle    = f.title?.toLowerCase().includes(qLow);
+    const inDesc     = f.description?.toLowerCase().includes(qLow);
+    const inDirector = f.director?.toLowerCase().includes(qLow);
+    const inActors   = f.actors?.toLowerCase().includes(qLow);
+    const inGenre    = f.genre?.toLowerCase().includes(qLow);
+    const matchQ = inTitle || inDesc || inDirector || inActors || inGenre;
+
+    const matchGenre   = !genre   || (f.genre||'').split(',').map(g=>g.trim()).includes(genre);
+    const matchYear    = !year    ? true : year === 'older' ? (f.year && f.year < 2020) : String(f.year) === year;
+    const matchCountry = !country || (f.country||'') === country;
+
+    return matchQ && matchGenre && matchYear && matchCountry;
+  });
+
+  // Score by relevance — title match ranked higher
+  results = results.map(f => ({
+    ...f,
+    _score: (f.title?.toLowerCase().includes(qLow) ? 10 : 0)
+          + (f.director?.toLowerCase().includes(qLow) ? 5 : 0)
+          + (f.actors?.toLowerCase().includes(qLow) ? 4 : 0)
+          + (f.genre?.toLowerCase().includes(qLow) ? 3 : 0)
+          + (f.description?.toLowerCase().includes(qLow) ? 1 : 0),
+    _matchField: f.title?.toLowerCase().includes(qLow) ? 'title'
+               : f.director?.toLowerCase().includes(qLow) ? 'director'
+               : f.actors?.toLowerCase().includes(qLow) ? 'cast'
+               : f.genre?.toLowerCase().includes(qLow) ? 'genre'
+               : 'description'
+  }));
+
+  // Sort
+  switch(sort) {
+    case 'imdb':      results.sort((a,b) => (b.imdb_rating||0) - (a.imdb_rating||0)); break;
+    case 'views':     results.sort((a,b) => (b.views||0) - (a.views||0)); break;
+    case 'newest':    results.sort((a,b) => (b.year||0) - (a.year||0)); break;
+    case 'az':        results.sort((a,b) => (a.title||'').localeCompare(b.title||'')); break;
+    default:          results.sort((a,b) => b._score - a._score); break;
+  }
+
+  renderResults(results, q);
+  updateFilterClearBtn();
+}
+
+// ── RENDER RESULTS ────────────────────────────────────────────
+function renderResults(results, q) {
+  const wrap  = document.getElementById('resultsWrap');
+  const list  = document.getElementById('resultsList');
+  const empty = document.getElementById('emptyState');
+  const count = document.getElementById('resultsCount');
+  const title = document.getElementById('resultsTitle');
+
+  title.textContent = `Results for "${q}"`;
+  count.innerHTML   = `<span>${results.length}</span> film${results.length !== 1 ? 's' : ''}`;
+
+  if (!results.length) {
+    wrap.style.display  = 'none';
+    empty.style.display = 'block';
+    renderEmptyState(q);
+    return;
+  }
+
+  empty.style.display = 'none';
+  wrap.style.display  = 'block';
+
+  list.innerHTML = results.map(f => {
+    const genres = (f.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
+    const matchHint = f._matchField !== 'title'
+      ? `<div class="result-match">Matched in <mark>${f._matchField}</mark>${f._matchField === 'director' ? `: ${highlight(f.director, q)}` : f._matchField === 'cast' ? `: ${highlight(f.actors, q)}` : ''}</div>`
+      : '';
+
+    return `
+    <a class="result-card" href="watch.html?id=${esc(f.id)}">
+      <div class="result-poster-wrap">
+        ${f.thumbnail_url
+          ? `<img src="${esc(f.thumbnail_url)}" alt="${esc(f.title)}" loading="lazy">`
+          : `<div class="result-poster-ph">🎬</div>`}
+        <div class="result-play"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div>
+      </div>
+      <div class="result-info">
+        <div class="result-title">${highlight(f.title, q)}</div>
+        <div class="result-meta">
+          ${f.year ? `<span class="result-badge year">${f.year}</span>` : ''}
+          ${f.imdb_rating ? `<span class="result-badge imdb">★ ${f.imdb_rating}</span>` : ''}
+          ${genres.slice(0,3).map(g => `<span class="result-badge genre">${esc(g)}</span>`).join('')}
+          ${f.country ? `<span style="color:var(--text-muted);">· ${esc(f.country)}</span>` : ''}
+          ${f.duration_secs ? `<span style="color:var(--text-muted);">· ${formatDur(f.duration_secs)}</span>` : ''}
+        </div>
+        ${f.description ? `<div class="result-desc">${esc(f.description)}</div>` : ''}
+        ${matchHint}
+      </div>
+      <button class="result-watch-btn" onclick="event.preventDefault();goFilm('${esc(f.id)}')">
+        <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+        Watch
+      </button>
+    </a>`;
+  }).join('');
+}
+
+// ── EMPTY STATE ───────────────────────────────────────────────
+function renderEmptyState(q) {
+  document.getElementById('emptyTitle').textContent = `No results for "${q}"`;
+  document.getElementById('emptySub').textContent = 'Try searching by title, director, actor or genre';
+
+  // Suggest random genres as pills
+  const genres = ['Action','Drama','Comedy','Thriller','Horror','Romance','Sci-Fi','Documentary'];
+  document.getElementById('emptySuggestions').innerHTML = genres.map(g =>
+    `<button class="empty-pill" onclick="document.getElementById('mainSearch').value='${g}';runSearch('${g}')">${g}</button>`
+  ).join('');
+}
+
+// ── SHOW INITIAL STATE ────────────────────────────────────────
+function showInitialState() {
+  currentQuery = '';
+  document.getElementById('initialState').style.display = 'block';
+  document.getElementById('resultsWrap').style.display  = 'none';
+  document.getElementById('emptyState').style.display   = 'none';
+  renderRecent();
+}
+
+// ── FILTERS ───────────────────────────────────────────────────
+function applyFilters() {
+  if (currentQuery) runSearch(currentQuery);
+  updateFilterClearBtn();
+}
+
+function clearFilters() {
+  document.getElementById('filterGenre').value   = '';
+  document.getElementById('filterYear').value    = '';
+  document.getElementById('filterCountry').value = '';
+  document.getElementById('filterSort').value    = 'relevance';
+  document.getElementById('filterClearAll').classList.remove('show');
+  if (currentQuery) runSearch(currentQuery);
+}
+
+function updateFilterClearBtn() {
+  const hasFilter = document.getElementById('filterGenre').value ||
+                    document.getElementById('filterYear').value ||
+                    document.getElementById('filterCountry').value;
+  document.getElementById('filterClearAll').classList.toggle('show', !!hasFilter);
+  // Highlight active filters
+  ['filterGenre','filterYear','filterCountry'].forEach(id => {
+    document.getElementById(id).classList.toggle('active', !!document.getElementById(id).value);
+  });
+}
+
+// ── CLEAR SEARCH ──────────────────────────────────────────────
+function clearSearch() {
+  document.getElementById('mainSearch').value = '';
+  document.getElementById('searchClear').classList.remove('show');
+  document.getElementById('suggestionsList').classList.remove('open');
+  showInitialState();
+  document.getElementById('mainSearch').focus();
+}
+
+// ── NAVIGATE TO FILM ──────────────────────────────────────────
+function goFilm(id) {
+  if (currentQuery) saveRecent(currentQuery);
+  window.location.href = `watch.html?id=${id}`;
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+async function init() {
+  const data = await sbFetch('films', 'select=*&order=created_at.desc');
+  allFilms = (Array.isArray(data) && data.length) ? data : DEMO;
+
+  renderTrending();
+  renderRecent();
+
+  // Read ?q= from URL
+  const params = new URLSearchParams(location.search);
+  const q = params.get('q');
+  if (q) {
+    document.getElementById('mainSearch').value = q;
+    document.getElementById('searchClear').classList.add('show');
+    runSearch(q);
+  } else {
+    showInitialState();
+  }
+}
+
+init();
+</script>
+
+<!-- ══ PWA — Service Worker + Install Prompt ══ -->
+<script>
+(function() {
+  // ── Register Service Worker ──────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => {
+          console.log('[MOVXIO] SW registered:', reg.scope);
+
+          // Check for updates every 30 minutes
+          setInterval(() => reg.update(), 30 * 60 * 1000);
+
+          // New version available — show update toast
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showPWAToast('🔄 New version available — ', 'Refresh', () => location.reload());
+              }
+            });
+          });
+        })
+        .catch(err => console.warn('[MOVXIO] SW registration failed:', err));
+    });
+  }
+
+  // ── Install Prompt (Add to Home Screen) ─────────────────
+  let deferredPrompt = null;
+  let promptShown    = false;
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Show banner after 30 seconds if user hasn't dismissed before
+    const dismissed = localStorage.getItem('mvx_pwa_dismissed');
+    if (!dismissed && !promptShown) {
+      setTimeout(() => showInstallBanner(), 30000);
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    const banner = document.getElementById('pwaInstallBanner');
+    if (banner) banner.remove();
+    localStorage.setItem('mvx_pwa_installed', '1');
+    console.log('[MOVXIO] PWA installed!');
+  });
+
+  // ── iOS detection (no beforeinstallprompt on Safari) ────
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+  if (isIOS && !isStandalone) {
+    const dismissed = localStorage.getItem('mvx_pwa_dismissed');
+    if (!dismissed) {
+      setTimeout(() => showIOSBanner(), 5000);
+    }
+  }
+
+  // ── Install Banner (Android / Desktop) ──────────────────
+  function showInstallBanner() {
+    if (document.getElementById('pwaInstallBanner') || promptShown) return;
+    promptShown = true;
+
+    const banner = document.createElement('div');
+    banner.id = 'pwaInstallBanner';
+    banner.style.cssText = `
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 800; background: #141418; border: 1px solid rgba(232,71,63,0.3);
+      border-radius: 14px; padding: 14px 16px; display: flex; align-items: center;
+      gap: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px); max-width: calc(100vw - 40px); width: 360px;
+      animation: pwaSlideUp 0.4s cubic-bezier(0.34,1.2,0.64,1);
+      font-family: 'DM Sans', sans-serif;
+    `;
+    banner.innerHTML = `
+      <div style="width:44px;height:44px;border-radius:10px;background:#080810;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">🎬</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:13px;color:#f0eee8;margin-bottom:2px;">Install MOVXIO</div>
+        <div style="font-size:11px;color:#6b6980;line-height:1.4;">Add to home screen for the best experience</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+        <button id="pwaInstallBtn" style="background:#e8473f;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Install</button>
+        <button id="pwaDismissBtn" style="background:none;border:1px solid rgba(255,255,255,0.1);color:#6b6980;padding:5px 14px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;">Not now</button>
+      </div>
+    `;
+
+    document.body.appendChild(banner);
+
+    document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      console.log('[MOVXIO] PWA install choice:', result.outcome);
+      deferredPrompt = null;
+      banner.remove();
+    });
+
+    document.getElementById('pwaDismissBtn').addEventListener('click', () => {
+      banner.remove();
+      localStorage.setItem('mvx_pwa_dismissed', Date.now());
+    });
+  }
+
+  // ── iOS Banner (Safari-specific instructions) ────────────
+  function showIOSBanner() {
+    if (document.getElementById('pwaIOSBanner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'pwaIOSBanner';
+    banner.style.cssText = `
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 800; background: #141418; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 14px 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      backdrop-filter: blur(20px); max-width: calc(100vw - 40px); width: 340px;
+      animation: pwaSlideUp 0.4s cubic-bezier(0.34,1.2,0.64,1);
+      font-family: 'DM Sans', sans-serif;
+    `;
+    banner.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-weight:700;font-size:13px;color:#f0eee8;">Install MOVXIO on iPhone</div>
+        <button onclick="this.closest('#pwaIOSBanner').remove();localStorage.setItem('mvx_pwa_dismissed',Date.now());" style="background:none;border:none;color:#6b6980;font-size:18px;cursor:pointer;padding:0;line-height:1;">✕</button>
+      </div>
+      <div style="font-size:12px;color:#9997b0;line-height:1.6;">
+        Tap <strong style="color:#f0eee8;">Share</strong> 
+        <span style="background:rgba(255,255,255,0.08);border-radius:4px;padding:1px 6px;font-size:14px;">⎋</span> 
+        then <strong style="color:#f0eee8;">"Add to Home Screen"</strong> 
+        <span style="font-size:13px;">⊕</span> to install MOVXIO as an app.
+      </div>
+      <div style="margin-top:10px;text-align:center;">
+        <div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid rgba(255,255,255,0.15);margin:0 auto;"></div>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => { if (banner.parentNode) banner.remove(); }, 10000);
+  }
+
+  // ── PWA Toast (for update notifications) ────────────────
+  function showPWAToast(msg, action, callback) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 800; background: #141418; border: 1px solid rgba(45,212,160,0.3);
+      border-radius: 10px; padding: 12px 16px; display: flex; align-items: center;
+      gap: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: calc(100vw - 40px);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #f0eee8;
+      animation: pwaSlideUp 0.3s ease;
+    `;
+    toast.innerHTML = `
+      <span>${msg}</span>
+      <button style="background:#2dd4a0;color:#000;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">${action}</button>
+    `;
+    toast.querySelector('button').addEventListener('click', () => { callback(); toast.remove(); });
+    document.body.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 8000);
+  }
+
+  // ── Inject animation keyframe ────────────────────────────
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pwaSlideUp {
+      from { opacity:0; transform:translateX(-50%) translateY(20px); }
+      to   { opacity:1; transform:translateX(-50%) translateY(0); }
+    }
+    @media (min-width: 768px) {
+      #pwaInstallBanner, #pwaIOSBanner {
+        bottom: 24px !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+})();
+</script>
+</body>
+</html>
