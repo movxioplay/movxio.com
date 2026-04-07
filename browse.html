@@ -4,82 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Browse Films — MOVXIO</title>
-<meta name="description" content="Browse and search thousands of free movies on MOVXIO. Filter by genre, year and language. No sign-up needed.">
+<meta name="description" content="Browse and search thousands of free movies on MOVXIO. Filter by genre, country, year and language. No sign-up needed.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="MOVXIO">
 <link rel="canonical" href="https://movxio.com/browse.html">
 <meta property="og:title" content="Browse Free Movies — MOVXIO">
-<meta property="og:description" content="Browse and search thousands of free movies. No sign-up needed.">
+<meta property="og:description" content="Browse and search thousands of free movies. Filter by genre, country, year. No sign-up needed.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://movxio.com/browse.html">
 <meta property="og:site_name" content="MOVXIO">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@movxio">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #080810;
-  --surface: #0e0e1a;
-  --surface2: #13131f;
-  --border: rgba(255,255,255,0.06);
-  --text: #f0eee8;
-  --text-muted: #6b6980;
-  --text-dim: #9997b0;
-  --accent: #e8473f;
-  --accent2: #ff6b35;
-  --gold: #f5c842;
-  --blue: #3d7fff;
-  --radius: 6px;
+  --bg: #080810; --surface: #0e0e1a; --surface2: #13131f;
+  --border: rgba(255,255,255,0.06); --text: #f0eee8;
+  --text-muted: #6b6980; --text-dim: #9997b0;
+  --accent: #e8473f; --accent2: #ff6b35; --gold: #f5c842; --blue: #3d7fff;
+  --green: #2dd4a0; --radius: 6px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
-
-/* NOISE */
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; padding-bottom: 64px; }
 body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
-
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 
-/* NAV */
+/* ── NAV ── */
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.04); }
 .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); display: flex; align-items: center; gap: 2px; }
 .nav-logo span { color: var(--accent); }
 .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
-.nav-links a { font-size: 13.5px; font-weight: 500; color: var(--text-dim); padding: 6px 14px; border-radius: 40px; transition: all 0.2s; letter-spacing: 0.01em; }
+.nav-links a { font-size: 13.5px; font-weight: 500; color: var(--text-dim); padding: 6px 14px; border-radius: 40px; transition: all 0.2s; }
 .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
 .nav-links a.active { color: var(--text); background: rgba(255,255,255,0.08); }
-.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+/* Nav Search */
+.nav-search { position: relative; }
+.nav-search input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: var(--text); padding: 8px 16px 8px 36px; border-radius: 40px; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; width: 180px; transition: all 0.25s; }
+.nav-search input:focus { width: 240px; background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.15); }
+.nav-search input::placeholder { color: var(--text-muted); }
+.nav-search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 14px; color: var(--text-muted); pointer-events: none; }
 .btn-nav { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.12); background: transparent; color: var(--text-dim); cursor: pointer; transition: all 0.2s; }
 .btn-nav:hover { color: var(--text); border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.05); }
 
-/* HAMBURGER */
+/* Hamburger */
 .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; border-radius: 6px; transition: background 0.2s; }
-.hamburger:hover { background: rgba(255,255,255,0.06); }
 .hamburger span { width: 22px; height: 2px; background: var(--text-dim); border-radius: 2px; transition: all 0.25s; display: block; }
 .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* MOBILE NAV */
-.mobile-nav { display: none; position: fixed; top: 64px; left: 0; right: 0; z-index: 99; background: rgba(8,8,16,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 12px 20px 20px; flex-direction: column; gap: 2px; animation: slideDown 0.2s ease; }
+/* Mobile nav */
+.mobile-nav { display: none; position: fixed; top: 64px; left: 0; right: 0; z-index: 99; background: rgba(8,8,16,0.98); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 12px 20px 20px; flex-direction: column; gap: 2px; animation: slideDown 0.2s ease; }
 @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
 .mobile-nav.open { display: flex; }
-.mobile-nav a, .mobile-nav button { display: flex; align-items: center; padding: 13px 16px; border-radius: 6px; font-size: 15px; font-weight: 500; color: var(--text-dim); transition: all 0.15s; border: none; background: none; cursor: pointer; text-align: left; width: 100%; min-height: 44px; }
-.mobile-nav a:hover, .mobile-nav button:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.mobile-nav a { display: flex; align-items: center; padding: 13px 16px; border-radius: 6px; font-size: 15px; font-weight: 500; color: var(--text-dim); transition: all 0.15s; min-height: 44px; }
+.mobile-nav a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
 .mobile-nav a.active { color: var(--text); background: rgba(232,71,63,0.1); }
 .mobile-nav-divider { height: 1px; background: var(--border); margin: 6px 0; }
+.mobile-search { padding: 8px 16px 4px; }
+.mobile-search input { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; }
+.mobile-search input::placeholder { color: var(--text-muted); }
 
-/* PAGE HEADER */
-.page-header { padding: 104px 32px 0; max-width: 1400px; margin: 0 auto; }
+/* ── BOTTOM NAV ── */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: stretch; }
+.bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; cursor: pointer; border: none; background: none; }
+.bottom-nav-item svg { width: 20px; height: 20px; }
+.bottom-nav-item.active { color: var(--accent); }
+.bottom-nav-item:hover { color: var(--text); }
+@media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
+
+/* ── PAGE HEADER ── */
+.page-header { padding: 96px 32px 0; max-width: 1400px; margin: 0 auto; }
 .page-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 10px; }
 .page-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(28px, 5vw, 48px); letter-spacing: -0.03em; color: var(--text); line-height: 1.0; margin-bottom: 6px; }
 .page-title span { color: rgba(240,238,232,0.3); }
 .page-subtitle { font-size: 14px; color: var(--text-muted); }
 
-/* GENRE PILLS */
+/* ── WATCHLIST HEADER ── */
+.watchlist-header { padding: 96px 32px 0; max-width: 1400px; margin: 0 auto; display: none; }
+.watchlist-header.show { display: block; }
+.wl-clear-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 40px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; margin-top: 12px; }
+.wl-clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── GENRE PILLS ── */
 .genre-strip { padding: 24px 32px 0; overflow-x: auto; scrollbar-width: none; }
 .genre-strip::-webkit-scrollbar { display: none; }
 .genre-pills { display: flex; gap: 8px; width: max-content; }
@@ -88,23 +103,36 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .genre-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .genre-pill .icon { font-size: 13px; }
 
-/* SEARCH + FILTERS */
-.filters-wrap { padding: 20px 32px 0; max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.search-box { position: relative; flex: 1; min-width: 200px; max-width: 400px; }
+/* ── FILTERS BAR ── */
+.filters-wrap { padding: 16px 32px 0; max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+/* Search */
+.search-box { position: relative; flex: 1; min-width: 200px; max-width: 360px; }
 .search-box svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; color: var(--text-muted); pointer-events: none; }
 .search-box input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 12px 16px 12px 42px; border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; transition: border 0.2s; min-height: 46px; }
 .search-box input::placeholder { color: var(--text-muted); }
 .search-box input:focus { border-color: var(--accent); }
+
+/* Selects */
 .filter-select { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 11px 34px 11px 14px; border-radius: 8px; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; transition: all 0.2s; min-height: 46px; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6980' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-color: var(--surface); }
 .filter-select:focus { border-color: var(--accent); color: var(--text); }
-.results-count { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; margin-left: auto; }
+
+/* Sort + Results */
+.filters-right { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+.results-count { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; white-space: nowrap; }
 .results-count span { color: var(--accent); }
 
-/* GRID */
-.grid-section { padding: 24px 32px 80px; max-width: 1400px; margin: 0 auto; }
+/* Active filters chips */
+.active-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 32px 0; max-width: 1400px; margin: 0 auto; }
+.filter-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(232,71,63,0.1); border: 1px solid rgba(232,71,63,0.25); border-radius: 40px; padding: 4px 12px; font-size: 12px; color: #ff8a82; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.filter-chip:hover { background: rgba(232,71,63,0.18); }
+.filter-chip .x { font-size: 14px; line-height: 1; opacity: 0.7; }
+
+/* ── GRID ── */
+.grid-section { padding: 20px 32px 80px; max-width: 1400px; margin: 0 auto; }
 .film-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 
-/* FILM CARD */
+/* ── FILM CARD ── */
 .film-card { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.25s ease; background: var(--surface); }
 .film-card:hover { transform: translateY(-4px); }
 .film-card:hover .card-overlay { opacity: 1; }
@@ -125,19 +153,39 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .card-overlay-meta { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
 .card-info { padding: 10px 12px 13px; }
 .card-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 12.5px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; margin-bottom: 4px; }
-.card-meta { display: flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); }
+.card-meta { display: flex; align-items: center; gap: 6px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); flex-wrap: wrap; }
 .card-genre-tag { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 3px; padding: 1px 6px; font-size: 9px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
-.card-badge { position: absolute; top: 8px; left: 8px; background: var(--accent); color: #fff; font-family: 'Space Mono', monospace; font-size: 8px; font-weight: 700; padding: 3px 8px; border-radius: 3px; letter-spacing: 0.08em; text-transform: uppercase; }
+.card-badge { position: absolute; top: 8px; left: 8px; background: var(--accent); color: #fff; font-family: 'Space Mono', monospace; font-size: 8px; font-weight: 700; padding: 3px 8px; border-radius: 3px; letter-spacing: 0.08em; text-transform: uppercase; z-index: 2; }
+.card-badge.new { background: var(--green); color: #000; }
+.card-badge.classic { background: var(--gold); color: #000; }
+.card-badge.coming { background: var(--blue); }
 
-/* EMPTY + SKELETON */
+/* Watchlist btn on card */
+.card-wl-btn { position: absolute; top: 8px; right: 8px; z-index: 2; width: 30px; height: 30px; border-radius: 50%; background: rgba(8,8,16,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+.film-card:hover .card-wl-btn { opacity: 1; }
+@media (hover: none) { .card-wl-btn { opacity: 1; } }
+.card-wl-btn:hover { background: rgba(232,184,75,0.2); border-color: var(--gold); }
+.card-wl-btn svg { width: 14px; fill: none; stroke: #fff; stroke-width: 2; }
+.card-wl-btn.saved svg { fill: var(--gold); stroke: var(--gold); }
+
+/* Views badge */
+.card-views { font-size: 9px; color: var(--text-muted); font-family: 'Space Mono', monospace; display: flex; align-items: center; gap: 3px; }
+
+/* ── EMPTY + SKELETON ── */
 .empty-state { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--text-muted); }
 .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
 .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; }
 .empty-state p { font-size: 13px; }
+.empty-state button { margin-top: 16px; background: var(--accent); color: #fff; border: none; padding: 10px 22px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
-/* FOOTER */
+/* ── LOAD MORE ── */
+.load-more-wrap { text-align: center; padding: 32px 0 0; }
+.btn-load-more { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 12px 32px; border-radius: 40px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.btn-load-more:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: var(--surface2); }
+
+/* ── FOOTER ── */
 footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
 .footer-brand .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); margin-bottom: 10px; }
@@ -151,16 +199,19 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 .footer-bottom { max-width: 1400px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .footer-bottom p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
 
-/* MOBILE */
+/* ── RESPONSIVE ── */
 @media (max-width: 900px) {
   nav { padding: 0 20px; }
   .nav-links { display: none; }
+  .nav-search { display: none; }
   .hamburger { display: flex; }
   .btn-nav { display: none; }
-  .page-header { padding: 96px 20px 0; }
+  .page-header { padding: 88px 20px 0; }
+  .watchlist-header { padding: 88px 20px 0; }
   .genre-strip { padding: 20px 20px 0; }
-  .filters-wrap { padding: 16px 20px 0; }
-  .grid-section { padding: 20px 20px 72px; }
+  .filters-wrap { padding: 14px 20px 0; }
+  .active-filters { padding: 10px 20px 0; }
+  .grid-section { padding: 16px 20px 72px; }
   .film-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
   footer { padding: 40px 20px 24px; }
   .footer-inner { flex-direction: column; gap: 24px; }
@@ -168,13 +219,14 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 }
 @media (max-width: 480px) {
   .film-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .results-count { margin-left: 0; }
+  .filters-right { margin-left: 0; }
   .footer-links { flex-direction: column; gap: 20px; }
 }
 </style>
 </head>
 <body>
 
+<!-- ── NAV ── -->
 <nav>
   <a href="index.html" class="nav-logo">MOV<span>X</span>IO</a>
   <ul class="nav-links">
@@ -186,12 +238,20 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
     <li><a href="browse.html?genre=thriller">Thriller</a></li>
   </ul>
   <div class="nav-right">
+    <div class="nav-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="navSearchInput" placeholder="Search films..." onkeydown="if(event.key==='Enter')applyNavSearch()" autocomplete="off">
+    </div>
     <button class="btn-nav" onclick="window.location.href='admin.html'">Admin</button>
     <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </nav>
 
 <div class="mobile-nav" id="mobileNav">
+  <div class="mobile-search">
+    <input type="text" id="mobileSearchInput" placeholder="Search films..." onkeydown="if(event.key==='Enter')applyMobileSearch()" autocomplete="off">
+  </div>
+  <div class="mobile-nav-divider"></div>
   <a href="index.html">Home</a>
   <a href="browse.html" class="active">Browse</a>
   <a href="browse.html?genre=action">Action</a>
@@ -199,36 +259,80 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
   <a href="browse.html?genre=comedy">Comedy</a>
   <a href="browse.html?genre=thriller">Thriller</a>
   <div class="mobile-nav-divider"></div>
+  <a href="browse.html?watchlist=1">My Watchlist</a>
   <a href="admin.html">Admin Panel</a>
 </div>
 
-<div class="page-header">
+<!-- ── PAGE HEADER ── -->
+<div class="page-header" id="pageHeader">
   <div class="page-eyebrow">Library</div>
   <h1 class="page-title">Browse <span>Films</span></h1>
   <p class="page-subtitle">Search and filter our full collection — all free, no signup.</p>
 </div>
 
+<!-- Watchlist mode header -->
+<div class="watchlist-header" id="watchlistHeader">
+  <div class="page-eyebrow">My Collection</div>
+  <h1 class="page-title">My <span>Watchlist</span></h1>
+  <p class="page-subtitle">Films you've saved to watch later.</p>
+  <button class="wl-clear-btn" onclick="clearWatchlist()">Clear Watchlist</button>
+</div>
+
+<!-- ── GENRE PILLS ── -->
 <div class="genre-strip">
-  <div class="genre-pills">
-    <button class="genre-pill active" data-genre="all"          onclick="filterGenre(this,'all')">         <span class="icon">🎬</span> All</button>
-    <button class="genre-pill"        data-genre="action"       onclick="filterGenre(this,'action')">      <span class="icon">💥</span> Action</button>
-    <button class="genre-pill"        data-genre="drama"        onclick="filterGenre(this,'drama')">       <span class="icon">🎭</span> Drama</button>
-    <button class="genre-pill"        data-genre="comedy"       onclick="filterGenre(this,'comedy')">      <span class="icon">😄</span> Comedy</button>
-    <button class="genre-pill"        data-genre="thriller"     onclick="filterGenre(this,'thriller')">    <span class="icon">🔪</span> Thriller</button>
-    <button class="genre-pill"        data-genre="horror"       onclick="filterGenre(this,'horror')">      <span class="icon">👻</span> Horror</button>
-    <button class="genre-pill"        data-genre="sci-fi"       onclick="filterGenre(this,'sci-fi')">      <span class="icon">🚀</span> Sci-Fi</button>
-    <button class="genre-pill"        data-genre="romance"      onclick="filterGenre(this,'romance')">     <span class="icon">💖</span> Romance</button>
-    <button class="genre-pill"        data-genre="documentary"  onclick="filterGenre(this,'documentary')"> <span class="icon">📽️</span> Documentary</button>
-    <button class="genre-pill"        data-genre="sinhala"      onclick="filterGenre(this,'sinhala')">     <span class="icon">🇱🇰</span> සිංහල</button>
-    <button class="genre-pill"        data-genre="tamil"        onclick="filterGenre(this,'tamil')">       <span class="icon">🇱🇰</span> தமிழ்</button>
+  <div class="genre-pills" id="genrePills">
+    <button class="genre-pill active" data-genre="all"         onclick="setGenre(this,'all')">         <span class="icon">🎬</span> All</button>
+    <button class="genre-pill"        data-genre="action"      onclick="setGenre(this,'action')">       <span class="icon">💥</span> Action</button>
+    <button class="genre-pill"        data-genre="adventure"   onclick="setGenre(this,'adventure')">    <span class="icon">🌍</span> Adventure</button>
+    <button class="genre-pill"        data-genre="animation"   onclick="setGenre(this,'animation')">    <span class="icon">🎨</span> Animation</button>
+    <button class="genre-pill"        data-genre="biography"   onclick="setGenre(this,'biography')">    <span class="icon">📖</span> Biography</button>
+    <button class="genre-pill"        data-genre="comedy"      onclick="setGenre(this,'comedy')">       <span class="icon">😄</span> Comedy</button>
+    <button class="genre-pill"        data-genre="crime"       onclick="setGenre(this,'crime')">        <span class="icon">🔫</span> Crime</button>
+    <button class="genre-pill"        data-genre="documentary" onclick="setGenre(this,'documentary')">  <span class="icon">📽️</span> Documentary</button>
+    <button class="genre-pill"        data-genre="drama"       onclick="setGenre(this,'drama')">        <span class="icon">🎭</span> Drama</button>
+    <button class="genre-pill"        data-genre="family"      onclick="setGenre(this,'family')">       <span class="icon">👨‍👩‍👧</span> Family</button>
+    <button class="genre-pill"        data-genre="fantasy"     onclick="setGenre(this,'fantasy')">      <span class="icon">🧙</span> Fantasy</button>
+    <button class="genre-pill"        data-genre="history"     onclick="setGenre(this,'history')">      <span class="icon">🏛️</span> History</button>
+    <button class="genre-pill"        data-genre="horror"      onclick="setGenre(this,'horror')">       <span class="icon">👻</span> Horror</button>
+    <button class="genre-pill"        data-genre="mystery"     onclick="setGenre(this,'mystery')">      <span class="icon">🔍</span> Mystery</button>
+    <button class="genre-pill"        data-genre="romance"     onclick="setGenre(this,'romance')">      <span class="icon">💖</span> Romance</button>
+    <button class="genre-pill"        data-genre="sci-fi"      onclick="setGenre(this,'sci-fi')">       <span class="icon">🚀</span> Sci-Fi</button>
+    <button class="genre-pill"        data-genre="sport"       onclick="setGenre(this,'sport')">        <span class="icon">⚽</span> Sport</button>
+    <button class="genre-pill"        data-genre="superhero"   onclick="setGenre(this,'superhero')">    <span class="icon">🦸</span> Superhero</button>
+    <button class="genre-pill"        data-genre="thriller"    onclick="setGenre(this,'thriller')">     <span class="icon">🔪</span> Thriller</button>
+    <button class="genre-pill"        data-genre="war"         onclick="setGenre(this,'war')">          <span class="icon">💣</span> War</button>
+    <button class="genre-pill"        data-genre="western"     onclick="setGenre(this,'western')">      <span class="icon">🤠</span> Western</button>
+    <button class="genre-pill"        data-genre="sinhala"     onclick="setGenre(this,'sinhala')">      <span class="icon">🇱🇰</span> සිංහල</button>
+    <button class="genre-pill"        data-genre="tamil"       onclick="setGenre(this,'tamil')">        <span class="icon">🇱🇰</span> தமிழ்</button>
+    <button class="genre-pill"        data-genre="hindi"       onclick="setGenre(this,'hindi')">        <span class="icon">🇮🇳</span> Hindi</button>
+    <button class="genre-pill"        data-genre="korean"      onclick="setGenre(this,'korean')">       <span class="icon">🇰🇷</span> Korean</button>
+    <button class="genre-pill"        data-genre="japanese"    onclick="setGenre(this,'japanese')">     <span class="icon">🇯🇵</span> Japanese</button>
+    <button class="genre-pill"        data-genre="french"      onclick="setGenre(this,'french')">       <span class="icon">🇫🇷</span> French</button>
+    <button class="genre-pill"        data-genre="spanish"     onclick="setGenre(this,'spanish')">      <span class="icon">🇪🇸</span> Spanish</button>
   </div>
 </div>
 
+<!-- ── FILTERS ── -->
 <div class="filters-wrap">
+  <!-- Search -->
   <div class="search-box">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="text" id="searchInput" placeholder="Search titles, descriptions..." oninput="filterFilms()" autocomplete="off" spellcheck="false">
+    <input type="text" id="searchInput" placeholder="Search titles, directors, actors..." oninput="filterFilms()" autocomplete="off" spellcheck="false">
   </div>
+
+  <!-- Country -->
+  <select class="filter-select" id="countryFilter" onchange="filterFilms()">
+    <option value="">All Countries</option>
+    <option>United States</option><option>United Kingdom</option><option>Canada</option>
+    <option>Australia</option><option>France</option><option>Germany</option>
+    <option>Italy</option><option>Spain</option><option>Japan</option><option>South Korea</option>
+    <option>China</option><option>India</option><option>Sri Lanka</option>
+    <option>Brazil</option><option>Mexico</option><option>Sweden</option>
+    <option>Norway</option><option>Denmark</option><option>Netherlands</option>
+    <option>Ireland</option><option>New Zealand</option><option>Other</option>
+  </select>
+
+  <!-- Year -->
   <select class="filter-select" id="yearFilter" onchange="filterFilms()">
     <option value="">All Years</option>
     <option value="2025">2025</option>
@@ -237,21 +341,49 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
     <option value="2022">2022</option>
     <option value="2021">2021</option>
     <option value="2020">2020</option>
+    <option value="2019">2019</option>
+    <option value="2018">2018</option>
+    <option value="older">Before 2018</option>
   </select>
+
+  <!-- Language -->
   <select class="filter-select" id="langFilter" onchange="filterFilms()">
     <option value="">All Languages</option>
     <option value="english">English</option>
     <option value="sinhala">Sinhala</option>
     <option value="tamil">Tamil</option>
     <option value="hindi">Hindi</option>
+    <option value="korean">Korean</option>
+    <option value="japanese">Japanese</option>
     <option value="french">French</option>
     <option value="spanish">Spanish</option>
+    <option value="german">German</option>
+    <option value="chinese">Chinese</option>
   </select>
-  <div class="results-count" id="resultsCount"></div>
+
+  <!-- Sort -->
+  <div class="filters-right">
+    <select class="filter-select" id="sortFilter" onchange="filterFilms()">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="az">A → Z</option>
+      <option value="za">Z → A</option>
+      <option value="imdb">Top IMDb</option>
+      <option value="views">Most Viewed</option>
+      <option value="year_desc">Year ↓</option>
+      <option value="year_asc">Year ↑</option>
+    </select>
+    <div class="results-count" id="resultsCount"></div>
+  </div>
 </div>
 
+<!-- Active filter chips -->
+<div class="active-filters" id="activeFilters"></div>
+
+<!-- ── FILM GRID ── -->
 <div class="grid-section">
   <div class="film-grid" id="filmGrid">
+    <!-- Skeletons while loading -->
     <div class="skeleton" style="aspect-ratio:2/3;"></div>
     <div class="skeleton" style="aspect-ratio:2/3;"></div>
     <div class="skeleton" style="aspect-ratio:2/3;"></div>
@@ -261,8 +393,12 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
     <div class="skeleton" style="aspect-ratio:2/3;"></div>
     <div class="skeleton" style="aspect-ratio:2/3;"></div>
   </div>
+  <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+    <button class="btn-load-more" onclick="loadMore()">Load More Films</button>
+  </div>
 </div>
 
+<!-- ── FOOTER ── -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
@@ -298,104 +434,286 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
   </div>
 </footer>
 
+<!-- ── BOTTOM NAV ── -->
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="browse.html" class="bottom-nav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Browse
+  </a>
+  <a href="browse.html?watchlist=1" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    Watchlist
+  </a>
+  <a href="admin.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    Admin
+  </a>
+</nav>
+
 <script>
+// ── CONFIG ────────────────────────────────────────────────────
 const SUPABASE_URL = localStorage.getItem('cv_url') || 'https://kncqgatjjcezlnwwikqm.supabase.co';
 const SUPABASE_KEY = localStorage.getItem('cv_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc';
 const PLACEHOLDERS = ['placeholder-1','placeholder-2','placeholder-3','placeholder-4'];
+const PAGE_SIZE = 24;
 
-function esc(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── DEMO DATA ─────────────────────────────────────────────────
+const DEMO = [
+  { id:'demo1', title:'The Open Road',   year:2023, genre:'drama',       language:'English', country:'United States', featured:true,  status:'active', thumbnail_url:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80', description:'A road trip that changes everything.', hls_url:null, subtitles:[], views:142, imdb_rating:7.2 },
+  { id:'demo2', title:'City Lights',     year:2022, genre:'romance',     language:'English', country:'United Kingdom',featured:true,  status:'active', thumbnail_url:'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80', description:'Love found in unexpected places.',     hls_url:null, subtitles:[], views:98,  imdb_rating:6.8 },
+  { id:'demo3', title:'Deep Waters',     year:2023, genre:'thriller',    language:'English', country:'United States', featured:false, status:'active', thumbnail_url:'https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=400&q=80', description:'Nothing is as it seems.',             hls_url:null, subtitles:[], views:210, imdb_rating:7.8 },
+  { id:'demo4', title:'Into The Wild',   year:2021, genre:'documentary', language:'English', country:'Canada',        featured:true,  status:'active', thumbnail_url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&q=80', description:'Nature at its most raw.',             hls_url:null, subtitles:[], views:54,  imdb_rating:8.1 },
+  { id:'demo5', title:'Neon Nights',     year:2022, genre:'action',      language:'English', country:'United States', featured:false, status:'active', thumbnail_url:'https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=400&q=80', description:'The city never sleeps.',             hls_url:null, subtitles:[], views:305, badge:'Hot', imdb_rating:6.5 },
+  { id:'demo6', title:'The Last Summit', year:2023, genre:'action',      language:'English', country:'New Zealand',   featured:false, status:'active', thumbnail_url:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80', description:'Every step could be the last.',      hls_url:null, subtitles:[], views:77,  badge:'New', imdb_rating:7.0 },
+  { id:'demo7', title:'Laughter Club',   year:2022, genre:'comedy',      language:'English', country:'Australia',     featured:false, status:'active', thumbnail_url:'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&q=80', description:'Life is better with laughter.',      hls_url:null, subtitles:[], views:188 },
+  { id:'demo8', title:'Midnight Fear',   year:2023, genre:'horror',      language:'English', country:'United States', featured:false, status:'active', thumbnail_url:'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400&q=80', description:'The dark hides more than shadows.',   hls_url:null, subtitles:[], views:421, badge:'Classic', imdb_rating:7.4 },
+];
+
+// ── UTILS ─────────────────────────────────────────────────────
+function esc(s) { if(!s)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function formatDur(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); return h>0?`${h}h ${m}m`:`${m}m`; }
+
+// ── WATCHLIST ─────────────────────────────────────────────────
+function getWatchlist() { try { return JSON.parse(localStorage.getItem('mvx_watchlist')||'[]'); } catch { return []; } }
+function setWatchlist(l) { localStorage.setItem('mvx_watchlist', JSON.stringify(l)); }
+function isInWatchlist(id) { return getWatchlist().includes(id); }
+function toggleWatchlistItem(id) {
+  let l = getWatchlist();
+  if (l.includes(id)) l = l.filter(i => i !== id);
+  else l.unshift(id);
+  setWatchlist(l);
+  return l.includes(id);
 }
-function formatDur(s) {
-  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
-  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+function clearWatchlist() {
+  if (!confirm('Clear your entire watchlist?')) return;
+  setWatchlist([]);
+  filterFilms();
+}
+function cardToggleWl(btn, id) {
+  const saved = toggleWatchlistItem(id);
+  btn.classList.toggle('saved', saved);
+  btn.title = saved ? 'Remove from watchlist' : 'Add to watchlist';
+  if (isWatchlistMode) filterFilms();
 }
 
+// ── STATE ─────────────────────────────────────────────────────
 let allFilms = [];
+let filteredFilms = [];
+let currentPage = 1;
 let currentGenre = 'all';
+let isWatchlistMode = false;
 
+// ── FILM CARD ─────────────────────────────────────────────────
 function filmCard(film, idx = 0) {
   const ph = PLACEHOLDERS[idx % 4];
   const thumb = film.thumbnail_url
     ? `<img src="${esc(film.thumbnail_url)}" alt="${esc(film.title)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-thumb-placeholder ${ph}\\'><span class=\\'placeholder-icon\\'>🎬</span></div>'">`
     : `<div class="card-thumb-placeholder ${ph}"><span class="placeholder-icon">🎬</span></div>`;
-  const year = film.year || '', genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
+  const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
+  const genreTags = genres.slice(0,2).map(g=>`<span class="card-genre-tag">${esc(g)}</span>`).join('');
   const dur = film.duration_secs ? formatDur(film.duration_secs) : '';
-  const genreTags = genres.map(g => `<span class="card-genre-tag">${esc(g)}</span>`).join('');
+  const badgeClass = film.badge === 'New' ? 'new' : film.badge === 'Classic' ? 'classic' : film.badge === 'Coming Soon' ? 'coming' : '';
+  const saved = isInWatchlist(film.id);
   return `
-    <div class="film-card" onclick="window.location.href='watch.html?id=${esc(film.id)}'">
-      ${film.featured ? '<div class="card-badge">Featured</div>' : ''}
-      <div class="card-thumb">
-        ${thumb}
-        <div class="card-overlay">
-          <div class="card-play"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div>
-          <div class="card-overlay-title">${esc(film.title)}</div>
-          <div class="card-overlay-meta">${year}${dur ? ' · '+dur : ''}</div>
-        </div>
+  <div class="film-card" onclick="trackAndGo('${esc(film.id)}')">
+    ${film.badge ? `<div class="card-badge ${badgeClass}">${esc(film.badge)}</div>` : ''}
+    <div class="card-thumb">
+      ${thumb}
+      <div class="card-overlay">
+        <div class="card-play"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div>
+        <div class="card-overlay-title">${esc(film.title)}</div>
+        <div class="card-overlay-meta">${film.year||''}${dur?' · '+dur:''}${film.country?' · '+esc(film.country):''}</div>
       </div>
-      <div class="card-info">
-        <div class="card-title">${esc(film.title)}</div>
-        <div class="card-meta">
-          <span>${year}</span>
-          ${genreTags}
-        </div>
+    </div>
+    <button class="card-wl-btn ${saved?'saved':''}" onclick="event.stopPropagation();cardToggleWl(this,'${esc(film.id)}')" title="${saved?'Remove from watchlist':'Add to watchlist'}">
+      <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    <div class="card-info">
+      <div class="card-title">${esc(film.title)}</div>
+      <div class="card-meta">
+        <span>${film.year||''}</span>
+        ${film.imdb_rating?`<span style="color:var(--gold);">★${film.imdb_rating}</span>`:''}
+        ${genreTags}
       </div>
-    </div>`;
+      ${film.views ? `<div class="card-views" style="margin-top:3px;">👁 ${Number(film.views).toLocaleString()}</div>` : ''}
+    </div>
+  </div>`;
 }
 
-function filterGenre(btn, genre) {
+function trackAndGo(id) {
+  // Track recently viewed
+  let history = JSON.parse(localStorage.getItem('mvx_history')||'[]');
+  history = [id, ...history.filter(i => i !== id)].slice(0, 30);
+  localStorage.setItem('mvx_history', JSON.stringify(history));
+  window.location.href = `watch.html?id=${id}`;
+}
+
+// ── GENRE ─────────────────────────────────────────────────────
+function setGenre(btn, genre) {
   document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   currentGenre = genre;
+  currentPage = 1;
+  updateURL();
   filterFilms();
 }
 
+// ── MAIN FILTER ───────────────────────────────────────────────
 function filterFilms() {
-  const q    = document.getElementById('searchInput').value.toLowerCase();
-  const year = document.getElementById('yearFilter').value;
-  const lang = document.getElementById('langFilter').value.toLowerCase();
-  const filtered = allFilms.filter(f =>
-    (currentGenre === 'all' || (f.genre||'').split(',').map(g=>g.trim()).includes(currentGenre)) &&
-    (!q    || f.title.toLowerCase().includes(q) || (f.description||'').toLowerCase().includes(q)) &&
-    (!year || String(f.year) === year) &&
-    (!lang || (f.language||'').toLowerCase() === lang)
-  );
-  document.getElementById('resultsCount').innerHTML = `<span>${filtered.length}</span> film${filtered.length !== 1 ? 's' : ''}`;
-  document.getElementById('filmGrid').innerHTML = filtered.length === 0
-    ? `<div class="empty-state"><div class="icon">🎬</div><h3>No films found</h3><p>Try adjusting your search or filters</p></div>`
-    : filtered.map((f,i) => filmCard(f,i)).join('');
+  const q       = document.getElementById('searchInput').value.toLowerCase().trim();
+  const country = document.getElementById('countryFilter').value;
+  const year    = document.getElementById('yearFilter').value;
+  const lang    = document.getElementById('langFilter').value.toLowerCase();
+  const sort    = document.getElementById('sortFilter').value;
+
+  let pool = isWatchlistMode
+    ? allFilms.filter(f => getWatchlist().includes(f.id))
+    : allFilms;
+
+  filteredFilms = pool.filter(f => {
+    const genres = (f.genre||'').split(',').map(g=>g.trim());
+    const matchGenre  = currentGenre === 'all' || genres.includes(currentGenre);
+    const matchQ      = !q || f.title.toLowerCase().includes(q) || (f.description||'').toLowerCase().includes(q) || (f.director||'').toLowerCase().includes(q) || (f.actors||'').toLowerCase().includes(q);
+    const matchCountry= !country || (f.country||'') === country;
+    const matchYear   = !year ? true : year === 'older' ? (f.year && f.year < 2018) : String(f.year) === year;
+    const matchLang   = !lang || (f.language||'').toLowerCase() === lang;
+    return matchGenre && matchQ && matchCountry && matchYear && matchLang;
+  });
+
+  // Sort
+  filteredFilms.sort((a, b) => {
+    switch(sort) {
+      case 'oldest':   return (a.created_at||'') > (b.created_at||'') ? 1 : -1;
+      case 'az':       return (a.title||'').localeCompare(b.title||'');
+      case 'za':       return (b.title||'').localeCompare(a.title||'');
+      case 'imdb':     return (b.imdb_rating||0) - (a.imdb_rating||0);
+      case 'views':    return (b.views||0) - (a.views||0);
+      case 'year_desc':return (b.year||0) - (a.year||0);
+      case 'year_asc': return (a.year||0) - (b.year||0);
+      default:         return (b.created_at||'') > (a.created_at||'') ? 1 : -1; // newest
+    }
+  });
+
+  currentPage = 1;
+  renderGrid();
+  renderActiveFilters(q, country, year, lang);
 }
 
-const DEMO = [
-  { id:'demo1', title:'The Open Road',   year:2023, genre:'drama',       language:'english', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80', description:'A road trip that changes everything.' },
-  { id:'demo2', title:'City Lights',     year:2022, genre:'romance',     language:'english', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80', description:'Love found in unexpected places.' },
-  { id:'demo3', title:'Deep Waters',     year:2023, genre:'thriller',    language:'english', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1518929458119-e5bf444c30f4?w=400&q=80', description:'Nothing is as it seems.' },
-  { id:'demo4', title:'Into The Wild',   year:2021, genre:'documentary', language:'english', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&q=80', description:'Nature at its most raw.' },
-  { id:'demo5', title:'Neon Nights',     year:2022, genre:'action',      language:'english', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=400&q=80', description:'The city never sleeps.' },
-  { id:'demo6', title:'The Last Summit', year:2023, genre:'action',      language:'english', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80', description:'Every step could be the last.' },
-  { id:'demo7', title:'Laughter Club',   year:2022, genre:'comedy',      language:'english', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&q=80', description:'Life is better with laughter.' },
-  { id:'demo8', title:'Midnight Fear',   year:2023, genre:'horror',      language:'english', featured:false, thumbnail_url:'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=400&q=80', description:'The dark hides more than shadows.' },
-];
+function renderGrid() {
+  const total = filteredFilms.length;
+  const page  = filteredFilms.slice(0, currentPage * PAGE_SIZE);
 
-async function init() {
+  document.getElementById('resultsCount').innerHTML = `<span>${total}</span> film${total !== 1 ? 's' : ''}`;
+
+  if (!total) {
+    document.getElementById('filmGrid').innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🎬</div>
+        <h3>${isWatchlistMode ? 'Your watchlist is empty' : 'No films found'}</h3>
+        <p>${isWatchlistMode ? 'Browse films and tap the bookmark icon to save them.' : 'Try adjusting your search or filters'}</p>
+        ${!isWatchlistMode ? '<button onclick="clearAllFilters()">Clear Filters</button>' : ''}
+      </div>`;
+    document.getElementById('loadMoreWrap').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('filmGrid').innerHTML = page.map((f,i) => filmCard(f, i)).join('');
+  document.getElementById('loadMoreWrap').style.display = total > page.length ? 'block' : 'none';
+}
+
+function loadMore() {
+  currentPage++;
+  renderGrid();
+  // Scroll to newly loaded cards
+}
+
+function renderActiveFilters(q, country, year, lang) {
+  const chips = [];
+  if (currentGenre !== 'all') chips.push({ label: `Genre: ${currentGenre}`, action: "setGenreClear()" });
+  if (q)       chips.push({ label: `"${q}"`,           action: "clearSearch()" });
+  if (country) chips.push({ label: country,            action: "clearCountry()" });
+  if (year)    chips.push({ label: year === 'older' ? 'Before 2018' : year, action: "clearYear()" });
+  if (lang)    chips.push({ label: lang,               action: "clearLang()" });
+  document.getElementById('activeFilters').innerHTML = chips.map(c =>
+    `<button class="filter-chip" onclick="${c.action}">${esc(c.label)} <span class="x">×</span></button>`
+  ).join('');
+}
+
+// Clear helpers
+function clearAllFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('countryFilter').value = '';
+  document.getElementById('yearFilter').value = '';
+  document.getElementById('langFilter').value = '';
+  document.getElementById('sortFilter').value = 'newest';
+  setGenreClear();
+}
+function setGenreClear() { const btn = document.querySelector('[data-genre="all"]'); if(btn) setGenre(btn,'all'); }
+function clearSearch()  { document.getElementById('searchInput').value=''; filterFilms(); }
+function clearCountry() { document.getElementById('countryFilter').value=''; filterFilms(); }
+function clearYear()    { document.getElementById('yearFilter').value=''; filterFilms(); }
+function clearLang()    { document.getElementById('langFilter').value=''; filterFilms(); }
+
+// ── URL SYNC ─────────────────────────────────────────────────
+function updateURL() {
   const params = new URLSearchParams(location.search);
+  if (currentGenre !== 'all') params.set('genre', currentGenre);
+  else params.delete('genre');
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) params.set('q', q); else params.delete('q');
+  history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+}
+
+function readURL() {
+  const params = new URLSearchParams(location.search);
+
+  // Watchlist mode
+  if (params.get('watchlist') === '1') {
+    isWatchlistMode = true;
+    document.getElementById('pageHeader').style.display = 'none';
+    document.getElementById('watchlistHeader').classList.add('show');
+    // Update bottom nav active
+    document.querySelectorAll('.bottom-nav-item').forEach(el => {
+      el.classList.toggle('active', el.href && el.href.includes('watchlist=1'));
+    });
+  }
+
+  // Genre
   if (params.get('genre')) {
     currentGenre = params.get('genre');
     document.querySelectorAll('.genre-pill').forEach(p => p.classList.toggle('active', p.dataset.genre === currentGenre));
   }
-  if (params.get('q')) document.getElementById('searchInput').value = params.get('q');
 
-  if (!SUPABASE_URL || !SUPABASE_KEY) { allFilms = DEMO; filterFilms(); return; }
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/films?select=*&order=created_at.desc`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-    });
-    allFilms = res.ok ? await res.json() : DEMO;
-  } catch { allFilms = DEMO; }
-  filterFilms();
+  // Search query
+  if (params.get('q')) {
+    document.getElementById('searchInput').value = params.get('q');
+    document.getElementById('navSearchInput').value = params.get('q');
+  }
+
+  // Sort
+  if (params.get('sort') === 'latest') document.getElementById('sortFilter').value = 'newest';
 }
 
+// ── NAV SEARCH ───────────────────────────────────────────────
+function applyNavSearch() {
+  const q = document.getElementById('navSearchInput').value.trim();
+  document.getElementById('searchInput').value = q;
+  filterFilms();
+  updateURL();
+}
+function applyMobileSearch() {
+  const q = document.getElementById('mobileSearchInput').value.trim();
+  document.getElementById('searchInput').value = q;
+  filterFilms();
+  updateURL();
+  toggleMenu();
+}
+
+// ── HAMBURGER ────────────────────────────────────────────────
 function toggleMenu() {
   const nav = document.getElementById('mobileNav'), btn = document.querySelector('.hamburger');
   const isOpen = nav.classList.toggle('open');
@@ -410,6 +728,21 @@ document.addEventListener('click', e => {
     document.body.style.overflow = '';
   }
 });
+
+// ── INIT ─────────────────────────────────────────────────────
+async function init() {
+  readURL();
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/films?select=*&order=created_at.desc`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    allFilms = res.ok ? await res.json() : DEMO;
+    if (!allFilms.length) allFilms = DEMO;
+  } catch { allFilms = DEMO; }
+
+  filterFilms();
+}
 
 init();
 </script>
