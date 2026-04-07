@@ -424,15 +424,10 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
    FILM INFO PANEL — cinematic layout
 ════════════════════════════════════════ */
 .content-outer {
-  max-width: 1400px; margin: 0 auto; padding: 0 32px 0;
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 0 48px;
-  align-items: start;
+  max-width: 100%; margin: 0; padding: 0 20px;
+  display: block;
 }
-@media (max-width: 959px) {
-  .content-outer { grid-template-columns: 1fr; gap: 0; padding: 0 20px; }
-}
+
 
 /* ── FILM PANEL (left) ── */
 .film-info { padding: 36px 0 0; }
@@ -721,6 +716,37 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
   #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
   .content-outer, .ad-slot, footer, .more-section { display: none; }
 }
+
+/* ══════════════════════════════════════
+   MASTER WATCH LAYOUT (123movies style)
+   Player + info LEFT | Sidebar RIGHT
+══════════════════════════════════════ */
+.master-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: calc(100vh - 64px);
+}
+.master-main { min-width: 0; }
+.master-sidebar {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 20px 14px;
+  position: sticky;
+  top: 64px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+@media (max-width: 1100px) { .master-layout { grid-template-columns: 1fr 280px; } }
+@media (max-width: 900px)  {
+  .master-layout { grid-template-columns: 1fr; }
+  .master-sidebar { border-left: none; border-top: 1px solid var(--border); position: static; max-height: none; }
+}
+@media (max-height: 500px) and (orientation: landscape) { .master-sidebar { display: none; } }
 </style>
 </head>
 <body>
@@ -738,6 +764,8 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 </nav>
 
 <!-- ══ PLAYER ══ -->
+<div class="master-layout">
+  <div class="master-main">
 <div class="player-section">
   <div id="playerContainer">
 
@@ -959,11 +987,16 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
     </div>
   </div>
 
-  <div class="sidebar">
+
+</div>
+  </div><!-- /master-main -->
+
+  <div class="master-sidebar">
     <div class="sidebar-title">Up Next</div>
     <div id="relatedList"></div>
-  </div>
-</div>
+    <div style="margin-top:20px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.07);border-radius:6px;min-height:200px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;" id="adWatchSidebar">Advertisement</div>
+  </div><!-- /master-sidebar -->
+</div><!-- /master-layout -->
 
 <div class="more-section" id="moreSection" style="display:none;">
   <div class="more-title">More to Watch</div>
