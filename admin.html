@@ -8,8 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c0c0e; --surface: #141418; --surface2: #1c1c22;
-  --gold: #e8b84b; --gold2: #f5d07a; --red: #e63946; --green: #2dd4a0;
+  --bg: #0c0c0e; --surface: #141418; --surface2: #1c1c22; --surface3: #222228;
+  --gold: #e8b84b; --gold2: #f5d07a; --red: #e63946; --green: #2dd4a0; --blue: #3d7fff;
   --text: #f0ede8; --muted: #7a7a8a; --border: rgba(255,255,255,0.07);
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -20,7 +20,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .login-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px 28px; width: 100%; max-width: 360px; text-align: center; }
 .login-logo { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 3px; color: var(--gold); margin-bottom: 6px; }
 .login-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
-.login-box input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 15px 16px; border-radius: 10px; font-size: 18px; font-family: 'DM Sans', sans-serif; outline: none; margin-bottom: 14px; transition: border .2s; text-align: center; letter-spacing: 6px; min-height: 52px; }
+.login-box input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 15px 16px; border-radius: 10px; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; margin-bottom: 14px; transition: border .2s; min-height: 52px; }
 .login-box input:focus { border-color: var(--gold); }
 .login-btn { width: 100%; background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s; min-height: 52px; }
 .login-btn:hover { background: var(--gold2); }
@@ -36,21 +36,21 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 
 /* ── LAYOUT ── */
 .admin-body { min-height: calc(100vh - 56px); padding-bottom: 72px; }
-@media (min-width: 768px) { .admin-body { display: grid; grid-template-columns: 220px 1fr; padding-bottom: 0; } }
+@media (min-width: 768px) { .admin-body { display: grid; grid-template-columns: 230px 1fr; padding-bottom: 0; } }
 
 /* ── SIDEBAR ── */
-.sidebar { display: none; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 0; }
-@media (min-width: 768px) { .sidebar { display: block; } }
-.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 13px 20px; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: all .2s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; min-height: 48px; }
+.sidebar { display: none; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 0; overflow-y: auto; }
+@media (min-width: 768px) { .sidebar { display: block; position: sticky; top: 56px; height: calc(100vh - 56px); } }
+.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: all .2s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; min-height: 46px; }
 .sidebar-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .sidebar-item.active { color: var(--gold); background: rgba(232,184,75,0.08); border-right: 2px solid var(--gold); }
 .sidebar-item svg { width: 15px; flex-shrink: 0; }
-.sidebar-section { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 16px 20px 6px; font-weight: 600; }
+.sidebar-section { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 16px 20px 6px; font-weight: 600; opacity: 0.6; }
 
 /* ── BOTTOM TABS ── */
-.bottom-tabs { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--surface); border-top: 1px solid var(--border); display: flex; height: 60px; }
+.bottom-tabs { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: var(--surface); border-top: 1px solid var(--border); display: flex; height: 60px; overflow-x: auto; }
 @media (min-width: 768px) { .bottom-tabs { display: none; } }
-.tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: none; border: none; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; transition: color .2s; }
+.tab-btn { flex: 1; min-width: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; background: none; border: none; color: var(--muted); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; transition: color .2s; }
 .tab-btn svg { width: 20px; }
 .tab-btn.active { color: var(--gold); }
 
@@ -59,7 +59,7 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 @media (min-width: 480px) { .main { padding: 24px; } }
 @media (min-width: 768px) { .main { padding: 28px 32px; } }
 
-.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
 .page-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(24px, 6vw, 36px); letter-spacing: 2px; }
 .page-title span { color: var(--gold); }
 
@@ -68,6 +68,9 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .btn-primary:hover { background: var(--gold2); }
 .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 12px 18px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; min-height: 44px; }
 .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
+.btn-sm { padding: 8px 14px; font-size: 12px; min-height: 36px; border-radius: 6px; }
+.btn-danger { background: rgba(230,57,70,0.15); color: var(--red); border: 1px solid rgba(230,57,70,0.3); padding: 8px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; min-height: 36px; transition: all .2s; }
+.btn-danger:hover { background: rgba(230,57,70,0.25); }
 
 /* ── STATS ── */
 .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
@@ -79,45 +82,31 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 /* ── FORM ── */
 .form-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; display: none; }
 .form-panel.open { display: block; }
-.form-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; margin-bottom: 18px; }
+.form-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; margin-bottom: 4px; }
+.form-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+.form-section-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin: 20px 0 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(232,184,75,0.15); }
 .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .form-row, .form-row-3 { grid-template-columns: 1fr; } }
 .form-group label { font-size: 11px; color: var(--muted); letter-spacing: .5px; text-transform: uppercase; font-weight: 600; }
-.form-group input, .form-group select, .form-group textarea { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 13px 14px; border-radius: 8px; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border .2s; min-height: 48px; width: 100%; }
+.form-group input, .form-group select, .form-group textarea {
+  background: var(--bg); border: 1px solid var(--border); color: var(--text);
+  padding: 13px 14px; border-radius: 8px; font-size: 15px; font-family: 'DM Sans', sans-serif;
+  outline: none; transition: border .2s; min-height: 48px; width: 100%;
+}
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold); }
 .form-group textarea { resize: vertical; min-height: 80px; }
 .form-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
 /* ── GENRE CHECKBOXES ── */
-.genre-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-}
-.genre-cb {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 14px;
-  border-radius: 40px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--text-dim);
-  transition: all 0.15s;
-  user-select: none;
-}
+.genre-checkboxes { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+.genre-cb { display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 40px; border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-size: 12px; color: var(--muted); transition: all 0.15s; user-select: none; }
 .genre-cb:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
 .genre-cb input[type="checkbox"] { display: none; }
-.genre-cb:has(input:checked) {
-  background: rgba(232,71,63,0.12);
-  border-color: var(--accent);
-  color: var(--text);
-}
-.genre-cb span { font-size: 13px; }
+.genre-cb:has(input:checked) { background: rgba(232,184,75,0.12); border-color: var(--gold); color: var(--text); }
+
+/* ── TOGGLE ── */
 .toggle-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; }
 .toggle { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
 .toggle input { opacity: 0; width: 0; height: 0; }
@@ -144,7 +133,7 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .list-thumb { width: 44px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; flex-shrink: 0; background: var(--surface2); }
 .list-thumb-ph { width: 44px; aspect-ratio: 2/3; border-radius: 4px; flex-shrink: 0; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; }
 .list-info { flex: 1; min-width: 0; }
-.list-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .list-meta { font-size: 12px; color: var(--muted); }
 .list-actions { display: flex; gap: 6px; flex-shrink: 0; }
 .btn-edit { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; min-height: 36px; transition: all .2s; }
@@ -152,22 +141,58 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .btn-delete { background: transparent; border: 1px solid rgba(230,57,70,0.25); color: var(--red); padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; min-height: 36px; transition: all .2s; }
 .btn-delete:hover { background: rgba(230,57,70,0.1); }
 .badge-featured { background: rgba(232,184,75,0.15); color: var(--gold); font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; }
+.badge-status { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+.badge-active { background: rgba(45,212,160,0.1); color: var(--green); }
+.badge-coming { background: rgba(61,127,255,0.1); color: var(--blue); }
+.badge-draft { background: rgba(255,255,255,0.06); color: var(--muted); }
 .film-table { display: none; width: 100%; border-collapse: collapse; }
 @media (min-width: 640px) { .film-list { display: none; } .film-table { display: table; } }
 th { text-align: left; padding: 12px 16px; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; border-bottom: 1px solid var(--border); }
-td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(255,255,255,0.02); }
 .row-thumb { width: 36px; height: 54px; object-fit: cover; border-radius: 3px; background: var(--surface2); }
-.badge-genre { background: var(--surface2); border: 1px solid var(--border); padding: 3px 9px; border-radius: 8px; font-size: 11px; color: var(--muted); }
 .badge-hls { background: rgba(45,212,160,0.1); color: var(--green); border: 1px solid rgba(45,212,160,0.2); padding: 3px 9px; border-radius: 8px; font-size: 11px; }
 .badge-no-video { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.2); padding: 3px 9px; border-radius: 8px; font-size: 11px; }
+.views-count { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted); }
+
+/* ── SEARCH BAR ── */
+.table-controls { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+.search-input-wrap { position: relative; flex: 1; min-width: 200px; }
+.search-input-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; color: var(--muted); pointer-events: none; }
+.search-input-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 11px 14px 11px 38px; border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; min-height: 44px; }
+.search-input-wrap input:focus { border-color: var(--gold); }
 
 /* ── SETTINGS ── */
 .settings-form { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-.settings-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; margin-bottom: 16px; }
+.settings-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; margin-bottom: 6px; }
 .settings-hint { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
-.code-block { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; font-family: 'Courier New', monospace; font-size: 12px; color: var(--green); margin: 8px 0; white-space: pre-wrap; word-break: break-all; }
+.code-block { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; font-family: 'Courier New', monospace; font-size: 11px; color: var(--green); margin: 8px 0; white-space: pre-wrap; word-break: break-all; max-height: 320px; overflow-y: auto; }
+
+/* ── BANNER MANAGER ── */
+.banner-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; align-items: center; }
+.banner-thumb { width: 80px; height: 50px; object-fit: cover; border-radius: 5px; flex-shrink: 0; background: var(--surface); }
+.banner-thumb-ph { width: 80px; height: 50px; border-radius: 5px; flex-shrink: 0; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.banner-info { flex: 1; min-width: 0; }
+.banner-title-text { font-size: 14px; font-weight: 600; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.banner-meta { font-size: 11px; color: var(--muted); }
+.banner-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.drag-handle { cursor: grab; color: var(--muted); font-size: 18px; flex-shrink: 0; }
+
+/* ── AD SLOT CARD ── */
+.ad-slot-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 10px; }
+.ad-slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.ad-slot-name { font-size: 14px; font-weight: 600; }
+.ad-slot-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+
+/* ── SQL PAGE ── */
+.sql-block { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; font-family: 'Courier New', monospace; font-size: 11px; color: var(--green); white-space: pre; overflow-x: auto; line-height: 1.7; }
+.sql-copy-wrap { position: relative; margin-bottom: 16px; }
+.sql-copy-btn { position: absolute; top: 8px; right: 8px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+.sql-copy-btn:hover { color: var(--gold); border-color: var(--gold); }
+.sql-step { margin-bottom: 24px; }
+.sql-step-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.sql-step-desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
 
 /* ── TOAST ── */
 .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--green); color: var(--green); padding: 12px 22px; border-radius: 8px; font-size: 14px; font-weight: 500; opacity: 0; transition: all .3s; z-index: 999; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
@@ -178,6 +203,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
 .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
 .form-actions { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 4px; }
+
+/* Tab content hidden by default */
+.page-content { display: none; }
+.page-content.active { display: block; }
 </style>
 </head>
 <body>
@@ -186,7 +215,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <div class="login-box">
     <div class="login-logo">MOVXIO</div>
     <div class="login-sub">Admin Dashboard — movxio.com</div>
-    <input type="email" id="login-email" placeholder="admin@movxio.com" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="email" style="letter-spacing:0;font-size:15px;margin-bottom:10px;">
+    <input type="email" id="login-email" placeholder="admin@movxio.com" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="email" style="letter-spacing:0;">
     <input type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
     <button class="login-btn" onclick="doLogin()" id="login-btn">Enter Dashboard</button>
     <div class="login-error" id="login-error">Invalid email or password</div>
@@ -207,9 +236,19 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     <button class="sidebar-item active" data-page="films" onclick="showPage('films')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m7 2 0 20M17 2v20M2 12h20"/></svg>Films
     </button>
+    <button class="sidebar-item" data-page="banners" onclick="showPage('banners')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 2h-8M12 2v5"/></svg>Hero Banners
+    </button>
+    <div class="sidebar-section">Monetization</div>
+    <button class="sidebar-item" data-page="ads" onclick="showPage('ads')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M9 9l3 6 3-6"/><path d="M9 12h6"/></svg>Ad Slots
+    </button>
     <div class="sidebar-section">System</div>
     <button class="sidebar-item" data-page="settings" onclick="showPage('settings')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Settings
+    </button>
+    <button class="sidebar-item" data-page="sql" onclick="showPage('sql')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>SQL Setup
     </button>
     <button class="sidebar-item" data-page="deploy" onclick="showPage('deploy')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Deploy Guide
@@ -218,8 +257,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
   <div class="main">
 
-    <!-- ── FILMS PAGE ── -->
-    <div id="page-films">
+    <!-- ══════════════════════════════════════════
+         FILMS PAGE
+    ══════════════════════════════════════════ -->
+    <div id="page-films" class="page-content active">
       <div class="page-header">
         <div class="page-title">Manage <span>Films</span></div>
         <button class="btn-primary" onclick="openForm()">
@@ -231,12 +272,16 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <div class="stat-card"><div class="stat-label">Total Films</div><div class="stat-value" id="stat-total">0</div></div>
         <div class="stat-card"><div class="stat-label">Featured</div><div class="stat-value" id="stat-featured">0</div></div>
         <div class="stat-card"><div class="stat-label">With Video</div><div class="stat-value" id="stat-video">0</div></div>
-        <div class="stat-card"><div class="stat-label">Genres</div><div class="stat-value" id="stat-genres">0</div></div>
+        <div class="stat-card"><div class="stat-label">Total Views</div><div class="stat-value" id="stat-views">0</div></div>
       </div>
 
       <!-- ADD / EDIT FORM -->
       <div class="form-panel" id="film-form">
         <div class="form-title" id="form-title">Add New Film</div>
+        <div class="form-subtitle">Fill in the details below. Fields marked * are required.</div>
+
+        <!-- BASIC INFO -->
+        <div class="form-section-label">Basic Information</div>
 
         <div class="form-group">
           <label>Title *</label>
@@ -248,27 +293,33 @@ tr:hover td { background: rgba(255,255,255,0.02); }
             <label>Year</label>
             <input type="number" id="f-year" placeholder="2024" min="1900" max="2099" inputmode="numeric">
           </div>
-          <div class="form-group" style="grid-column:1/-1;">
-            <label>Genre <span style="font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;">(select one or more)</span></label>
-            <div class="genre-checkboxes" id="genreCheckboxes">
-              <label class="genre-cb"><input type="checkbox" value="action">      <span>💥 Action</span></label>
-              <label class="genre-cb"><input type="checkbox" value="drama">       <span>🎭 Drama</span></label>
-              <label class="genre-cb"><input type="checkbox" value="comedy">      <span>😄 Comedy</span></label>
-              <label class="genre-cb"><input type="checkbox" value="thriller">    <span>🔪 Thriller</span></label>
-              <label class="genre-cb"><input type="checkbox" value="horror">      <span>👻 Horror</span></label>
-              <label class="genre-cb"><input type="checkbox" value="documentary"> <span>📽️ Documentary</span></label>
-              <label class="genre-cb"><input type="checkbox" value="romance">     <span>💖 Romance</span></label>
-              <label class="genre-cb"><input type="checkbox" value="sci-fi">      <span>🚀 Sci-Fi</span></label>
-              <label class="genre-cb"><input type="checkbox" value="sinhala">     <span>🇱🇰 සිංහල</span></label>
-              <label class="genre-cb"><input type="checkbox" value="tamil">       <span>🇱🇰 தமிழ்</span></label>
-            </div>
+          <div class="form-group">
+            <label>Language</label>
+            <input type="text" id="f-lang" placeholder="English" autocomplete="off">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Language</label>
-            <input type="text" id="f-lang" placeholder="English" autocomplete="off">
+            <label>Country of Origin</label>
+            <select id="f-country">
+              <option value="">Select country...</option>
+              <option>United States</option><option>United Kingdom</option><option>Canada</option>
+              <option>Australia</option><option>France</option><option>Germany</option>
+              <option>Italy</option><option>Spain</option><option>Japan</option><option>South Korea</option>
+              <option>China</option><option>India</option><option>Sri Lanka</option>
+              <option>Brazil</option><option>Mexico</option><option>Argentina</option>
+              <option>Sweden</option><option>Norway</option><option>Denmark</option>
+              <option>Netherlands</option><option>Belgium</option><option>Switzerland</option>
+              <option>Austria</option><option>Poland</option><option>Russia</option>
+              <option>Turkey</option><option>Iran</option><option>Israel</option>
+              <option>Nigeria</option><option>South Africa</option><option>Egypt</option>
+              <option>Thailand</option><option>Indonesia</option><option>Philippines</option>
+              <option>Hong Kong</option><option>Taiwan</option><option>New Zealand</option>
+              <option>Ireland</option><option>Portugal</option><option>Greece</option>
+              <option>Czech Republic</option><option>Romania</option><option>Hungary</option>
+              <option>Pakistan</option><option>Bangladesh</option><option>Other</option>
+            </select>
           </div>
           <div class="form-group">
             <label>Duration (minutes)</label>
@@ -276,14 +327,121 @@ tr:hover td { background: rgba(255,255,255,0.02); }
           </div>
         </div>
 
+        <div class="form-row">
+          <div class="form-group">
+            <label>IMDb Rating</label>
+            <input type="number" id="f-imdb" placeholder="7.5" min="0" max="10" step="0.1" inputmode="decimal">
+          </div>
+          <div class="form-group">
+            <label>Content Rating</label>
+            <select id="f-content-rating">
+              <option value="">Select rating...</option>
+              <option value="G">G — General Audiences</option>
+              <option value="PG">PG — Parental Guidance</option>
+              <option value="PG-13">PG-13 — Parents Strongly Cautioned</option>
+              <option value="R">R — Restricted</option>
+              <option value="NC-17">NC-17 — Adults Only</option>
+              <option value="18+">18+ — Adults Only</option>
+              <option value="U">U — Universal (UK)</option>
+              <option value="12A">12A (UK)</option>
+              <option value="15">15 (UK)</option>
+              <option value="TV-MA">TV-MA</option>
+              <option value="TV-14">TV-14</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Status</label>
+            <select id="f-status">
+              <option value="active">Active — Live on site</option>
+              <option value="coming_soon">Coming Soon</option>
+              <option value="draft">Draft — Hidden</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Film Badge Label</label>
+            <select id="f-badge">
+              <option value="">None</option>
+              <option value="New">New</option>
+              <option value="Hot">Hot</option>
+              <option value="Classic">Classic</option>
+              <option value="Coming Soon">Coming Soon</option>
+              <option value="Exclusive">Exclusive</option>
+              <option value="4K">4K</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- CAST & CREW -->
+        <div class="form-section-label">Cast & Crew</div>
+
         <div class="form-group">
-          <label>HLS Video URL (from R2)</label>
-          <input type="url" id="f-hls" placeholder="https://videos.movxio.com/films/film-slug/master.m3u8" inputmode="url" autocomplete="off">
-          <div class="form-hint">After running encode.sh + upload.sh, paste the master.m3u8 URL here</div>
+          <label>Director(s)</label>
+          <input type="text" id="f-director" placeholder="Christopher Nolan" autocomplete="off">
+          <div class="form-hint">Separate multiple directors with commas</div>
         </div>
 
         <div class="form-group">
-          <label>Thumbnail URL</label>
+          <label>Actors / Cast</label>
+          <input type="text" id="f-actors" placeholder="Cillian Murphy, Emily Blunt, Matt Damon" autocomplete="off">
+          <div class="form-hint">Separate actors with commas</div>
+        </div>
+
+        <!-- GENRES -->
+        <div class="form-section-label">Genres</div>
+        <div class="form-group">
+          <label>Select all that apply</label>
+          <div class="genre-checkboxes" id="genreCheckboxes">
+            <label class="genre-cb"><input type="checkbox" value="action"><span>💥 Action</span></label>
+            <label class="genre-cb"><input type="checkbox" value="adventure"><span>🌍 Adventure</span></label>
+            <label class="genre-cb"><input type="checkbox" value="animation"><span>🎨 Animation</span></label>
+            <label class="genre-cb"><input type="checkbox" value="biography"><span>📖 Biography</span></label>
+            <label class="genre-cb"><input type="checkbox" value="comedy"><span>😄 Comedy</span></label>
+            <label class="genre-cb"><input type="checkbox" value="crime"><span>🔫 Crime</span></label>
+            <label class="genre-cb"><input type="checkbox" value="documentary"><span>📽️ Documentary</span></label>
+            <label class="genre-cb"><input type="checkbox" value="drama"><span>🎭 Drama</span></label>
+            <label class="genre-cb"><input type="checkbox" value="family"><span>👨‍👩‍👧 Family</span></label>
+            <label class="genre-cb"><input type="checkbox" value="fantasy"><span>🧙 Fantasy</span></label>
+            <label class="genre-cb"><input type="checkbox" value="history"><span>🏛️ History</span></label>
+            <label class="genre-cb"><input type="checkbox" value="horror"><span>👻 Horror</span></label>
+            <label class="genre-cb"><input type="checkbox" value="music"><span>🎵 Music</span></label>
+            <label class="genre-cb"><input type="checkbox" value="mystery"><span>🔍 Mystery</span></label>
+            <label class="genre-cb"><input type="checkbox" value="romance"><span>💖 Romance</span></label>
+            <label class="genre-cb"><input type="checkbox" value="sci-fi"><span>🚀 Sci-Fi</span></label>
+            <label class="genre-cb"><input type="checkbox" value="sport"><span>⚽ Sport</span></label>
+            <label class="genre-cb"><input type="checkbox" value="superhero"><span>🦸 Superhero</span></label>
+            <label class="genre-cb"><input type="checkbox" value="thriller"><span>🔪 Thriller</span></label>
+            <label class="genre-cb"><input type="checkbox" value="war"><span>💣 War</span></label>
+            <label class="genre-cb"><input type="checkbox" value="western"><span>🤠 Western</span></label>
+            <label class="genre-cb"><input type="checkbox" value="sinhala"><span>🇱🇰 සිංහල</span></label>
+            <label class="genre-cb"><input type="checkbox" value="tamil"><span>🇱🇰 தமிழ்</span></label>
+            <label class="genre-cb"><input type="checkbox" value="hindi"><span>🇮🇳 Hindi</span></label>
+            <label class="genre-cb"><input type="checkbox" value="korean"><span>🇰🇷 Korean</span></label>
+            <label class="genre-cb"><input type="checkbox" value="japanese"><span>🇯🇵 Japanese</span></label>
+            <label class="genre-cb"><input type="checkbox" value="french"><span>🇫🇷 French</span></label>
+            <label class="genre-cb"><input type="checkbox" value="spanish"><span>🇪🇸 Spanish</span></label>
+          </div>
+        </div>
+
+        <!-- MEDIA -->
+        <div class="form-section-label">Media</div>
+
+        <div class="form-group">
+          <label>HLS Video URL (from R2)</label>
+          <input type="url" id="f-hls" placeholder="https://videos.movxio.com/films/film-slug/master.m3u8" inputmode="url" autocomplete="off">
+          <div class="form-hint">After encode.sh + upload.sh, paste the master.m3u8 URL here</div>
+        </div>
+
+        <div class="form-group">
+          <label>Trailer URL</label>
+          <input type="url" id="f-trailer" placeholder="https://www.youtube.com/watch?v=... or self-hosted .mp4" inputmode="url" autocomplete="off">
+          <div class="form-hint">YouTube URL or direct video link — shown in hero on homepage</div>
+        </div>
+
+        <div class="form-group">
+          <label>Thumbnail / Poster URL</label>
           <input type="url" id="f-thumb" placeholder="https://... (poster image URL)" inputmode="url" autocomplete="off">
         </div>
 
@@ -294,15 +452,21 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
         <!-- Subtitles -->
         <div class="form-group">
-          <label>Subtitles / Subtitle Tracks</label>
+          <label>Subtitle Tracks</label>
           <div class="subtitle-list" id="subtitle-list"></div>
           <button class="btn-add-sub" onclick="addSubtitleRow()">+ Add Subtitle Track</button>
-          <div class="form-hint">Upload .vtt files to R2 at films/slug/subtitles/lang.vtt then paste URL here</div>
+          <div class="form-hint">Upload .vtt files to R2 then paste URL here</div>
         </div>
+
+        <!-- VISIBILITY -->
+        <div class="form-section-label">Visibility</div>
 
         <div class="toggle-row">
           <label class="toggle"><input type="checkbox" id="f-featured"><span class="toggle-slider"></span></label>
-          <span style="font-size:14px;">Featured on homepage</span>
+          <div>
+            <div style="font-size:14px;font-weight:500;">Featured on Homepage</div>
+            <div style="font-size:12px;color:var(--muted);">Show in hero carousel and featured grid</div>
+          </div>
         </div>
 
         <div class="form-actions">
@@ -314,20 +478,220 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         </div>
       </div>
 
-      <!-- FILM LIST -->
+      <!-- FILM TABLE -->
+      <div class="table-controls">
+        <div class="search-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" placeholder="Search films..." id="film-search" oninput="filterFilmTable()" autocomplete="off">
+        </div>
+        <select class="form-group" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;min-height:44px;margin-bottom:0;" id="status-filter" onchange="filterFilmTable()">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="coming_soon">Coming Soon</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+
       <div class="table-wrap">
         <div class="film-list" id="film-list">
           <div class="empty-state"><div class="icon">🎬</div><p>Loading films...</p></div>
         </div>
         <table class="film-table" id="film-table">
-          <thead><tr><th></th><th>Title</th><th>Genre</th><th>Year</th><th>Video</th><th>Featured</th><th>Actions</th></tr></thead>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Title</th>
+              <th>Genre</th>
+              <th>Country</th>
+              <th>Year</th>
+              <th>IMDb</th>
+              <th>Views</th>
+              <th>Video</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
           <tbody id="films-tbody"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── SETTINGS PAGE ── -->
-    <div id="page-settings" style="display:none;">
+    <!-- ══════════════════════════════════════════
+         BANNERS PAGE
+    ══════════════════════════════════════════ -->
+    <div id="page-banners" class="page-content">
+      <div class="page-header">
+        <div class="page-title">Hero <span>Banners</span></div>
+        <button class="btn-primary" onclick="openBannerForm()">
+          <svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Add Banner
+        </button>
+      </div>
+
+      <div class="settings-form">
+        <div class="settings-title">About Hero Banners</div>
+        <p class="settings-hint">Banners rotate in the homepage hero carousel. Link each banner to a film or use a custom URL. Set sort_order to control the sequence (lower = first). Only active banners are shown.</p>
+      </div>
+
+      <!-- Banner Form -->
+      <div class="form-panel" id="banner-form">
+        <div class="form-title" id="banner-form-title">Add Banner</div>
+        <div class="form-subtitle">Configure the homepage hero slide</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Headline Title</label>
+            <input type="text" id="b-title" placeholder="The Dark Knight" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Subtitle / Tagline</label>
+            <input type="text" id="b-subtitle" placeholder="Why so serious?" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Background Image URL</label>
+            <input type="url" id="b-image" placeholder="https://... (wide banner image, 1920×800 ideal)" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Link Film (optional)</label>
+            <select id="b-film">
+              <option value="">Custom URL (below)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>CTA Button Text</label>
+            <input type="text" id="b-cta-text" placeholder="Watch Now" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Custom CTA URL (if no film linked)</label>
+            <input type="url" id="b-cta-url" placeholder="https://movxio.com/watch.html?id=..." autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sort Order</label>
+            <input type="number" id="b-order" placeholder="0" min="0" inputmode="numeric">
+          </div>
+          <div class="form-group" style="justify-content:flex-end;">
+            <div class="toggle-row" style="padding:0;margin-top:auto;">
+              <label class="toggle"><input type="checkbox" id="b-active" checked><span class="toggle-slider"></span></label>
+              <span style="font-size:14px;">Active (show on site)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary" onclick="saveBanner()">Save Banner</button>
+          <button class="btn-cancel" onclick="closeBannerForm()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Banner List -->
+      <div id="banner-list">
+        <div class="empty-state"><div class="icon">🖼️</div><p>Loading banners...</p></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         AD SLOTS PAGE
+    ══════════════════════════════════════════ -->
+    <div id="page-ads" class="page-content">
+      <div class="page-header">
+        <div class="page-title">Ad <span>Slots</span></div>
+        <button class="btn-primary" onclick="saveAdSettings()">
+          <svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>Save All
+        </button>
+      </div>
+
+      <div class="settings-form">
+        <div class="settings-title">Google AdSense Publisher ID</div>
+        <p class="settings-hint">Enter your AdSense publisher ID (ca-pub-XXXXXXXXXXXXXXXX). This is applied globally to all ad slots.</p>
+        <div class="form-group">
+          <label>Publisher ID</label>
+          <input type="text" id="ad-publisher" placeholder="ca-pub-0000000000000000" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+
+      <div class="ad-slot-card">
+        <div class="ad-slot-header">
+          <div class="ad-slot-name">🏠 Homepage Banner (728×90)</div>
+          <div class="toggle-row" style="padding:0;">
+            <label class="toggle"><input type="checkbox" id="ad-home-banner" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="ad-slot-desc">Leaderboard banner shown below the hero section on index.html</div>
+        <div class="form-group">
+          <label>Ad Slot ID</label>
+          <input type="text" id="ad-home-banner-id" placeholder="1234567890" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="ad-slot-card">
+        <div class="ad-slot-header">
+          <div class="ad-slot-name">🏠 Homepage Inline (728×90)</div>
+          <div class="toggle-row" style="padding:0;">
+            <label class="toggle"><input type="checkbox" id="ad-home-inline" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="ad-slot-desc">Inline ad slot between sections on index.html</div>
+        <div class="form-group">
+          <label>Ad Slot ID</label>
+          <input type="text" id="ad-home-inline-id" placeholder="1234567890" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="ad-slot-card">
+        <div class="ad-slot-header">
+          <div class="ad-slot-name">🔍 Browse Page Banner (728×90)</div>
+          <div class="toggle-row" style="padding:0;">
+            <label class="toggle"><input type="checkbox" id="ad-browse-banner" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="ad-slot-desc">Banner at the top of the browse.html film grid</div>
+        <div class="form-group">
+          <label>Ad Slot ID</label>
+          <input type="text" id="ad-browse-banner-id" placeholder="1234567890" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="ad-slot-card">
+        <div class="ad-slot-header">
+          <div class="ad-slot-name">🎬 Watch Page (below player)</div>
+          <div class="toggle-row" style="padding:0;">
+            <label class="toggle"><input type="checkbox" id="ad-watch" checked><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="ad-slot-desc">Ad shown directly below the video player on watch.html</div>
+        <div class="form-group">
+          <label>Ad Slot ID</label>
+          <input type="text" id="ad-watch-id" placeholder="1234567890" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="ad-slot-card">
+        <div class="ad-slot-header">
+          <div class="ad-slot-name">🎬 Watch Sidebar Ad</div>
+          <div class="toggle-row" style="padding:0;">
+            <label class="toggle"><input type="checkbox" id="ad-watch-sidebar"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+        <div class="ad-slot-desc">Sidebar rectangle (300×250) on watch.html desktop layout</div>
+        <div class="form-group">
+          <label>Ad Slot ID</label>
+          <input type="text" id="ad-watch-sidebar-id" placeholder="1234567890" autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SETTINGS PAGE
+    ══════════════════════════════════════════ -->
+    <div id="page-settings" class="page-content">
       <div class="page-header">
         <div class="page-title">Site <span>Settings</span></div>
       </div>
@@ -336,9 +700,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <div class="settings-title">Supabase Config</div>
         <p class="settings-hint">Get these from Supabase → Project Settings → API</p>
         <div class="form-group"><label>Project URL</label><input type="text" id="s-url" placeholder="https://xxxx.supabase.co" autocomplete="off" spellcheck="false"></div>
-        <div class="form-group"><label>Anon / Public Key</label><input type="text" id="s-key" placeholder="eyJ... (anon key from Supabase → Project Settings → API)" autocomplete="off" spellcheck="false"></div>
+        <div class="form-group"><label>Anon / Public Key</label><input type="text" id="s-key" placeholder="eyJ... (anon key)" autocomplete="off" spellcheck="false"></div>
         <p class="settings-hint">✅ Use the <strong>anon key</strong> — writes are secured via Supabase Auth login.</p>
-        <div class="form-actions"><button class="btn-primary" onclick="saveSettings()">Save Settings</button></div>
+        <div class="form-actions"><button class="btn-primary" onclick="saveSettings()">Save Supabase Settings</button></div>
       </div>
 
       <div class="settings-form">
@@ -350,9 +714,23 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
       <div class="settings-form">
         <div class="settings-title">R2 Video Storage</div>
-        <p class="settings-hint">Your R2 bucket custom domain (set in Cloudflare R2 → Settings → Custom Domains)</p>
+        <p class="settings-hint">Your R2 bucket custom domain (Cloudflare R2 → Settings → Custom Domains)</p>
         <div class="form-group"><label>Videos Base URL</label><input type="text" id="s-r2" placeholder="https://videos.movxio.com" autocomplete="off" spellcheck="false"></div>
         <div class="form-actions"><button class="btn-primary" onclick="saveR2()">Save R2 URL</button></div>
+      </div>
+
+      <div class="settings-form">
+        <div class="settings-title">Site Identity & Favicon</div>
+        <p class="settings-hint">Favicon URLs — generate your full favicon set at <a href="https://realfavicongenerator.net" target="_blank" style="color:var(--gold);">realfavicongenerator.net</a></p>
+        <div class="form-row">
+          <div class="form-group"><label>Site Name</label><input type="text" id="s-sitename" placeholder="MOVXIO" autocomplete="off"></div>
+          <div class="form-group"><label>Favicon ICO URL</label><input type="text" id="s-favicon" placeholder="/favicon.ico" autocomplete="off"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Apple Touch Icon URL</label><input type="text" id="s-apple-icon" placeholder="/apple-touch-icon.png" autocomplete="off"></div>
+          <div class="form-group"><label>OG Image URL (1200×630)</label><input type="text" id="s-og-image" placeholder="https://movxio.com/og-image.png" autocomplete="off"></div>
+        </div>
+        <div class="form-actions"><button class="btn-primary" onclick="saveSiteIdentity()">Save Identity</button></div>
       </div>
 
       <div class="settings-form">
@@ -362,28 +740,187 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       </div>
     </div>
 
-    <!-- ── DEPLOY GUIDE ── -->
-    <div id="page-deploy" style="display:none;">
+    <!-- ══════════════════════════════════════════
+         SQL SETUP PAGE
+    ══════════════════════════════════════════ -->
+    <div id="page-sql" class="page-content">
+      <div class="page-header">
+        <div class="page-title">SQL <span>Setup</span></div>
+      </div>
+
+      <div class="settings-form">
+        <div class="settings-title">How to run SQL</div>
+        <p class="settings-hint">Go to your Supabase project → SQL Editor → New Query. Paste each block and click Run. Run them in order — Step 1 first, then Step 2, etc.</p>
+      </div>
+
+      <div class="settings-form">
+        <div class="sql-step">
+          <div class="sql-step-title">Step 1 — Update films table (add new columns)</div>
+          <div class="sql-step-desc">Run this if you already have a films table and need to add the new fields.</div>
+          <div class="sql-copy-wrap">
+            <button class="sql-copy-btn" onclick="copySQL(0)">Copy</button>
+            <pre class="sql-block" id="sql-0">ALTER TABLE films ADD COLUMN IF NOT EXISTS director text;
+ALTER TABLE films ADD COLUMN IF NOT EXISTS actors text;
+ALTER TABLE films ADD COLUMN IF NOT EXISTS country text;
+ALTER TABLE films ADD COLUMN IF NOT EXISTS imdb_rating numeric(3,1);
+ALTER TABLE films ADD COLUMN IF NOT EXISTS trailer_url text;
+ALTER TABLE films ADD COLUMN IF NOT EXISTS content_rating text;
+ALTER TABLE films ADD COLUMN IF NOT EXISTS badge text;
+ALTER TABLE films ADD COLUMN IF NOT EXISTS status text DEFAULT 'active';
+ALTER TABLE films ADD COLUMN IF NOT EXISTS views integer DEFAULT 0;</pre>
+          </div>
+        </div>
+
+        <div class="sql-step">
+          <div class="sql-step-title">Step 2 — Create films table from scratch (if you don't have it yet)</div>
+          <div class="sql-step-desc">Only run this if you haven't created the films table yet.</div>
+          <div class="sql-copy-wrap">
+            <button class="sql-copy-btn" onclick="copySQL(1)">Copy</button>
+            <pre class="sql-block" id="sql-1">CREATE TABLE IF NOT EXISTS films (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  title text NOT NULL,
+  year integer,
+  genre text,
+  language text,
+  country text,
+  director text,
+  actors text,
+  duration_secs integer,
+  hls_url text,
+  trailer_url text,
+  thumbnail_url text,
+  description text,
+  imdb_rating numeric(3,1),
+  content_rating text,
+  badge text,
+  featured boolean DEFAULT false,
+  status text DEFAULT 'active',
+  subtitles jsonb DEFAULT '[]'::jsonb,
+  views integer DEFAULT 0,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE films ENABLE ROW LEVEL SECURITY;
+
+-- Public can read active films
+CREATE POLICY "Public read active films" ON films
+  FOR SELECT USING (status = 'active' OR status IS NULL);
+
+-- Auth users can do everything
+CREATE POLICY "Auth full access" ON films
+  FOR ALL USING (auth.role() = 'authenticated');</pre>
+          </div>
+        </div>
+
+        <div class="sql-step">
+          <div class="sql-step-title">Step 3 — Reactions table (likes / dislikes)</div>
+          <div class="sql-step-desc">Allows anonymous like/dislike voting using a browser fingerprint.</div>
+          <div class="sql-copy-wrap">
+            <button class="sql-copy-btn" onclick="copySQL(2)">Copy</button>
+            <pre class="sql-block" id="sql-2">CREATE TABLE IF NOT EXISTS reactions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  film_id uuid REFERENCES films(id) ON DELETE CASCADE,
+  fingerprint text NOT NULL,
+  reaction text CHECK (reaction IN ('like','dislike')),
+  created_at timestamptz DEFAULT now(),
+  UNIQUE(film_id, fingerprint)
+);
+
+ALTER TABLE reactions ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can read reactions (for counts)
+CREATE POLICY "Public read reactions" ON reactions
+  FOR SELECT USING (true);
+
+-- Anyone can insert/update their own reaction
+CREATE POLICY "Public upsert reactions" ON reactions
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Public update reactions" ON reactions
+  FOR UPDATE USING (true);
+
+CREATE POLICY "Public delete reactions" ON reactions
+  FOR DELETE USING (true);</pre>
+          </div>
+        </div>
+
+        <div class="sql-step">
+          <div class="sql-step-title">Step 4 — Banners table (hero carousel)</div>
+          <div class="sql-copy-wrap">
+            <button class="sql-copy-btn" onclick="copySQL(3)">Copy</button>
+            <pre class="sql-block" id="sql-3">CREATE TABLE IF NOT EXISTS banners (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  film_id uuid REFERENCES films(id) ON DELETE SET NULL,
+  title text,
+  subtitle text,
+  image_url text,
+  cta_text text DEFAULT 'Watch Now',
+  cta_url text,
+  active boolean DEFAULT true,
+  sort_order integer DEFAULT 0,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE banners ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read active banners" ON banners
+  FOR SELECT USING (active = true);
+
+CREATE POLICY "Auth manage banners" ON banners
+  FOR ALL USING (auth.role() = 'authenticated');</pre>
+          </div>
+        </div>
+
+        <div class="sql-step">
+          <div class="sql-step-title">Step 5 — Views increment function</div>
+          <div class="sql-step-desc">Creates the RPC function called when a user starts watching a film.</div>
+          <div class="sql-copy-wrap">
+            <button class="sql-copy-btn" onclick="copySQL(4)">Copy</button>
+            <pre class="sql-block" id="sql-4">CREATE OR REPLACE FUNCTION increment_views(film_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  UPDATE films SET views = COALESCE(views, 0) + 1
+  WHERE id = film_id;
+END;
+$$;
+
+-- Grant public execute
+GRANT EXECUTE ON FUNCTION increment_views(uuid) TO anon;
+GRANT EXECUTE ON FUNCTION increment_views(uuid) TO authenticated;</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         DEPLOY GUIDE PAGE
+    ══════════════════════════════════════════ -->
+    <div id="page-deploy" class="page-content">
       <div class="page-header">
         <div class="page-title">Deploy <span>Guide</span></div>
       </div>
 
       <div class="settings-form">
         <div class="settings-title">How to add a new movie</div>
-        <p class="settings-hint">Follow these steps every time you add a new movie to MOVXIO:</p>
         <p style="font-size:13px;color:var(--text);margin-bottom:8px;"><strong>Step 1 — Encode the video</strong></p>
         <div class="code-block">bash encode.sh "/path/to/movie.mp4" film-slug-name</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Replace film-slug-name with a URL-friendly name like "the-open-road"</p>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Replace film-slug-name with a URL-friendly name like "the-dark-knight"</p>
+
         <p style="font-size:13px;color:var(--text);margin-bottom:8px;"><strong>Step 2 — Upload to R2</strong></p>
         <div class="code-block">bash upload.sh film-slug-name</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Or use the combined command: bash encode-and-upload.sh movie.mp4 film-slug-name</p>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Or: bash encode-and-upload.sh movie.mp4 film-slug-name</p>
+
         <p style="font-size:13px;color:var(--text);margin-bottom:8px;"><strong>Step 3 — Add in admin panel</strong></p>
-        <p style="font-size:12px;color:var(--muted);">Click "Add Film" above, fill in the details, and paste this URL in the Video URL field:</p>
+        <p style="font-size:12px;color:var(--muted);">Click "Add Film" → fill in details → paste URL:</p>
         <div class="code-block" id="r2-example">https://videos.movxio.com/films/film-slug-name/master.m3u8</div>
+
         <p style="font-size:13px;color:var(--text);margin-top:16px;margin-bottom:8px;"><strong>Step 4 — For subtitles</strong></p>
         <div class="code-block">wrangler r2 object put movxio-videos/films/film-slug/subtitles/english.vtt \
   --file english.vtt --content-type text/vtt</div>
-        <p style="font-size:12px;color:var(--muted);">Then add the subtitle URL in the Add Film form: https://videos.movxio.com/films/slug/subtitles/english.vtt</p>
       </div>
 
       <div class="settings-form">
@@ -392,7 +929,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <div class="code-block">winget install ffmpeg</div>
         <p style="font-size:13px;color:var(--text);margin-top:12px;margin-bottom:8px;"><strong>Mac:</strong></p>
         <div class="code-block">brew install ffmpeg</div>
-        <p style="font-size:13px;color:var(--text);margin-top:12px;margin-bottom:8px;"><strong>Verify installation:</strong></p>
+        <p style="font-size:13px;color:var(--text);margin-top:12px;margin-bottom:8px;"><strong>Verify:</strong></p>
         <div class="code-block">ffmpeg -version</div>
       </div>
 
@@ -404,34 +941,43 @@ wrangler r2 bucket list</div>
       </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /main -->
+</div><!-- /admin-body -->
 
+<!-- Bottom tabs -->
 <div class="bottom-tabs">
   <button class="tab-btn active" id="tab-films" onclick="showPage('films')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m7 2 0 20M17 2v20M2 12h20"/></svg>Films
   </button>
+  <button class="tab-btn" id="tab-banners" onclick="showPage('banners')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/></svg>Banners
+  </button>
+  <button class="tab-btn" id="tab-ads" onclick="showPage('ads')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/></svg>Ads
+  </button>
   <button class="tab-btn" id="tab-settings" onclick="showPage('settings')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Settings
   </button>
-  <button class="tab-btn" id="tab-deploy" onclick="showPage('deploy')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Guide
+  <button class="tab-btn" id="tab-sql" onclick="showPage('sql')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>SQL
   </button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-let SUPABASE_URL    = localStorage.getItem('cv_url')    || 'https://kncqgatjjcezlnwwikqm.supabase.co';
-let SUPABASE_KEY    = localStorage.getItem('cv_key')    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc';
-let WORKER_URL      = localStorage.getItem('cv_worker') || '';
-let R2_BASE         = localStorage.getItem('cv_r2')     || 'https://videos.movxio.com';
-let ADMIN_PASSWORD  = localStorage.getItem('cv_pwd')    || 'admin123';
-let editingId       = null;
-let subtitleCount   = 0;
-let SESSION_TOKEN   = null;
+// ── CONFIG ─────────────────────────────────────────────────────
+let SUPABASE_URL   = localStorage.getItem('cv_url')    || 'https://kncqgatjjcezlnwwikqm.supabase.co';
+let SUPABASE_KEY   = localStorage.getItem('cv_key')    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc';
+let WORKER_URL     = localStorage.getItem('cv_worker') || '';
+let R2_BASE        = localStorage.getItem('cv_r2')     || 'https://videos.movxio.com';
+let SESSION_TOKEN  = null;
+let editingId      = null;
+let subtitleCount  = 0;
+let allFilmsCache  = [];
+let editingBannerId = null;
 
-// ── Login ─────────────────────────────────────────────────────
+// ── LOGIN ─────────────────────────────────────────────────────
 async function doLogin() {
   const email    = document.getElementById('login-email').value.trim();
   const password = document.getElementById('pwd-input').value;
@@ -447,10 +993,12 @@ async function doLogin() {
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
-    if (!res.ok || !data.access_token) throw new Error(data.error_description || data.msg || 'Login failed');
+    if (!res.ok || !data.access_token) throw new Error(data.error_description || 'Login failed');
     SESSION_TOKEN = data.access_token;
     document.getElementById('login-screen').style.display = 'none';
     loadFilms();
+    loadBanners();
+    loadAdSettings();
   } catch(e) {
     errEl.textContent = e.message;
     errEl.style.display = 'block';
@@ -461,15 +1009,19 @@ async function doLogin() {
 }
 function logout() { SESSION_TOKEN = null; location.reload(); }
 
-// ── Page navigation ───────────────────────────────────────────
+// ── PAGE NAVIGATION ───────────────────────────────────────────
+const ALL_PAGES = ['films','banners','ads','settings','sql','deploy'];
+
 function showPage(p) {
-  ['films','settings','deploy'].forEach(name => {
-    document.getElementById(`page-${name}`).style.display = p === name ? 'block' : 'none';
-    const sideBtn = document.querySelector(`.sidebar-item[data-page="${name}"]`);
-    if (sideBtn) sideBtn.classList.toggle('active', p === name);
-    const tabBtn = document.getElementById(`tab-${name}`);
-    if (tabBtn) tabBtn.classList.toggle('active', p === name);
+  ALL_PAGES.forEach(name => {
+    const el = document.getElementById(`page-${name}`);
+    if (el) el.classList.toggle('active', p === name);
+    const side = document.querySelector(`.sidebar-item[data-page="${name}"]`);
+    if (side) side.classList.toggle('active', p === name);
+    const tab = document.getElementById(`tab-${name}`);
+    if (tab) tab.classList.toggle('active', p === name);
   });
+
   if (p === 'settings') {
     document.getElementById('s-url').value    = SUPABASE_URL;
     document.getElementById('s-key').value    = SUPABASE_KEY;
@@ -478,10 +1030,18 @@ function showPage(p) {
   }
 }
 
-// ── Supabase API ───────────────────────────────────────────────
+// ── SUPABASE API ───────────────────────────────────────────────
 async function supaFetch(path, method = 'GET', body = null) {
   const token = SESSION_TOKEN || SUPABASE_KEY;
-  const opts = { method, headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' } };
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    }
+  };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, opts);
   if (!res.ok) throw new Error(await res.text());
@@ -489,48 +1049,73 @@ async function supaFetch(path, method = 'GET', body = null) {
   return txt ? JSON.parse(txt) : [];
 }
 
-// ── Local fallback ─────────────────────────────────────────────
+// ── LOCAL FALLBACK ─────────────────────────────────────────────
 let localFilms = JSON.parse(localStorage.getItem('cv_films') || 'null') || [
-  { id: 'demo1', title: 'The Open Road', year: 2023, genre: 'drama', language: 'English', featured: true, thumbnail_url: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80', description: 'A road trip that changes everything.', hls_url: null, subtitles: [] },
-  { id: 'demo2', title: 'City Lights', year: 2022, genre: 'romance', language: 'English', featured: true, thumbnail_url: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80', description: 'Love in unexpected places.', hls_url: null, subtitles: [] },
+  { id: 'demo1', title: 'The Open Road', year: 2023, genre: 'drama', language: 'English', country: 'United States', featured: true, status: 'active', thumbnail_url: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80', description: 'A road trip that changes everything.', hls_url: null, subtitles: [], views: 142, imdb_rating: 7.2 },
+  { id: 'demo2', title: 'City Lights', year: 2022, genre: 'romance', language: 'English', country: 'United Kingdom', featured: true, status: 'active', thumbnail_url: 'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80', description: 'Love in unexpected places.', hls_url: null, subtitles: [], views: 98, imdb_rating: 6.8 },
 ];
 function saveLocal() { localStorage.setItem('cv_films', JSON.stringify(localFilms)); }
 
-// ── Genre badge helper ────────────────────────────────────────
+// ── GENRE BADGE HELPER ────────────────────────────────────────
 function genreBadges(genre) {
   if (!genre) return '—';
   return genre.split(',').map(g => g.trim()).filter(Boolean)
-    .map(g => `<span class="badge-genre" style="margin-right:3px;">${g}</span>`).join('');
+    .slice(0, 2)
+    .map(g => `<span style="background:var(--surface2);border:1px solid var(--border);padding:2px 7px;border-radius:6px;font-size:10px;color:var(--muted);margin-right:3px;">${g}</span>`).join('');
 }
 
-// ── Load films ────────────────────────────────────────────────
+// ── LOAD FILMS ────────────────────────────────────────────────
 async function loadFilms() {
   let films;
-  if (SUPABASE_URL) {
-    try { films = await supaFetch('films?select=*&order=created_at.desc'); }
-    catch(e) { films = localFilms; toast('Using local data (Supabase error)', true); }
-  } else { films = localFilms; }
+  try {
+    films = await supaFetch('films?select=*&order=created_at.desc');
+  } catch(e) {
+    films = localFilms;
+    toast('Using local data (Supabase error)', true);
+  }
+  allFilmsCache = films;
 
   // Stats
+  const totalViews = films.reduce((a, f) => a + (f.views || 0), 0);
   document.getElementById('stat-total').textContent    = films.length;
   document.getElementById('stat-featured').textContent = films.filter(f => f.featured).length;
   document.getElementById('stat-video').textContent    = films.filter(f => f.hls_url).length;
-  const allGenres = new Set(films.flatMap(f => (f.genre||'').split(',').map(g=>g.trim()).filter(Boolean)));
-  document.getElementById('stat-genres').textContent   = allGenres.size;
+  document.getElementById('stat-views').textContent    = totalViews > 999 ? (totalViews/1000).toFixed(1)+'K' : totalViews;
 
-  if (!films.length) {
-    document.getElementById('film-list').innerHTML = `<div class="empty-state"><div class="icon">🎬</div><p>No films yet. Click Add Film to get started!</p></div>`;
-    document.getElementById('films-tbody').innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px;">No films yet.</td></tr>`;
+  renderFilmTable(films);
+
+  // Also populate banner film dropdown
+  const bFilm = document.getElementById('b-film');
+  bFilm.innerHTML = '<option value="">No film linked (use custom URL)</option>';
+  films.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f.id;
+    opt.textContent = f.title + (f.year ? ` (${f.year})` : '');
+    bFilm.appendChild(opt);
+  });
+}
+
+function renderFilmTable(films) {
+  const q = (document.getElementById('film-search')?.value || '').toLowerCase();
+  const st = document.getElementById('status-filter')?.value || '';
+  const filtered = films.filter(f =>
+    (!q || f.title.toLowerCase().includes(q) || (f.director||'').toLowerCase().includes(q)) &&
+    (!st || f.status === st)
+  );
+
+  if (!filtered.length) {
+    document.getElementById('film-list').innerHTML = `<div class="empty-state"><div class="icon">🎬</div><p>No films found.</p></div>`;
+    document.getElementById('films-tbody').innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:40px;">No films found.</td></tr>`;
     return;
   }
 
   // Mobile list
-  document.getElementById('film-list').innerHTML = films.map(f => `
+  document.getElementById('film-list').innerHTML = filtered.map(f => `
     <div class="film-list-item">
       ${f.thumbnail_url ? `<img class="list-thumb" src="${f.thumbnail_url}" alt="">` : `<div class="list-thumb-ph">🎬</div>`}
       <div class="list-info">
         <div class="list-title">${f.title}${f.featured ? ' <span class="badge-featured">★</span>' : ''}</div>
-        <div class="list-meta">${genreBadges(f.genre)} · ${f.year || '—'} · ${f.hls_url ? '🟢 HLS' : '🔴 No video'}</div>
+        <div class="list-meta">${f.country || '—'} · ${f.year || '—'} · ${f.imdb_rating ? '⭐'+f.imdb_rating : ''} · <span class="badge-status badge-${(f.status||'active').replace('_','-')}">${f.status||'active'}</span></div>
       </div>
       <div class="list-actions">
         <button class="btn-edit" onclick='editFilm(${JSON.stringify(f)})'>Edit</button>
@@ -539,26 +1124,44 @@ async function loadFilms() {
     </div>`).join('');
 
   // Desktop table
-  document.getElementById('films-tbody').innerHTML = films.map(f => `
+  document.getElementById('films-tbody').innerHTML = filtered.map(f => `
     <tr>
       <td>${f.thumbnail_url ? `<img class="row-thumb" src="${f.thumbnail_url}" alt="">` : '🎬'}</td>
-      <td><strong>${f.title}</strong></td>
-      <td>${f.genre ? genreBadges(f.genre) : '—'}</td>
-      <td>${f.year || '—'}</td>
+      <td>
+        <strong>${f.title}</strong>
+        ${f.director ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;">Dir: ${f.director}</div>` : ''}
+        ${f.badge ? `<span style="font-size:9px;background:rgba(232,184,75,0.15);color:var(--gold);padding:1px 6px;border-radius:3px;font-weight:700;">${f.badge}</span>` : ''}
+      </td>
+      <td>${genreBadges(f.genre)}</td>
+      <td style="font-size:12px;color:var(--muted);">${f.country || '—'}</td>
+      <td style="font-size:12px;">${f.year || '—'}</td>
+      <td style="font-size:12px;">${f.imdb_rating ? `<span style="color:var(--gold);">⭐ ${f.imdb_rating}</span>` : '—'}</td>
+      <td class="views-count">${f.views ? Number(f.views).toLocaleString() : '0'}</td>
       <td>${f.hls_url ? `<span class="badge-hls">✓ HLS</span>` : `<span class="badge-no-video">No video</span>`}</td>
-      <td>${f.featured ? `<span class="badge-featured">★ Featured</span>` : '<span style="color:var(--muted);font-size:12px;">Standard</span>'}</td>
+      <td><span class="badge-status badge-${(f.status||'active').replace('_','-')}">${(f.status||'active').replace('_',' ')}</span></td>
       <td><div style="display:flex;gap:6px;">
         <button class="btn-edit" onclick='editFilm(${JSON.stringify(f)})'>Edit</button>
-        <button class="btn-delete" onclick="deleteFilm('${f.id}')">Delete</button>
+        <button class="btn-delete" onclick="deleteFilm('${f.id}')">Del</button>
       </div></td>
     </tr>`).join('');
 }
 
-// ── Form open/close ───────────────────────────────────────────
+function filterFilmTable() {
+  renderFilmTable(allFilmsCache);
+}
+
+// ── FORM OPEN/CLOSE ───────────────────────────────────────────
 function openForm() {
   editingId = null;
   document.getElementById('form-title').textContent = 'Add New Film';
-  ['f-title','f-year','f-lang','f-duration','f-hls','f-thumb','f-desc'].forEach(id => document.getElementById(id).value = '');
+  ['f-title','f-year','f-lang','f-duration','f-hls','f-thumb','f-desc','f-director','f-actors','f-imdb','f-trailer'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['f-country','f-content-rating','f-status','f-badge'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { if (id === 'f-status') el.value = 'active'; else el.value = ''; }
+  });
   document.querySelectorAll('#genreCheckboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
   document.getElementById('f-featured').checked = false;
   document.getElementById('subtitle-list').innerHTML = '';
@@ -572,20 +1175,28 @@ function closeForm() { document.getElementById('film-form').classList.remove('op
 function editFilm(film) {
   editingId = film.id;
   document.getElementById('form-title').textContent = 'Edit Film';
-  document.getElementById('f-title').value    = film.title         || '';
-  document.getElementById('f-year').value     = film.year          || '';
+  document.getElementById('f-title').value     = film.title || '';
+  document.getElementById('f-year').value      = film.year || '';
+  document.getElementById('f-lang').value      = film.language || '';
+  document.getElementById('f-duration').value  = film.duration_secs ? Math.round(film.duration_secs / 60) : '';
+  document.getElementById('f-hls').value       = film.hls_url || '';
+  document.getElementById('f-thumb').value     = film.thumbnail_url || '';
+  document.getElementById('f-desc').value      = film.description || '';
+  document.getElementById('f-director').value  = film.director || '';
+  document.getElementById('f-actors').value    = film.actors || '';
+  document.getElementById('f-imdb').value      = film.imdb_rating || '';
+  document.getElementById('f-trailer').value   = film.trailer_url || '';
+  document.getElementById('f-country').value   = film.country || '';
+  document.getElementById('f-content-rating').value = film.content_rating || '';
+  document.getElementById('f-status').value    = film.status || 'active';
+  document.getElementById('f-badge').value     = film.badge || '';
+  document.getElementById('f-featured').checked = !!film.featured;
+
   const genres = (film.genre || '').split(',').map(g => g.trim()).filter(Boolean);
   document.querySelectorAll('#genreCheckboxes input[type="checkbox"]').forEach(cb => {
     cb.checked = genres.includes(cb.value);
   });
-  document.getElementById('f-lang').value     = film.language      || '';
-  document.getElementById('f-duration').value = film.duration_secs ? Math.round(film.duration_secs / 60) : '';
-  document.getElementById('f-hls').value      = film.hls_url       || '';
-  document.getElementById('f-thumb').value    = film.thumbnail_url || '';
-  document.getElementById('f-desc').value     = film.description   || '';
-  document.getElementById('f-featured').checked = !!film.featured;
 
-  // Subtitles
   document.getElementById('subtitle-list').innerHTML = '';
   subtitleCount = 0;
   (film.subtitles || []).forEach(s => addSubtitleRow(s.lang, s.url));
@@ -594,22 +1205,17 @@ function editFilm(film) {
   setTimeout(() => document.getElementById('film-form').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
-// ── Subtitle rows ─────────────────────────────────────────────
+// ── SUBTITLE ROWS ─────────────────────────────────────────────
 function addSubtitleRow(lang = '', url = '') {
   const id = ++subtitleCount;
   const row = document.createElement('div');
   row.className = 'subtitle-row';
   row.id = `sub-row-${id}`;
   row.innerHTML = `
-    <select class="filter-select" id="sub-lang-${id}" style="min-height:44px;font-size:14px;">
-      <option value="English" ${lang==='English'?'selected':''}>English</option>
-      <option value="Sinhala" ${lang==='Sinhala'?'selected':''}>Sinhala</option>
-      <option value="Tamil"   ${lang==='Tamil'?'selected':''}>Tamil</option>
-      <option value="Hindi"   ${lang==='Hindi'?'selected':''}>Hindi</option>
-      <option value="French"  ${lang==='French'?'selected':''}>French</option>
-      <option value="Spanish" ${lang==='Spanish'?'selected':''}>Spanish</option>
+    <select id="sub-lang-${id}" style="min-height:44px;font-size:14px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;outline:none;width:140px;flex-shrink:0;">
+      ${['English','Sinhala','Tamil','Hindi','French','Spanish','German','Japanese','Korean','Chinese','Arabic','Portuguese'].map(l => `<option value="${l}" ${lang===l?'selected':''}>${l}</option>`).join('')}
     </select>
-    <input type="url" id="sub-url-${id}" placeholder="https://videos.movxio.com/films/.../subtitles/english.vtt" value="${url}" style="min-height:44px;">
+    <input type="url" id="sub-url-${id}" placeholder="https://videos.movxio.com/films/.../subtitles/english.vtt" value="${url}" style="min-height:44px;flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:13px 14px;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;">
     <button class="btn-icon" onclick="document.getElementById('sub-row-${id}').remove()" title="Remove">✕</button>`;
   document.getElementById('subtitle-list').appendChild(row);
 }
@@ -625,61 +1231,227 @@ function getSubtitles() {
   return subs;
 }
 
-// ── Save film ─────────────────────────────────────────────────
+// ── SAVE FILM ─────────────────────────────────────────────────
 async function saveFilm() {
   const title = document.getElementById('f-title').value.trim();
   if (!title) { toast('Title is required', true); return; }
 
   const durMins = parseInt(document.getElementById('f-duration').value) || null;
+  const imdbVal = parseFloat(document.getElementById('f-imdb').value) || null;
+
   const data = {
     title,
     year:          parseInt(document.getElementById('f-year').value) || null,
     genre:         Array.from(document.querySelectorAll('#genreCheckboxes input:checked')).map(cb => cb.value).join(',') || null,
-    language:      document.getElementById('f-lang').value     || null,
-    hls_url:       document.getElementById('f-hls').value      || null,
-    thumbnail_url: document.getElementById('f-thumb').value    || null,
-    description:   document.getElementById('f-desc').value     || null,
+    language:      document.getElementById('f-lang').value || null,
+    country:       document.getElementById('f-country').value || null,
+    director:      document.getElementById('f-director').value || null,
+    actors:        document.getElementById('f-actors').value || null,
+    hls_url:       document.getElementById('f-hls').value || null,
+    trailer_url:   document.getElementById('f-trailer').value || null,
+    thumbnail_url: document.getElementById('f-thumb').value || null,
+    description:   document.getElementById('f-desc').value || null,
+    imdb_rating:   imdbVal,
+    content_rating: document.getElementById('f-content-rating').value || null,
+    badge:         document.getElementById('f-badge').value || null,
+    status:        document.getElementById('f-status').value || 'active',
     featured:      document.getElementById('f-featured').checked,
     subtitles:     getSubtitles(),
     duration_secs: durMins ? durMins * 60 : null,
   };
 
-  if (SUPABASE_URL) {
-    try {
-      const cleanData = Object.fromEntries(Object.entries(data).filter(([, v]) => v !== null && v !== undefined));
-      if (editingId) await supaFetch(`films?id=eq.${editingId}`, 'PATCH', cleanData);
-      else await supaFetch('films', 'POST', cleanData);
-      toast(editingId ? 'Film updated!' : 'Film added!');
-      closeForm(); loadFilms();
-    } catch(e) {
-      let msg = e.message || 'unknown error';
-      try { const p = JSON.parse(msg); msg = p.message || p.hint || msg; } catch {}
-      toast('Error saving: ' + msg, true);
+  try {
+    const cleanData = Object.fromEntries(Object.entries(data).filter(([, v]) => v !== null && v !== undefined));
+    if (editingId) {
+      await supaFetch(`films?id=eq.${editingId}`, 'PATCH', cleanData);
+    } else {
+      await supaFetch('films', 'POST', cleanData);
     }
-  } else {
+    toast(editingId ? 'Film updated!' : 'Film added!');
+    closeForm();
+    loadFilms();
+  } catch(e) {
+    // Fallback to local
     if (editingId) {
       const i = localFilms.findIndex(f => f.id === editingId);
       if (i >= 0) localFilms[i] = { ...localFilms[i], ...data };
     } else {
       localFilms.unshift({ id: 'f' + Date.now(), ...data });
     }
-    saveLocal(); toast(editingId ? 'Updated!' : 'Added!'); closeForm(); loadFilms();
+    saveLocal();
+    toast(editingId ? 'Updated (local)!' : 'Added (local)!');
+    closeForm();
+    allFilmsCache = localFilms;
+    renderFilmTable(localFilms);
   }
 }
 
-// ── Delete film ───────────────────────────────────────────────
+// ── DELETE FILM ───────────────────────────────────────────────
 async function deleteFilm(id) {
   if (!confirm('Delete this film? This cannot be undone.')) return;
-  if (SUPABASE_URL) {
-    try { await supaFetch(`films?id=eq.${id}`, 'DELETE'); toast('Deleted!'); loadFilms(); }
-    catch(e) { toast('Error deleting film', true); }
-  } else {
+  try {
+    await supaFetch(`films?id=eq.${id}`, 'DELETE');
+    toast('Deleted!');
+    loadFilms();
+  } catch(e) {
     localFilms = localFilms.filter(f => f.id !== id);
-    saveLocal(); toast('Deleted!'); loadFilms();
+    saveLocal();
+    allFilmsCache = localFilms;
+    renderFilmTable(localFilms);
+    toast('Deleted (local)!');
   }
 }
 
-// ── Settings ──────────────────────────────────────────────────
+// ── BANNERS ───────────────────────────────────────────────────
+async function loadBanners() {
+  let banners = [];
+  try {
+    banners = await supaFetch('banners?select=*&order=sort_order.asc');
+  } catch(e) {
+    banners = JSON.parse(localStorage.getItem('cv_banners') || '[]');
+  }
+  renderBanners(banners);
+}
+
+function renderBanners(banners) {
+  const list = document.getElementById('banner-list');
+  if (!banners.length) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🖼️</div><p>No banners yet. Click "Add Banner" to create your first hero slide.</p></div>`;
+    return;
+  }
+  list.innerHTML = banners.map(b => `
+    <div class="banner-card">
+      ${b.image_url ? `<img class="banner-thumb" src="${b.image_url}" alt="">` : `<div class="banner-thumb-ph">🖼️</div>`}
+      <div class="banner-info">
+        <div class="banner-title-text">${b.title || 'Untitled Banner'}</div>
+        <div class="banner-meta">${b.subtitle || ''} ${b.active ? '· <span style="color:var(--green);">Active</span>' : '· <span style="color:var(--muted);">Inactive</span>'} · Order: ${b.sort_order ?? 0}</div>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-edit" onclick='editBanner(${JSON.stringify(b)})'>Edit</button>
+        <button class="btn-delete" onclick="deleteBanner('${b.id}')">Del</button>
+      </div>
+    </div>`).join('');
+}
+
+function openBannerForm() {
+  editingBannerId = null;
+  document.getElementById('banner-form-title').textContent = 'Add Banner';
+  ['b-title','b-subtitle','b-image','b-cta-text','b-cta-url'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = id === 'b-cta-text' ? 'Watch Now' : '';
+  });
+  document.getElementById('b-film').value = '';
+  document.getElementById('b-order').value = '0';
+  document.getElementById('b-active').checked = true;
+  document.getElementById('banner-form').classList.add('open');
+  document.getElementById('banner-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeBannerForm() { document.getElementById('banner-form').classList.remove('open'); }
+
+function editBanner(b) {
+  editingBannerId = b.id;
+  document.getElementById('banner-form-title').textContent = 'Edit Banner';
+  document.getElementById('b-title').value    = b.title || '';
+  document.getElementById('b-subtitle').value = b.subtitle || '';
+  document.getElementById('b-image').value    = b.image_url || '';
+  document.getElementById('b-cta-text').value = b.cta_text || 'Watch Now';
+  document.getElementById('b-cta-url').value  = b.cta_url || '';
+  document.getElementById('b-film').value     = b.film_id || '';
+  document.getElementById('b-order').value    = b.sort_order ?? 0;
+  document.getElementById('b-active').checked = !!b.active;
+  document.getElementById('banner-form').classList.add('open');
+  document.getElementById('banner-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function saveBanner() {
+  const filmId = document.getElementById('b-film').value;
+  const data = {
+    title:      document.getElementById('b-title').value || null,
+    subtitle:   document.getElementById('b-subtitle').value || null,
+    image_url:  document.getElementById('b-image').value || null,
+    cta_text:   document.getElementById('b-cta-text').value || 'Watch Now',
+    cta_url:    document.getElementById('b-cta-url').value || null,
+    film_id:    filmId || null,
+    sort_order: parseInt(document.getElementById('b-order').value) || 0,
+    active:     document.getElementById('b-active').checked,
+  };
+
+  // If film linked, auto-fill from film data
+  if (filmId) {
+    const film = allFilmsCache.find(f => f.id === filmId);
+    if (film) {
+      if (!data.title) data.title = film.title;
+      if (!data.image_url) data.image_url = film.thumbnail_url;
+      if (!data.cta_url) data.cta_url = `watch.html?id=${film.id}`;
+    }
+  }
+
+  try {
+    const clean = Object.fromEntries(Object.entries(data).filter(([,v]) => v !== null && v !== undefined));
+    if (editingBannerId) {
+      await supaFetch(`banners?id=eq.${editingBannerId}`, 'PATCH', clean);
+    } else {
+      await supaFetch('banners', 'POST', clean);
+    }
+    toast(editingBannerId ? 'Banner updated!' : 'Banner added!');
+    closeBannerForm();
+    loadBanners();
+  } catch(e) {
+    // Local fallback
+    let banners = JSON.parse(localStorage.getItem('cv_banners') || '[]');
+    if (editingBannerId) {
+      const i = banners.findIndex(b => b.id === editingBannerId);
+      if (i >= 0) banners[i] = { ...banners[i], ...data };
+    } else {
+      banners.push({ id: 'b' + Date.now(), ...data });
+    }
+    localStorage.setItem('cv_banners', JSON.stringify(banners));
+    toast('Saved (local)!');
+    closeBannerForm();
+    renderBanners(banners);
+  }
+}
+
+async function deleteBanner(id) {
+  if (!confirm('Delete this banner?')) return;
+  try {
+    await supaFetch(`banners?id=eq.${id}`, 'DELETE');
+    toast('Banner deleted!');
+    loadBanners();
+  } catch(e) {
+    let banners = JSON.parse(localStorage.getItem('cv_banners') || '[]');
+    banners = banners.filter(b => b.id !== id);
+    localStorage.setItem('cv_banners', JSON.stringify(banners));
+    renderBanners(banners);
+    toast('Deleted (local)!');
+  }
+}
+
+// ── AD SETTINGS ───────────────────────────────────────────────
+function loadAdSettings() {
+  const ads = JSON.parse(localStorage.getItem('cv_ads') || '{}');
+  const ids = ['ad-publisher','ad-home-banner-id','ad-home-inline-id','ad-browse-banner-id','ad-watch-id','ad-watch-sidebar-id'];
+  const toggles = ['ad-home-banner','ad-home-inline','ad-browse-banner','ad-watch','ad-watch-sidebar'];
+  ids.forEach(id => { const el = document.getElementById(id); if (el && ads[id] !== undefined) el.value = ads[id]; });
+  toggles.forEach(id => { const el = document.getElementById(id); if (el && ads[id] !== undefined) el.checked = ads[id]; });
+}
+
+function saveAdSettings() {
+  const ads = {};
+  ['ad-publisher','ad-home-banner-id','ad-home-inline-id','ad-browse-banner-id','ad-watch-id','ad-watch-sidebar-id'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) ads[id] = el.value;
+  });
+  ['ad-home-banner','ad-home-inline','ad-browse-banner','ad-watch','ad-watch-sidebar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) ads[id] = el.checked;
+  });
+  localStorage.setItem('cv_ads', JSON.stringify(ads));
+  toast('Ad settings saved!');
+}
+
+// ── SETTINGS ──────────────────────────────────────────────────
 function saveSettings() {
   SUPABASE_URL = document.getElementById('s-url').value.trim();
   SUPABASE_KEY = document.getElementById('s-key').value.trim();
@@ -698,16 +1470,32 @@ function saveR2() {
   document.getElementById('r2-example').textContent = `${R2_BASE}/films/film-slug-name/master.m3u8`;
   toast('R2 URL saved!');
 }
+function saveSiteIdentity() {
+  const fields = ['s-sitename','s-favicon','s-apple-icon','s-og-image'];
+  const identity = {};
+  fields.forEach(id => { const el = document.getElementById(id); if (el) identity[id] = el.value.trim(); });
+  localStorage.setItem('cv_identity', JSON.stringify(identity));
+  toast('Site identity saved!');
+}
 function changePassword() {
   const p = document.getElementById('new-pwd').value;
   if (!p || p.length < 6) { toast('Min 6 characters', true); return; }
-  ADMIN_PASSWORD = p;
   localStorage.setItem('cv_pwd', p);
   document.getElementById('new-pwd').value = '';
   toast('Password updated!');
 }
 
-// ── Toast ─────────────────────────────────────────────────────
+// ── SQL COPY ──────────────────────────────────────────────────
+function copySQL(idx) {
+  const el = document.getElementById(`sql-${idx}`);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    const btn = el.parentElement.querySelector('.sql-copy-btn');
+    if (btn) { btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); }
+  });
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
 function toast(msg, err = false) {
   const el = document.getElementById('toast');
   el.textContent = msg;
