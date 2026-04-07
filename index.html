@@ -1093,6 +1093,159 @@ footer {
 }
 
 .stagger { opacity: 0; animation: fadeUp 0.5s ease forwards; }
+
+/* ══════════════════════════════════════
+   TRAILER MODAL
+══════════════════════════════════════ */
+.trailer-modal {
+  position: fixed; inset: 0; z-index: 900;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.trailer-modal.open { display: flex; }
+
+.trailer-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: tmFadeIn 0.25s ease;
+}
+@keyframes tmFadeIn { from { opacity:0; } to { opacity:1; } }
+
+.trailer-box {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 900px;
+  animation: tmSlideUp 0.3s cubic-bezier(0.34,1.2,0.64,1);
+}
+@keyframes tmSlideUp { from { opacity:0; transform:translateY(32px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+/* Film info strip above video */
+.trailer-film-info {
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 0 14px;
+}
+.trailer-poster {
+  width: 48px; height: 72px;
+  object-fit: cover; border-radius: 6px;
+  flex-shrink: 0; background: var(--surface2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.trailer-poster-ph {
+  width: 48px; height: 72px; border-radius: 6px;
+  background: var(--surface2); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.trailer-meta { flex: 1; min-width: 0; }
+.trailer-label {
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--accent); margin-bottom: 4px;
+}
+.trailer-title {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(16px, 3vw, 22px); letter-spacing: -0.02em;
+  color: var(--text); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.trailer-tags {
+  display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap;
+}
+.trailer-tag {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px; padding: 2px 8px;
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em;
+}
+.trailer-tag.imdb { background: rgba(245,200,66,0.1); border-color: rgba(245,200,66,0.2); color: var(--gold); }
+
+.trailer-close {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.2s; margin-left: auto;
+}
+.trailer-close:hover { background: rgba(255,255,255,0.15); transform: scale(1.1); }
+
+/* Video container — 16:9 responsive */
+.trailer-video-wrap {
+  position: relative; width: 100%; aspect-ratio: 16/9;
+  border-radius: 12px; overflow: hidden;
+  background: #000;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+}
+.trailer-video-wrap iframe,
+.trailer-video-wrap video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; border: none;
+}
+
+/* No trailer state */
+.trailer-no-video {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  background: var(--surface2);
+}
+.trailer-no-video p {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase;
+}
+
+/* Loading spinner inside trailer */
+.trailer-spinner {
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center;
+  background: #000; z-index: 2; transition: opacity 0.3s;
+}
+.trailer-spinner-ring {
+  width: 44px; height: 44px; position: relative;
+}
+.trailer-spinner-ring::before, .trailer-spinner-ring::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+}
+.trailer-spinner-ring::before { border: 2px solid rgba(232,71,63,0.12); }
+.trailer-spinner-ring::after {
+  border: 2px solid transparent;
+  border-top-color: var(--accent);
+  border-right-color: rgba(232,71,63,0.4);
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Action buttons below video */
+.trailer-actions {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 0 0; flex-wrap: wrap;
+}
+.trailer-watch-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+  padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer;
+  transition: all 0.2s; text-decoration: none;
+}
+.trailer-watch-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+.trailer-watch-btn svg { width: 15px; fill: currentColor; }
+.trailer-more-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.07); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  padding: 11px 20px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+  transition: all 0.2s; text-decoration: none;
+}
+.trailer-more-btn:hover { background: rgba(255,255,255,0.11); }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .trailer-box { max-width: 100%; }
+  .trailer-actions { gap: 8px; }
+  .trailer-watch-btn, .trailer-more-btn { padding: 11px 16px; font-size: 13px; }
+}
 </style>
 </head>
 <body>
@@ -1174,8 +1327,8 @@ footer {
         <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
         Watch Now
       </a>
-      <button class="btn-info" onclick="openMoreInfo()">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg>
+      <button class="btn-info" id="heroMoreInfoBtn" onclick="openMoreInfo()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg>
         More Info
       </button>
       <button id="heroWlBtn" onclick="toggleHeroWatchlist()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:13px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;">
@@ -1591,11 +1744,11 @@ function startProgress() {
 // ============================================================
 function navSearchGo() {
   const q = document.getElementById('navSearch').value.trim();
-  if (q) window.location.href = `browse.html?q=${encodeURIComponent(q)}`;
+  if (q) window.location.href = `search.html?q=${encodeURIComponent(q)}`;
 }
 function mobileSearchGo() {
   const q = document.getElementById('mobileSearch').value.trim();
-  if (q) window.location.href = `browse.html?q=${encodeURIComponent(q)}`;
+  if (q) window.location.href = `search.html?q=${encodeURIComponent(q)}`;
 }
 
 async function init() {
@@ -1784,9 +1937,120 @@ function renderDemoState() {
   document.getElementById('statMovies').textContent = '—';
 }
 
+// ── TRAILER MODAL ────────────────────────────────────────────
 function openMoreInfo() {
-  // Scroll to all films or open modal
-  document.getElementById('allFilmsSection').scrollIntoView({ behavior: 'smooth' });
+  if (currentHeroFilm) openTrailer(currentHeroFilm);
+  else document.getElementById('allFilmsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function openTrailer(film) {
+  const modal = document.getElementById('trailerModal');
+  const wrap  = document.getElementById('trailerVideoWrap');
+  const spinner = document.getElementById('trailerSpinner');
+
+  // Set title
+  document.getElementById('trailerTitle').textContent = film.title;
+
+  // Update More Info button icon
+  const moreBtn = document.getElementById('heroMoreInfoBtn');
+  if (moreBtn) {
+    moreBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Trailer`;
+  }
+
+  // Tags (genre, year, imdb)
+  const tags = [];
+  if (film.genre) tags.push(...film.genre.split(',').slice(0,2).map(g => `<span class="trailer-tag">${esc(g.trim())}</span>`));
+  if (film.year)        tags.push(`<span class="trailer-tag">${film.year}</span>`);
+  if (film.imdb_rating) tags.push(`<span class="trailer-tag imdb">★ ${film.imdb_rating}</span>`);
+  if (film.content_rating) tags.push(`<span class="trailer-tag">${esc(film.content_rating)}</span>`);
+  document.getElementById('trailerTags').innerHTML = tags.join('');
+
+  // Poster
+  const posterEl = document.getElementById('trailerPosterPh');
+  if (film.thumbnail_url) {
+    posterEl.outerHTML = `<img class="trailer-poster" id="trailerPosterPh" src="${esc(film.thumbnail_url)}" alt="${esc(film.title)}">`;
+  }
+
+  // Watch button
+  document.getElementById('trailerWatchBtn').href = `watch.html?id=${esc(film.id)}`;
+
+  // Clear previous video
+  const oldMedia = wrap.querySelectorAll('iframe, video');
+  oldMedia.forEach(el => el.remove());
+  spinner.style.opacity = '1';
+  spinner.style.pointerEvents = 'auto';
+
+  // Inject video
+  const url = film.trailer_url || '';
+  if (url) {
+    const ytMatch  = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    const ytEmbed  = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+    const ytId     = (ytMatch && ytMatch[1]) || (ytEmbed && ytEmbed[1]);
+
+    if (ytId) {
+      // YouTube embed
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.onload = () => { spinner.style.opacity = '0'; spinner.style.pointerEvents = 'none'; };
+      wrap.appendChild(iframe);
+    } else {
+      // Self-hosted video (.mp4 / .m3u8 direct)
+      const video = document.createElement('video');
+      video.src = url;
+      video.controls = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;background:#000;';
+      video.onloadeddata = () => { spinner.style.opacity = '0'; spinner.style.pointerEvents = 'none'; };
+      video.onerror = () => showNoTrailer(wrap, spinner);
+      wrap.appendChild(video);
+    }
+  } else {
+    // No trailer URL — show fallback
+    showNoTrailer(wrap, spinner);
+  }
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showNoTrailer(wrap, spinner) {
+  spinner.style.opacity = '0';
+  spinner.style.pointerEvents = 'none';
+  // Check if no-video div already exists
+  if (!wrap.querySelector('.trailer-no-video')) {
+    const div = document.createElement('div');
+    div.className = 'trailer-no-video';
+    div.innerHTML = `
+      <div style="font-size:48px;opacity:0.3;">🎬</div>
+      <p>No trailer available yet</p>
+      <a href="#" id="noTrailerWatchBtn" style="margin-top:8px;display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;text-decoration:none;">
+        <svg viewBox="0 0 16 16" width="14" fill="#fff"><path d="M4 2l10 6-10 6V2z"/></svg>
+        Watch Film Instead
+      </a>`;
+    wrap.appendChild(div);
+  }
+}
+
+function closeTrailer() {
+  const modal = document.getElementById('trailerModal');
+  const wrap  = document.getElementById('trailerVideoWrap');
+
+  // Stop any playing video/iframe
+  wrap.querySelectorAll('iframe').forEach(el => { el.src = ''; el.remove(); });
+  wrap.querySelectorAll('video').forEach(el => { el.pause(); el.remove(); });
+  wrap.querySelectorAll('.trailer-no-video').forEach(el => el.remove());
+
+  // Restore More Info button
+  const moreBtn = document.getElementById('heroMoreInfoBtn');
+  if (moreBtn) {
+    moreBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg> More Info`;
+  }
+
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function toggleMenu() {
@@ -1829,6 +2093,234 @@ init();
 @media (min-width: 768px) { .bottom-nav-bar { display: none !important; } body { padding-bottom: 0 !important; } }
 body { padding-bottom: 64px; }
 </style>
+
+
+<!-- ══ TRAILER MODAL ══ -->
+<div class="trailer-modal" id="trailerModal">
+  <div class="trailer-backdrop" onclick="closeTrailer()"></div>
+  <div class="trailer-box">
+
+    <!-- Film info strip -->
+    <div class="trailer-film-info">
+      <div class="trailer-poster-ph" id="trailerPosterPh">🎬</div>
+      <div class="trailer-meta">
+        <div class="trailer-label">Official Trailer</div>
+        <div class="trailer-title" id="trailerTitle">—</div>
+        <div class="trailer-tags" id="trailerTags"></div>
+      </div>
+      <button class="trailer-close" onclick="closeTrailer()">✕</button>
+    </div>
+
+    <!-- Video -->
+    <div class="trailer-video-wrap" id="trailerVideoWrap">
+      <div class="trailer-spinner" id="trailerSpinner">
+        <div class="trailer-spinner-ring"></div>
+      </div>
+      <!-- iframe / video injected by JS -->
+    </div>
+
+    <!-- Action buttons -->
+    <div class="trailer-actions">
+      <a class="trailer-watch-btn" id="trailerWatchBtn" href="#">
+        <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+        Watch Full Film
+      </a>
+      <a class="trailer-more-btn" id="trailerBrowseBtn" href="browse.html">
+        Browse More
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Keyboard close -->
+<script>
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeTrailer();
+});
+</script>
+
+
+<!-- ══ PWA — Service Worker + Install Prompt ══ -->
+<script>
+(function() {
+  // ── Register Service Worker ──────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(reg => {
+          console.log('[MOVXIO] SW registered:', reg.scope);
+
+          // Check for updates every 30 minutes
+          setInterval(() => reg.update(), 30 * 60 * 1000);
+
+          // New version available — show update toast
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                showPWAToast('🔄 New version available — ', 'Refresh', () => location.reload());
+              }
+            });
+          });
+        })
+        .catch(err => console.warn('[MOVXIO] SW registration failed:', err));
+    });
+  }
+
+  // ── Install Prompt (Add to Home Screen) ─────────────────
+  let deferredPrompt = null;
+  let promptShown    = false;
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Show banner after 30 seconds if user hasn't dismissed before
+    const dismissed = localStorage.getItem('mvx_pwa_dismissed');
+    if (!dismissed && !promptShown) {
+      setTimeout(() => showInstallBanner(), 30000);
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    const banner = document.getElementById('pwaInstallBanner');
+    if (banner) banner.remove();
+    localStorage.setItem('mvx_pwa_installed', '1');
+    console.log('[MOVXIO] PWA installed!');
+  });
+
+  // ── iOS detection (no beforeinstallprompt on Safari) ────
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+  if (isIOS && !isStandalone) {
+    const dismissed = localStorage.getItem('mvx_pwa_dismissed');
+    if (!dismissed) {
+      setTimeout(() => showIOSBanner(), 5000);
+    }
+  }
+
+  // ── Install Banner (Android / Desktop) ──────────────────
+  function showInstallBanner() {
+    if (document.getElementById('pwaInstallBanner') || promptShown) return;
+    promptShown = true;
+
+    const banner = document.createElement('div');
+    banner.id = 'pwaInstallBanner';
+    banner.style.cssText = `
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 800; background: #141418; border: 1px solid rgba(232,71,63,0.3);
+      border-radius: 14px; padding: 14px 16px; display: flex; align-items: center;
+      gap: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px); max-width: calc(100vw - 40px); width: 360px;
+      animation: pwaSlideUp 0.4s cubic-bezier(0.34,1.2,0.64,1);
+      font-family: 'DM Sans', sans-serif;
+    `;
+    banner.innerHTML = `
+      <div style="width:44px;height:44px;border-radius:10px;background:#080810;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">🎬</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:13px;color:#f0eee8;margin-bottom:2px;">Install MOVXIO</div>
+        <div style="font-size:11px;color:#6b6980;line-height:1.4;">Add to home screen for the best experience</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+        <button id="pwaInstallBtn" style="background:#e8473f;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Install</button>
+        <button id="pwaDismissBtn" style="background:none;border:1px solid rgba(255,255,255,0.1);color:#6b6980;padding:5px 14px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;">Not now</button>
+      </div>
+    `;
+
+    document.body.appendChild(banner);
+
+    document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      console.log('[MOVXIO] PWA install choice:', result.outcome);
+      deferredPrompt = null;
+      banner.remove();
+    });
+
+    document.getElementById('pwaDismissBtn').addEventListener('click', () => {
+      banner.remove();
+      localStorage.setItem('mvx_pwa_dismissed', Date.now());
+    });
+  }
+
+  // ── iOS Banner (Safari-specific instructions) ────────────
+  function showIOSBanner() {
+    if (document.getElementById('pwaIOSBanner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'pwaIOSBanner';
+    banner.style.cssText = `
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 800; background: #141418; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 14px 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+      backdrop-filter: blur(20px); max-width: calc(100vw - 40px); width: 340px;
+      animation: pwaSlideUp 0.4s cubic-bezier(0.34,1.2,0.64,1);
+      font-family: 'DM Sans', sans-serif;
+    `;
+    banner.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-weight:700;font-size:13px;color:#f0eee8;">Install MOVXIO on iPhone</div>
+        <button onclick="this.closest('#pwaIOSBanner').remove();localStorage.setItem('mvx_pwa_dismissed',Date.now());" style="background:none;border:none;color:#6b6980;font-size:18px;cursor:pointer;padding:0;line-height:1;">✕</button>
+      </div>
+      <div style="font-size:12px;color:#9997b0;line-height:1.6;">
+        Tap <strong style="color:#f0eee8;">Share</strong> 
+        <span style="background:rgba(255,255,255,0.08);border-radius:4px;padding:1px 6px;font-size:14px;">⎋</span> 
+        then <strong style="color:#f0eee8;">"Add to Home Screen"</strong> 
+        <span style="font-size:13px;">⊕</span> to install MOVXIO as an app.
+      </div>
+      <div style="margin-top:10px;text-align:center;">
+        <div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid rgba(255,255,255,0.15);margin:0 auto;"></div>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => { if (banner.parentNode) banner.remove(); }, 10000);
+  }
+
+  // ── PWA Toast (for update notifications) ────────────────
+  function showPWAToast(msg, action, callback) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+      z-index: 800; background: #141418; border: 1px solid rgba(45,212,160,0.3);
+      border-radius: 10px; padding: 12px 16px; display: flex; align-items: center;
+      gap: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: calc(100vw - 40px);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #f0eee8;
+      animation: pwaSlideUp 0.3s ease;
+    `;
+    toast.innerHTML = `
+      <span>${msg}</span>
+      <button style="background:#2dd4a0;color:#000;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">${action}</button>
+    `;
+    toast.querySelector('button').addEventListener('click', () => { callback(); toast.remove(); });
+    document.body.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 8000);
+  }
+
+  // ── Inject animation keyframe ────────────────────────────
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pwaSlideUp {
+      from { opacity:0; transform:translateX(-50%) translateY(20px); }
+      to   { opacity:1; transform:translateX(-50%) translateY(0); }
+    }
+    @media (min-width: 768px) {
+      #pwaInstallBanner, #pwaIOSBanner {
+        bottom: 24px !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+})();
+</script>
 
 </body>
 </html>
