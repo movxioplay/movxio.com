@@ -94,14 +94,101 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .wl-clear-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 40px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; margin-top: 12px; }
 .wl-clear-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ── GENRE PILLS ── */
-.genre-strip { padding: 24px 32px 0; overflow-x: auto; scrollbar-width: none; }
-.genre-strip::-webkit-scrollbar { display: none; }
-.genre-pills { display: flex; gap: 8px; width: max-content; }
-.genre-pill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 40px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 500; color: var(--text-dim); cursor: pointer; transition: all 0.2s; white-space: nowrap; letter-spacing: 0.01em; font-family: 'DM Sans', sans-serif; }
-.genre-pill:hover { border-color: rgba(255,255,255,0.15); color: var(--text); background: var(--surface2); }
-.genre-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.genre-pill .icon { font-size: 13px; }
+/* ── GENRE DROPDOWN ── */
+.genre-dropdown-wrap { padding: 24px 32px 0; max-width: 1400px; margin: 0 auto; }
+.genre-dropdown-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 11px 18px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  min-height: 46px; position: relative; user-select: none;
+}
+.genre-dropdown-btn:hover { border-color: rgba(255,255,255,0.18); background: var(--surface2); }
+.genre-dropdown-btn.open { border-color: var(--accent); }
+.genre-dropdown-btn .btn-icon-left { font-size: 15px; }
+.genre-dropdown-btn .btn-label { flex: 1; text-align: left; }
+.genre-dropdown-btn .btn-badge {
+  background: var(--accent); color: #fff;
+  font-size: 10px; font-weight: 700; padding: 1px 7px;
+  border-radius: 20px; font-family: 'Space Mono', monospace;
+  display: none;
+}
+.genre-dropdown-btn .btn-badge.show { display: inline-block; }
+.genre-dropdown-btn .chevron {
+  width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted);
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.genre-dropdown-btn.open .chevron { transform: rotate(180deg); }
+
+/* Dropdown panel */
+.genre-dropdown-panel {
+  position: absolute; top: calc(100% + 8px); left: 0; z-index: 200;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 8px;
+  width: 540px; max-width: calc(100vw - 48px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
+  backdrop-filter: blur(24px);
+  display: none;
+  animation: dropIn 0.2s cubic-bezier(0.34,1.2,0.64,1);
+}
+.genre-dropdown-panel.open { display: block; }
+@keyframes dropIn { from { opacity:0; transform:translateY(-8px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+/* Panel header */
+.gdp-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 8px 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.gdp-header-title {
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted);
+}
+.gdp-clear {
+  background: none; border: none; color: var(--text-muted); font-size: 12px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; padding: 2px 8px;
+  border-radius: 4px; transition: color 0.15s;
+}
+.gdp-clear:hover { color: var(--accent); }
+
+/* Genre sections inside panel */
+.gdp-section { margin-bottom: 8px; }
+.gdp-section-label {
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text-muted); padding: 4px 8px 6px;
+  opacity: 0.6;
+}
+.gdp-grid { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 4px 4px; }
+
+/* Individual genre pill inside dropdown */
+.gdp-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 13px; border-radius: 40px;
+  border: 1px solid var(--border); background: var(--surface2);
+  font-size: 12.5px; font-weight: 500; color: var(--text-dim);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  font-family: 'DM Sans', sans-serif; line-height: 1;
+}
+.gdp-pill:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: rgba(255,255,255,0.07); }
+.gdp-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.gdp-pill .icon { font-size: 12px; }
+
+/* Active genre chip shown in filters bar */
+.active-genre-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(232,71,63,0.1); border: 1px solid rgba(232,71,63,0.25);
+  border-radius: 40px; padding: 8px 14px;
+  font-size: 13px; color: #ff8a82; cursor: pointer;
+  transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+.active-genre-chip:hover { background: rgba(232,71,63,0.18); }
+.active-genre-chip .x { opacity: 0.7; font-size: 14px; }
 
 /* ── FILTERS BAR ── */
 .filters-wrap { padding: 16px 32px 0; max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
@@ -278,37 +365,69 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
   <button class="wl-clear-btn" onclick="clearWatchlist()">Clear Watchlist</button>
 </div>
 
-<!-- ── GENRE PILLS ── -->
-<div class="genre-strip">
-  <div class="genre-pills" id="genrePills">
-    <button class="genre-pill active" data-genre="all"         onclick="setGenre(this,'all')">         <span class="icon">🎬</span> All</button>
-    <button class="genre-pill"        data-genre="action"      onclick="setGenre(this,'action')">       <span class="icon">💥</span> Action</button>
-    <button class="genre-pill"        data-genre="adventure"   onclick="setGenre(this,'adventure')">    <span class="icon">🌍</span> Adventure</button>
-    <button class="genre-pill"        data-genre="animation"   onclick="setGenre(this,'animation')">    <span class="icon">🎨</span> Animation</button>
-    <button class="genre-pill"        data-genre="biography"   onclick="setGenre(this,'biography')">    <span class="icon">📖</span> Biography</button>
-    <button class="genre-pill"        data-genre="comedy"      onclick="setGenre(this,'comedy')">       <span class="icon">😄</span> Comedy</button>
-    <button class="genre-pill"        data-genre="crime"       onclick="setGenre(this,'crime')">        <span class="icon">🔫</span> Crime</button>
-    <button class="genre-pill"        data-genre="documentary" onclick="setGenre(this,'documentary')">  <span class="icon">📽️</span> Documentary</button>
-    <button class="genre-pill"        data-genre="drama"       onclick="setGenre(this,'drama')">        <span class="icon">🎭</span> Drama</button>
-    <button class="genre-pill"        data-genre="family"      onclick="setGenre(this,'family')">       <span class="icon">👨‍👩‍👧</span> Family</button>
-    <button class="genre-pill"        data-genre="fantasy"     onclick="setGenre(this,'fantasy')">      <span class="icon">🧙</span> Fantasy</button>
-    <button class="genre-pill"        data-genre="history"     onclick="setGenre(this,'history')">      <span class="icon">🏛️</span> History</button>
-    <button class="genre-pill"        data-genre="horror"      onclick="setGenre(this,'horror')">       <span class="icon">👻</span> Horror</button>
-    <button class="genre-pill"        data-genre="mystery"     onclick="setGenre(this,'mystery')">      <span class="icon">🔍</span> Mystery</button>
-    <button class="genre-pill"        data-genre="romance"     onclick="setGenre(this,'romance')">      <span class="icon">💖</span> Romance</button>
-    <button class="genre-pill"        data-genre="sci-fi"      onclick="setGenre(this,'sci-fi')">       <span class="icon">🚀</span> Sci-Fi</button>
-    <button class="genre-pill"        data-genre="sport"       onclick="setGenre(this,'sport')">        <span class="icon">⚽</span> Sport</button>
-    <button class="genre-pill"        data-genre="superhero"   onclick="setGenre(this,'superhero')">    <span class="icon">🦸</span> Superhero</button>
-    <button class="genre-pill"        data-genre="thriller"    onclick="setGenre(this,'thriller')">     <span class="icon">🔪</span> Thriller</button>
-    <button class="genre-pill"        data-genre="war"         onclick="setGenre(this,'war')">          <span class="icon">💣</span> War</button>
-    <button class="genre-pill"        data-genre="western"     onclick="setGenre(this,'western')">      <span class="icon">🤠</span> Western</button>
-    <button class="genre-pill"        data-genre="sinhala"     onclick="setGenre(this,'sinhala')">      <span class="icon">🇱🇰</span> සිංහල</button>
-    <button class="genre-pill"        data-genre="tamil"       onclick="setGenre(this,'tamil')">        <span class="icon">🇱🇰</span> தமிழ்</button>
-    <button class="genre-pill"        data-genre="hindi"       onclick="setGenre(this,'hindi')">        <span class="icon">🇮🇳</span> Hindi</button>
-    <button class="genre-pill"        data-genre="korean"      onclick="setGenre(this,'korean')">       <span class="icon">🇰🇷</span> Korean</button>
-    <button class="genre-pill"        data-genre="japanese"    onclick="setGenre(this,'japanese')">     <span class="icon">🇯🇵</span> Japanese</button>
-    <button class="genre-pill"        data-genre="french"      onclick="setGenre(this,'french')">       <span class="icon">🇫🇷</span> French</button>
-    <button class="genre-pill"        data-genre="spanish"     onclick="setGenre(this,'spanish')">      <span class="icon">🇪🇸</span> Spanish</button>
+<!-- ── GENRE DROPDOWN ── -->
+<div class="genre-dropdown-wrap">
+  <div style="position:relative;display:inline-block;">
+    <button class="genre-dropdown-btn" id="genreDropdownBtn" onclick="toggleGenreDropdown()">
+      <span class="btn-icon-left" id="genreBtnIcon">🎬</span>
+      <span class="btn-label" id="genreBtnLabel">All Genres</span>
+      <span class="btn-badge" id="genreBadge"></span>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+
+    <div class="genre-dropdown-panel" id="genreDropdownPanel">
+      <div class="gdp-header">
+        <span class="gdp-header-title">Select Genre</span>
+        <button class="gdp-clear" onclick="clearGenreFilter()">Show All</button>
+      </div>
+
+      <div class="gdp-section">
+        <div class="gdp-section-label">Popular</div>
+        <div class="gdp-grid">
+          <button class="gdp-pill active" data-genre="all"       onclick="setGenreDrop(this,'all','🎬','All Genres')">       <span class="icon">🎬</span> All</button>
+          <button class="gdp-pill"        data-genre="action"    onclick="setGenreDrop(this,'action','💥','Action')">         <span class="icon">💥</span> Action</button>
+          <button class="gdp-pill"        data-genre="comedy"    onclick="setGenreDrop(this,'comedy','😄','Comedy')">         <span class="icon">😄</span> Comedy</button>
+          <button class="gdp-pill"        data-genre="drama"     onclick="setGenreDrop(this,'drama','🎭','Drama')">           <span class="icon">🎭</span> Drama</button>
+          <button class="gdp-pill"        data-genre="thriller"  onclick="setGenreDrop(this,'thriller','🔪','Thriller')">     <span class="icon">🔪</span> Thriller</button>
+          <button class="gdp-pill"        data-genre="horror"    onclick="setGenreDrop(this,'horror','👻','Horror')">         <span class="icon">👻</span> Horror</button>
+          <button class="gdp-pill"        data-genre="romance"   onclick="setGenreDrop(this,'romance','💖','Romance')">       <span class="icon">💖</span> Romance</button>
+          <button class="gdp-pill"        data-genre="sci-fi"    onclick="setGenreDrop(this,'sci-fi','🚀','Sci-Fi')">         <span class="icon">🚀</span> Sci-Fi</button>
+          <button class="gdp-pill"        data-genre="crime"     onclick="setGenreDrop(this,'crime','🔫','Crime')">           <span class="icon">🔫</span> Crime</button>
+          <button class="gdp-pill"        data-genre="animation" onclick="setGenreDrop(this,'animation','🎨','Animation')">   <span class="icon">🎨</span> Animation</button>
+        </div>
+      </div>
+
+      <div class="gdp-section">
+        <div class="gdp-section-label">More Genres</div>
+        <div class="gdp-grid">
+          <button class="gdp-pill" data-genre="adventure"   onclick="setGenreDrop(this,'adventure','🌍','Adventure')">     <span class="icon">🌍</span> Adventure</button>
+          <button class="gdp-pill" data-genre="biography"   onclick="setGenreDrop(this,'biography','📖','Biography')">     <span class="icon">📖</span> Biography</button>
+          <button class="gdp-pill" data-genre="documentary" onclick="setGenreDrop(this,'documentary','📽️','Documentary')"> <span class="icon">📽️</span> Documentary</button>
+          <button class="gdp-pill" data-genre="family"      onclick="setGenreDrop(this,'family','👨‍👩‍👧','Family')">         <span class="icon">👨‍👩‍👧</span> Family</button>
+          <button class="gdp-pill" data-genre="fantasy"     onclick="setGenreDrop(this,'fantasy','🧙','Fantasy')">         <span class="icon">🧙</span> Fantasy</button>
+          <button class="gdp-pill" data-genre="history"     onclick="setGenreDrop(this,'history','🏛️','History')">         <span class="icon">🏛️</span> History</button>
+          <button class="gdp-pill" data-genre="mystery"     onclick="setGenreDrop(this,'mystery','🔍','Mystery')">         <span class="icon">🔍</span> Mystery</button>
+          <button class="gdp-pill" data-genre="music"       onclick="setGenreDrop(this,'music','🎵','Music')">             <span class="icon">🎵</span> Music</button>
+          <button class="gdp-pill" data-genre="sport"       onclick="setGenreDrop(this,'sport','⚽','Sport')">             <span class="icon">⚽</span> Sport</button>
+          <button class="gdp-pill" data-genre="superhero"   onclick="setGenreDrop(this,'superhero','🦸','Superhero')">     <span class="icon">🦸</span> Superhero</button>
+          <button class="gdp-pill" data-genre="war"         onclick="setGenreDrop(this,'war','💣','War')">                 <span class="icon">💣</span> War</button>
+          <button class="gdp-pill" data-genre="western"     onclick="setGenreDrop(this,'western','🤠','Western')">         <span class="icon">🤠</span> Western</button>
+        </div>
+      </div>
+
+      <div class="gdp-section">
+        <div class="gdp-section-label">By Language / Region</div>
+        <div class="gdp-grid">
+          <button class="gdp-pill" data-genre="sinhala"  onclick="setGenreDrop(this,'sinhala','🇱🇰','සිංහල')">   <span class="icon">🇱🇰</span> සිංහල</button>
+          <button class="gdp-pill" data-genre="tamil"    onclick="setGenreDrop(this,'tamil','🇱🇰','தமிழ்')">     <span class="icon">🇱🇰</span> தமிழ்</button>
+          <button class="gdp-pill" data-genre="hindi"    onclick="setGenreDrop(this,'hindi','🇮🇳','Hindi')">     <span class="icon">🇮🇳</span> Hindi</button>
+          <button class="gdp-pill" data-genre="korean"   onclick="setGenreDrop(this,'korean','🇰🇷','Korean')">   <span class="icon">🇰🇷</span> Korean</button>
+          <button class="gdp-pill" data-genre="japanese" onclick="setGenreDrop(this,'japanese','🇯🇵','Japanese')"><span class="icon">🇯🇵</span> Japanese</button>
+          <button class="gdp-pill" data-genre="french"   onclick="setGenreDrop(this,'french','🇫🇷','French')">   <span class="icon">🇫🇷</span> French</button>
+          <button class="gdp-pill" data-genre="spanish"  onclick="setGenreDrop(this,'spanish','🇪🇸','Spanish')"> <span class="icon">🇪🇸</span> Spanish</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -553,13 +672,57 @@ function trackAndGo(id) {
 }
 
 // ── GENRE ─────────────────────────────────────────────────────
-function setGenre(btn, genre) {
-  document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
+function toggleGenreDropdown() {
+  const panel = document.getElementById('genreDropdownPanel');
+  const btn   = document.getElementById('genreDropdownBtn');
+  const isOpen = panel.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+}
+
+function closeGenreDropdown() {
+  document.getElementById('genreDropdownPanel').classList.remove('open');
+  document.getElementById('genreDropdownBtn').classList.remove('open');
+}
+
+function setGenreDrop(pill, genre, icon, label) {
+  // Update pill active state
+  document.querySelectorAll('.gdp-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+
+  // Update button label + icon
+  document.getElementById('genreBtnIcon').textContent  = icon;
+  document.getElementById('genreBtnLabel').textContent = label;
+
+  // Show badge if not "all"
+  const badge = document.getElementById('genreBadge');
+  if (genre !== 'all') {
+    badge.textContent = '✓';
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+
   currentGenre = genre;
-  currentPage = 1;
+  currentPage  = 1;
+  closeGenreDropdown();
   updateURL();
   filterFilms();
+}
+
+function clearGenreFilter() {
+  const allPill = document.querySelector('.gdp-pill[data-genre="all"]');
+  if (allPill) setGenreDrop(allPill, 'all', '🎬', 'All Genres');
+  else closeGenreDropdown();
+}
+
+// Keep setGenre as alias for URL-based init
+function setGenre(_, genre) {
+  const pill = document.querySelector(`.gdp-pill[data-genre="${genre}"]`);
+  if (pill) {
+    const icon  = pill.querySelector('.icon')?.textContent || '🎬';
+    const label = pill.textContent.trim().replace(icon,'').trim();
+    setGenreDrop(pill, genre, icon, label);
+  }
 }
 
 // ── MAIN FILTER ───────────────────────────────────────────────
@@ -721,11 +884,16 @@ function toggleMenu() {
   document.body.style.overflow = isOpen ? 'hidden' : '';
 }
 document.addEventListener('click', e => {
+  // Close mobile nav
   const nav = document.getElementById('mobileNav');
   if (nav && nav.classList.contains('open') && !nav.contains(e.target) && !e.target.closest('.hamburger')) {
     nav.classList.remove('open');
     document.querySelector('.hamburger').classList.remove('open');
     document.body.style.overflow = '';
+  }
+  // Close genre dropdown
+  if (!e.target.closest('.genre-dropdown-btn') && !e.target.closest('.genre-dropdown-panel')) {
+    closeGenreDropdown();
   }
 });
 
