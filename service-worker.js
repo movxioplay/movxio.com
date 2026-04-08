@@ -3,7 +3,7 @@
  * Fixed redirect handling — let browser follow all redirects natively
  */
 
-const SW_VERSION    = 'movxio-v3';
+const SW_VERSION    = 'movxio-v4';
 const SHELL_CACHE   = `${SW_VERSION}-shell`;
 const IMAGE_CACHE   = `${SW_VERSION}-images`;
 const RUNTIME_CACHE = `${SW_VERSION}-runtime`;
@@ -109,7 +109,11 @@ async function safeFetch(request) {
   // Always follow redirects, and return null if the response
   // is a redirect (opaque) so we never cache a redirect response
   try {
-    const response = await fetch(request, { redirect: 'follow' });
+    // IMPORTANT: passing { redirect: 'follow' } as a second arg is ignored
+    // when request is a Request object — its own redirect mode wins.
+    // We must construct a new Request with redirect:'follow' forced.
+    const req = new Request(request, { redirect: 'follow' });
+    const response = await fetch(req);
     // response.redirected means browser followed a redirect
     // We still return it to the page, just don't cache it
     return response;
