@@ -194,6 +194,47 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .sql-step-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
 .sql-step-desc { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
 
+
+/* ── SERIES / EPISODE MANAGER ── */
+.type-toggle-row { display: flex; gap: 10px; margin-bottom: 18px; }
+.type-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.type-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+.type-btn.active { background: rgba(232,184,75,0.1); border-color: var(--gold); color: var(--gold); }
+.type-btn svg { width: 18px; flex-shrink: 0; }
+
+.series-only { display: none; }
+.series-only.show { display: block; }
+
+.episode-manager { margin-top: 8px; }
+.episode-season-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+.season-tab { padding: 7px 16px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.season-tab:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+.season-tab.active { background: var(--gold); border-color: var(--gold); color: #000; }
+.btn-add-season { background: none; border: 1px dashed var(--border); color: var(--muted); padding: 7px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+.btn-add-season:hover { border-color: var(--gold); color: var(--gold); }
+
+.episode-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.episode-row { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.episode-row-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ep-number { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--gold); letter-spacing: 1px; width: 36px; flex-shrink: 0; }
+.ep-title-input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 6px; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; min-height: 40px; }
+.ep-title-input:focus { border-color: var(--gold); }
+.btn-ep-delete { background: transparent; border: 1px solid rgba(230,57,70,0.25); color: var(--red); width: 34px; height: 34px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; transition: all .2s; }
+.btn-ep-delete:hover { background: rgba(230,57,70,0.1); }
+.episode-row-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 480px) { .episode-row-fields { grid-template-columns: 1fr; } }
+.ep-field { display: flex; flex-direction: column; gap: 4px; }
+.ep-field label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+.ep-field input, .ep-field textarea { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: 6px; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; min-height: 38px; width: 100%; }
+.ep-field input:focus, .ep-field textarea:focus { border-color: var(--gold); }
+.ep-field textarea { resize: vertical; min-height: 60px; }
+.btn-add-episode { background: none; border: 1px dashed var(--border); color: var(--muted); padding: 11px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; width: 100%; text-align: center; }
+.btn-add-episode:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Episode count badge on film table */
+.badge-series { background: rgba(61,127,255,0.1); color: var(--blue); border: 1px solid rgba(61,127,255,0.2); padding: 3px 9px; border-radius: 8px; font-size: 11px; }
+.badge-movie  { background: rgba(45,212,160,0.1); color: var(--green); border: 1px solid rgba(45,212,160,0.2); padding: 3px 9px; border-radius: 8px; font-size: 11px; }
+
 /* ── TOAST ── */
 .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--green); color: var(--green); padding: 12px 22px; border-radius: 8px; font-size: 14px; font-weight: 500; opacity: 0; transition: all .3s; z-index: 999; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -279,6 +320,36 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <div class="form-panel" id="film-form">
         <div class="form-title" id="form-title">Add New Film</div>
         <div class="form-subtitle">Fill in the details below. Fields marked * are required.</div>
+
+        <!-- TYPE TOGGLE -->
+        <div class="type-toggle-row">
+          <button type="button" class="type-btn active" id="typeMovie" onclick="setType('movie')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m7 2 0 20M17 2v20M2 12h20"/></svg>
+            Movie
+          </button>
+          <button type="button" class="type-btn" id="typeSeries" onclick="setType('series')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+            TV Series
+          </button>
+        </div>
+
+        <!-- Series-only field -->
+        <div class="series-only" id="seriesOnlyFields">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Total Seasons</label>
+              <input type="number" id="f-seasons" placeholder="1" min="1" max="50" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label>Series Status</label>
+              <select id="f-series-status">
+                <option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
         <!-- BASIC INFO -->
         <div class="form-section-label">Basic Information</div>
@@ -460,6 +531,19 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
         <!-- VISIBILITY -->
         <div class="form-section-label">Visibility</div>
+
+        <!-- EPISODE MANAGER (series only) -->
+        <div class="series-only" id="episodeManagerSection">
+          <div class="form-section-label">Episodes</div>
+          <div class="episode-manager">
+            <div class="episode-season-tabs" id="seasonTabs">
+              <button type="button" class="season-tab active" data-season="1" onclick="switchSeason(1)">Season 1</button>
+              <button type="button" class="btn-add-season" onclick="addSeason()">+ Season</button>
+            </div>
+            <div class="episode-list" id="episodeList"></div>
+            <button type="button" class="btn-add-episode" onclick="addEpisodeRow()">+ Add Episode</button>
+          </div>
+        </div>
 
         <div class="toggle-row">
           <label class="toggle"><input type="checkbox" id="f-featured"><span class="toggle-slider"></span></label>
@@ -873,6 +957,40 @@ CREATE POLICY "Auth manage banners" ON banners
         </div>
 
         <div class="sql-step">
+          <div class="sql-step-title">Step 6 — TV Series support</div>
+          <div class="sql-step-desc">Run this to add series/episode support.</div>
+          <div class="sql-copy-wrap">
+            <button class="sql-copy-btn" onclick="copySQL(5)">Copy</button>
+            <pre class="sql-block" id="sql-5">-- Add series columns to films table
+ALTER TABLE films ADD COLUMN IF NOT EXISTS type text DEFAULT 'movie';
+ALTER TABLE films ADD COLUMN IF NOT EXISTS total_seasons integer DEFAULT 1;
+
+-- Episodes table
+CREATE TABLE IF NOT EXISTS episodes (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  series_id uuid REFERENCES films(id) ON DELETE CASCADE,
+  season integer NOT NULL DEFAULT 1,
+  episode integer NOT NULL DEFAULT 1,
+  title text NOT NULL,
+  description text,
+  hls_url text,
+  thumbnail_url text,
+  duration_secs integer,
+  air_date date,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE episodes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read episodes" ON episodes
+  FOR SELECT USING (true);
+
+CREATE POLICY "Auth manage episodes" ON episodes
+  FOR ALL USING (auth.role() = 'authenticated');</pre>
+          </div>
+        </div>
+
+        <div class="sql-step">
           <div class="sql-step-title">Step 5 — Views increment function</div>
           <div class="sql-step-desc">Creates the RPC function called when a user starts watching a film.</div>
           <div class="sql-copy-wrap">
@@ -1115,7 +1233,7 @@ function renderFilmTable(films) {
       ${f.thumbnail_url ? `<img class="list-thumb" src="${f.thumbnail_url}" alt="">` : `<div class="list-thumb-ph">🎬</div>`}
       <div class="list-info">
         <div class="list-title">${f.title}${f.featured ? ' <span class="badge-featured">★</span>' : ''}</div>
-        <div class="list-meta">${f.country || '—'} · ${f.year || '—'} · ${f.imdb_rating ? '⭐'+f.imdb_rating : ''} · <span class="badge-status badge-${(f.status||'active').replace('_','-')}">${f.status||'active'}</span></div>
+        <div class="list-meta"><span class="badge-${f.type === 'series' ? 'series' : 'movie'}">${f.type === 'series' ? '📺 Series' : '🎬 Movie'}</span> · ${f.country || '—'} · ${f.year || '—'} · ${f.imdb_rating ? '⭐'+f.imdb_rating : ''}</div>
       </div>
       <div class="list-actions">
         <button class="btn-edit" onclick='editFilm(${JSON.stringify(f)})'>Edit</button>
@@ -1129,7 +1247,9 @@ function renderFilmTable(films) {
       <td>${f.thumbnail_url ? `<img class="row-thumb" src="${f.thumbnail_url}" alt="">` : '🎬'}</td>
       <td>
         <strong>${f.title}</strong>
+        <span class="badge-${f.type === 'series' ? 'series' : 'movie'}" style="margin-left:6px;font-size:9px;">${f.type === 'series' ? '📺 Series' : '🎬'}</span>
         ${f.director ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;">Dir: ${f.director}</div>` : ''}
+        ${f.type === 'series' && f.total_seasons ? `<div style="font-size:11px;color:var(--blue);margin-top:2px;">${f.total_seasons} Season${f.total_seasons > 1 ? 's' : ''}</div>` : ''}
         ${f.badge ? `<span style="font-size:9px;background:rgba(232,184,75,0.15);color:var(--gold);padding:1px 6px;border-radius:3px;font-weight:700;">${f.badge}</span>` : ''}
       </td>
       <td>${genreBadges(f.genre)}</td>
@@ -1153,12 +1273,12 @@ function filterFilmTable() {
 // ── FORM OPEN/CLOSE ───────────────────────────────────────────
 function openForm() {
   editingId = null;
-  document.getElementById('form-title').textContent = 'Add New Film';
-  ['f-title','f-year','f-lang','f-duration','f-hls','f-thumb','f-desc','f-director','f-actors','f-imdb','f-trailer'].forEach(id => {
+  document.getElementById('form-title').textContent = 'Add New Title';
+  ['f-title','f-year','f-lang','f-duration','f-hls','f-thumb','f-desc','f-director','f-actors','f-imdb','f-trailer','f-seasons'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  ['f-country','f-content-rating','f-status','f-badge'].forEach(id => {
+  ['f-country','f-content-rating','f-status','f-badge','f-series-status'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { if (id === 'f-status') el.value = 'active'; else el.value = ''; }
   });
@@ -1166,6 +1286,11 @@ function openForm() {
   document.getElementById('f-featured').checked = false;
   document.getElementById('subtitle-list').innerHTML = '';
   subtitleCount = 0;
+  // Reset type to movie
+  setType('movie');
+  resetEpisodeManager();
+  setType('movie');
+  resetEpisodeManager();
   document.getElementById('film-form').classList.add('open');
   setTimeout(() => document.getElementById('film-form').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
@@ -1174,7 +1299,7 @@ function closeForm() { document.getElementById('film-form').classList.remove('op
 
 function editFilm(film) {
   editingId = film.id;
-  document.getElementById('form-title').textContent = 'Edit Film';
+  document.getElementById('form-title').textContent = film.type === 'series' ? 'Edit Series' : 'Edit Film';
   document.getElementById('f-title').value     = film.title || '';
   document.getElementById('f-year').value      = film.year || '';
   document.getElementById('f-lang').value      = film.language || '';
@@ -1200,6 +1325,19 @@ function editFilm(film) {
   document.getElementById('subtitle-list').innerHTML = '';
   subtitleCount = 0;
   (film.subtitles || []).forEach(s => addSubtitleRow(s.lang, s.url));
+
+  // Type toggle + episodes
+  const filmType = film.type || 'movie';
+  setType(filmType);
+  resetEpisodeManager();
+  if (filmType === 'series') {
+    if (film.total_seasons) {
+      totalSeasons = film.total_seasons;
+      document.getElementById('f-seasons').value = totalSeasons;
+      renderSeasonTabs();
+    }
+    if (film.id) loadEpisodesForSeries(film.id);
+  }
 
   document.getElementById('film-form').classList.add('open');
   setTimeout(() => document.getElementById('film-form').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
@@ -1241,6 +1379,7 @@ async function saveFilm() {
 
   const data = {
     title,
+    type: currentType,
     year:          parseInt(document.getElementById('f-year').value) || null,
     genre:         Array.from(document.querySelectorAll('#genreCheckboxes input:checked')).map(cb => cb.value).join(',') || null,
     language:      document.getElementById('f-lang').value || null,
@@ -1258,6 +1397,7 @@ async function saveFilm() {
     featured:      document.getElementById('f-featured').checked,
     subtitles:     getSubtitles(),
     duration_secs: durMins ? durMins * 60 : null,
+    total_seasons: currentType === 'series' ? (parseInt((document.getElementById('f-seasons')||{}).value)||1) : null,
   };
 
   try {
@@ -1267,7 +1407,8 @@ async function saveFilm() {
     } else {
       await supaFetch('films', 'POST', cleanData);
     }
-    toast(editingId ? 'Film updated!' : 'Film added!');
+    if (currentType === 'series') { try { await saveEpisodes(editingId || (typeof result !== 'undefined' && result[0] ? result[0].id : null)); } catch(e){} }
+    toast(editingId ? (currentType==='series'?'Series updated!':'Film updated!') : (currentType==='series'?'Series added!':'Film added!'));
     closeForm();
     loadFilms();
   } catch(e) {
@@ -1496,6 +1637,196 @@ function copySQL(idx) {
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
+
+// ══════════════════════════════════════════
+// TV SERIES SUPPORT
+// ══════════════════════════════════════════
+let currentType      = 'movie';
+let currentSeason    = 1;
+let totalSeasons     = 1;
+let episodesBySeason = {};
+let epCounter        = 0;
+
+function setType(type) {
+  currentType = type;
+  const mBtn = document.getElementById('typeMovie');
+  const sBtn = document.getElementById('typeSeries');
+  if (mBtn) mBtn.classList.toggle('active', type === 'movie');
+  if (sBtn) sBtn.classList.toggle('active', type === 'series');
+  document.querySelectorAll('.series-only').forEach(el => el.classList.toggle('show', type === 'series'));
+  const hlsGroup = document.getElementById('f-hls') && document.getElementById('f-hls').closest('.form-group');
+  if (hlsGroup) hlsGroup.style.display = type === 'series' ? 'none' : '';
+}
+
+function addSeason() {
+  totalSeasons++;
+  const el = document.getElementById('f-seasons');
+  if (el) el.value = totalSeasons;
+  renderSeasonTabs();
+  switchSeason(totalSeasons);
+}
+
+function renderSeasonTabs() {
+  const tabs = document.getElementById('seasonTabs');
+  if (!tabs) return;
+  let html = '';
+  for (let s = 1; s <= totalSeasons; s++) {
+    const cnt = (episodesBySeason[s] || []).length;
+    html += '<button type="button" class="season-tab ' + (s === currentSeason ? 'active' : '') + '" onclick="switchSeason(' + s + ')">Season ' + s + (cnt ? ' (' + cnt + ')' : '') + '</button>';
+  }
+  html += '<button type="button" class="btn-add-season" onclick="addSeason()">+ Season</button>';
+  tabs.innerHTML = html;
+}
+
+function switchSeason(s) {
+  saveCurrentSeasonEpisodes();
+  currentSeason = s;
+  renderSeasonTabs();
+  renderEpisodeList();
+}
+
+function saveCurrentSeasonEpisodes() {
+  const rows = document.querySelectorAll('.episode-row[data-ep]');
+  const eps = [];
+  rows.forEach(function(row) {
+    const ep = row.dataset.ep;
+    eps.push({
+      id: row.dataset.dbid || null,
+      episode: parseInt(ep),
+      title: (document.getElementById('ep-title-' + ep) || {}).value || '',
+      description: (document.getElementById('ep-desc-' + ep) || {}).value || '',
+      hls_url: (document.getElementById('ep-hls-' + ep) || {}).value || '',
+      thumbnail_url: (document.getElementById('ep-thumb-' + ep) || {}).value || '',
+      duration_mins: (document.getElementById('ep-dur-' + ep) || {}).value || '',
+      air_date: (document.getElementById('ep-date-' + ep) || {}).value || '',
+    });
+  });
+  episodesBySeason[currentSeason] = eps;
+}
+
+function renderEpisodeList() {
+  const list = document.getElementById('episodeList');
+  if (!list) return;
+  const eps = episodesBySeason[currentSeason] || [];
+  list.innerHTML = eps.map(function(ep) { return buildEpisodeRow(ep.episode, ep); }).join('');
+  epCounter = eps.length ? Math.max.apply(null, eps.map(function(e){return e.episode;})) : 0;
+}
+
+function addEpisodeRow() {
+  saveCurrentSeasonEpisodes();
+  epCounter++;
+  if (!episodesBySeason[currentSeason]) episodesBySeason[currentSeason] = [];
+  episodesBySeason[currentSeason].push({ episode: epCounter });
+  const list = document.getElementById('episodeList');
+  if (!list) return;
+  const div = document.createElement('div');
+  div.innerHTML = buildEpisodeRow(epCounter, {});
+  list.appendChild(div.firstElementChild);
+  renderSeasonTabs();
+}
+
+function buildEpisodeRow(ep, d) {
+  d = d || {};
+  return '<div class="episode-row" data-ep="' + ep + '" data-dbid="' + (d.id||'') + '">' +
+    '<div class="episode-row-header">' +
+      '<div class="ep-number">E' + ep + '</div>' +
+      '<input type="text" class="ep-title-input" id="ep-title-' + ep + '" placeholder="Episode ' + ep + ' title" value="' + (d.title||'') + '">' +
+      '<button type="button" class="btn-ep-delete" onclick="deleteEpisodeRow(' + ep + ')">✕</button>' +
+    '</div>' +
+    '<div class="episode-row-fields">' +
+      '<div class="ep-field" style="grid-column:1/-1"><label>HLS Video URL</label>' +
+        '<input type="url" id="ep-hls-' + ep + '" placeholder="https://videos.movxio.com/.../master.m3u8" value="' + (d.hls_url||'') + '"></div>' +
+      '<div class="ep-field" style="grid-column:1/-1"><label>Description</label>' +
+        '<textarea id="ep-desc-' + ep + '">' + (d.description||'') + '</textarea></div>' +
+      '<div class="ep-field"><label>Thumbnail URL</label>' +
+        '<input type="url" id="ep-thumb-' + ep + '" value="' + (d.thumbnail_url||'') + '"></div>' +
+      '<div class="ep-field"><label>Duration (mins)</label>' +
+        '<input type="number" id="ep-dur-' + ep + '" placeholder="45" value="' + (d.duration_mins||'') + '"></div>' +
+      '<div class="ep-field"><label>Air Date</label>' +
+        '<input type="date" id="ep-date-' + ep + '" value="' + (d.air_date||'') + '"></div>' +
+    '</div></div>';
+}
+
+function deleteEpisodeRow(ep) {
+  if (!confirm('Remove Episode ' + ep + '?')) return;
+  const row = document.querySelector('.episode-row[data-ep="' + ep + '"]');
+  if (row) row.remove();
+  if (episodesBySeason[currentSeason]) {
+    episodesBySeason[currentSeason] = episodesBySeason[currentSeason].filter(function(e){ return e.episode !== ep; });
+  }
+  renderSeasonTabs();
+}
+
+function getAllEpisodes() {
+  saveCurrentSeasonEpisodes();
+  const all = [];
+  for (let s = 1; s <= totalSeasons; s++) {
+    (episodesBySeason[s] || []).forEach(function(ep) {
+      if (!ep.title) return;
+      const obj = {
+        season: s, episode: ep.episode, title: ep.title,
+        description: ep.description || null,
+        hls_url: ep.hls_url || null,
+        thumbnail_url: ep.thumbnail_url || null,
+        duration_secs: ep.duration_mins ? parseInt(ep.duration_mins)*60 : null,
+        air_date: ep.air_date || null,
+      };
+      if (ep.id) obj.id = ep.id;
+      all.push(obj);
+    });
+  }
+  return all;
+}
+
+function resetEpisodeManager() {
+  currentSeason = 1; totalSeasons = 1;
+  episodesBySeason = {}; epCounter = 0;
+  const el = document.getElementById('f-seasons');
+  if (el) el.value = 1;
+  renderSeasonTabs();
+  renderEpisodeList();
+}
+
+async function loadEpisodesForSeries(seriesId) {
+  try {
+    const eps = await supaFetch('episodes?series_id=eq.' + seriesId + '&select=*&order=season.asc,episode.asc');
+    if (!eps || !eps.length) return;
+    episodesBySeason = {}; totalSeasons = 1;
+    eps.forEach(function(ep) {
+      const s = ep.season;
+      if (s > totalSeasons) totalSeasons = s;
+      if (!episodesBySeason[s]) episodesBySeason[s] = [];
+      episodesBySeason[s].push({
+        id: ep.id, episode: ep.episode, title: ep.title||'',
+        description: ep.description||'', hls_url: ep.hls_url||'',
+        thumbnail_url: ep.thumbnail_url||'',
+        duration_mins: ep.duration_secs ? Math.round(ep.duration_secs/60) : '',
+        air_date: ep.air_date||'',
+      });
+    });
+    const el = document.getElementById('f-seasons');
+    if (el) el.value = totalSeasons;
+    renderSeasonTabs(); renderEpisodeList();
+  } catch(e) { console.error('Load episodes:', e); }
+}
+
+async function saveEpisodes(seriesId) {
+  const eps = getAllEpisodes();
+  for (const ep of eps) {
+    const data = {
+      series_id: seriesId, season: ep.season, episode: ep.episode,
+      title: ep.title, description: ep.description, hls_url: ep.hls_url,
+      thumbnail_url: ep.thumbnail_url, duration_secs: ep.duration_secs,
+      air_date: ep.air_date,
+    };
+    const clean = Object.fromEntries(Object.entries(data).filter(function([,v]){return v!=null && v!=='';}));
+    try {
+      if (ep.id) await supaFetch('episodes?id=eq.' + ep.id, 'PATCH', clean);
+      else await supaFetch('episodes', 'POST', clean);
+    } catch(e) { console.error('Save ep error:', e); }
+  }
+}
+
 function toast(msg, err = false) {
   const el = document.getElementById('toast');
   el.textContent = msg;
