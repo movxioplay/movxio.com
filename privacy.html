@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — MOVXIO</title>
+<meta name="description" content="MOVXIO Privacy Policy — how we handle your data and protect your privacy.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#080810">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810; --surface: #0e0e1a; --surface2: #13131f;
+  --border: rgba(255,255,255,0.06); --text: #f0eee8;
+  --text-muted: #6b6980; --text-dim: #9997b0;
+  --accent: #e8473f; --gold: #f5c842;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; padding-bottom: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; padding: 0 32px; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.04); }
+.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+.nav-logo span { color: var(--accent); }
+.back-btn { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 13px; padding: 6px 12px; border-radius: 40px; transition: all 0.2s; margin-left: auto; }
+.back-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.back-btn svg { width: 14px; }
+
+/* HERO */
+.legal-hero { padding: 60px 32px 40px; max-width: 800px; margin: 0 auto; border-bottom: 1px solid var(--border); }
+.legal-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 14px; }
+.legal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(32px, 6vw, 54px); letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px; }
+.legal-updated { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+/* CONTENT */
+.legal-body { max-width: 800px; margin: 0 auto; padding: 48px 32px 64px; }
+.legal-body h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.legal-body h2:first-child { margin-top: 0; }
+.legal-body p { font-size: 14.5px; color: var(--text-dim); line-height: 1.8; margin-bottom: 16px; }
+.legal-body ul { padding-left: 20px; margin-bottom: 16px; }
+.legal-body ul li { font-size: 14.5px; color: var(--text-dim); line-height: 1.8; margin-bottom: 6px; }
+.legal-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.legal-body a:hover { color: #ff8a82; }
+.legal-body strong { color: var(--text); font-weight: 600; }
+.legal-highlight {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: 8px;
+  padding: 16px 20px; margin: 20px 0;
+  font-size: 14px; color: var(--text-dim); line-height: 1.7;
+}
+.legal-contact-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; margin-top: 40px;
+}
+.legal-contact-box h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 10px; }
+.legal-contact-box p { font-size: 13.5px; color: var(--text-dim); margin: 0; }
+.legal-contact-box a { color: var(--accent); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 32px; max-width: 800px; margin: 0 auto; }
+.footer-legal-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-legal-links a { font-size: 12px; color: var(--text-muted); transition: color 0.2s; }
+.footer-legal-links a:hover { color: var(--text); }
+.footer-copy { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); margin-top: 12px; }
+
+/* BOTTOM NAV */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: stretch; }
+.bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; }
+.bottom-nav-item svg { width: 20px; height: 20px; }
+@media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
+@media (max-width: 600px) { .legal-hero, .legal-body { padding-left: 20px; padding-right: 20px; } nav { padding: 0 16px; } footer { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">MOV<span>X</span>IO</a>
+  <a href="javascript:history.back()" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back
+  </a>
+</nav>
+
+
+<div class="legal-hero">
+  <div class="legal-eyebrow">Legal</div>
+  <h1 class="legal-title">Privacy Policy</h1>
+  <div class="legal-updated">Last updated: January 1, 2025</div>
+</div>
+
+<div class="legal-body">
+  <div class="legal-highlight">
+    <strong>Short version:</strong> MOVXIO does not require an account. We collect minimal data, we don't sell your information, and we use anonymous identifiers stored locally on your device to power features like likes, reviews, and watch history.
+  </div>
+
+  <h2>1. Information We Collect</h2>
+  <p>MOVXIO is designed with privacy in mind. We collect as little data as possible:</p>
+  <ul>
+    <li><strong>Anonymous fingerprint</strong> — A randomly generated identifier stored in your browser's localStorage. Used only to power likes, dislikes, and reviews. It never leaves your device except to associate your actions with our database. It contains no personal information.</li>
+    <li><strong>Watch history &amp; watchlist</strong> — Stored entirely in your browser's localStorage. This data never leaves your device and is not transmitted to our servers.</li>
+    <li><strong>Reviews &amp; ratings</strong> — If you submit a review, we store your chosen display name (or "Anonymous"), your star rating, and your review text. These are associated with your anonymous fingerprint, not any personal account.</li>
+    <li><strong>Usage data</strong> — We track aggregate view counts per film (a simple integer counter). We do not track individual viewing sessions or build user profiles.</li>
+  </ul>
+
+  <h2>2. Cookies &amp; Local Storage</h2>
+  <p>MOVXIO uses browser localStorage (not traditional cookies) to store:</p>
+  <ul>
+    <li>Your anonymous fingerprint (mvx_fp)</li>
+    <li>Your watch history (mvx_history)</li>
+    <li>Your watchlist (mvx_watchlist)</li>
+    <li>Your video playback positions (mvx_pos_*)</li>
+    <li>Your recent searches (mvx_searches)</li>
+  </ul>
+  <p>You can clear this data at any time by clearing your browser's local storage or site data.</p>
+
+  <h2>3. Advertising</h2>
+  <p>MOVXIO is supported by advertising. Our advertising partners may use cookies or similar tracking technologies to serve relevant ads. We recommend reviewing the privacy policies of our advertising partners for more information about their data practices.</p>
+
+  <h2>4. Third-Party Services</h2>
+  <p>We use the following third-party services:</p>
+  <ul>
+    <li><strong>Supabase</strong> — Our database provider. Film data, reactions, and reviews are stored here. See Supabase's privacy policy at supabase.com/privacy.</li>
+    <li><strong>Cloudflare</strong> — Our hosting and CDN provider. Cloudflare processes network requests and may log IP addresses for security purposes. See cloudflare.com/privacypolicy.</li>
+    <li><strong>Google Fonts</strong> — We load fonts from Google's servers, which may log your IP address.</li>
+  </ul>
+
+  <h2>5. Children's Privacy</h2>
+  <p>MOVXIO is not directed at children under the age of 13. We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us and we will delete it.</p>
+
+  <h2>6. Data Retention</h2>
+  <p>Anonymous fingerprint data and associated reviews/reactions are retained indefinitely to maintain the integrity of our rating system. Watch history and watchlist data is stored only on your device and is under your control.</p>
+
+  <h2>7. Your Rights</h2>
+  <p>Since we collect minimal personal data and most data is stored locally on your device, you have full control. You can:</p>
+  <ul>
+    <li>Clear your local data anytime via browser settings</li>
+    <li>Request deletion of any reviews or reactions associated with your fingerprint by contacting us</li>
+    <li>Opt out of advertising by using browser ad-blocking tools</li>
+  </ul>
+
+  <h2>8. Changes to This Policy</h2>
+  <p>We may update this Privacy Policy from time to time. We will notify users of significant changes by updating the date at the top of this page.</p>
+
+  <div class="legal-contact-box">
+    <h3>Privacy Questions?</h3>
+    <p>Contact us at <a href="mailto:privacy@movxio.com">privacy@movxio.com</a></p>
+  </div>
+</div>
+
+
+<footer>
+  <div class="footer-legal-links">
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Use</a>
+    <a href="dmca.html">DMCA</a>
+    <a href="index.html">← Back to MOVXIO</a>
+  </div>
+  <div class="footer-copy">© 2025 MOVXIO. All rights reserved.</div>
+</footer>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="browse.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Browse
+  </a>
+  <a href="search.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Search
+  </a>
+  <a href="browse.html?watchlist=1" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    Watchlist
+  </a>
+</nav>
+
+</body>
+</html>

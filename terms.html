@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Use — MOVXIO</title>
+<meta name="description" content="MOVXIO Terms of Use — the rules and guidelines for using our free streaming platform.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#080810">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810; --surface: #0e0e1a; --surface2: #13131f;
+  --border: rgba(255,255,255,0.06); --text: #f0eee8;
+  --text-muted: #6b6980; --text-dim: #9997b0;
+  --accent: #e8473f; --gold: #f5c842;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; padding-bottom: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; padding: 0 32px; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.04); }
+.nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+.nav-logo span { color: var(--accent); }
+.back-btn { display: flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 13px; padding: 6px 12px; border-radius: 40px; transition: all 0.2s; margin-left: auto; }
+.back-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.back-btn svg { width: 14px; }
+
+/* HERO */
+.legal-hero { padding: 60px 32px 40px; max-width: 800px; margin: 0 auto; border-bottom: 1px solid var(--border); }
+.legal-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 14px; }
+.legal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(32px, 6vw, 54px); letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px; }
+.legal-updated { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+/* CONTENT */
+.legal-body { max-width: 800px; margin: 0 auto; padding: 48px 32px 64px; }
+.legal-body h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.legal-body h2:first-child { margin-top: 0; }
+.legal-body p { font-size: 14.5px; color: var(--text-dim); line-height: 1.8; margin-bottom: 16px; }
+.legal-body ul { padding-left: 20px; margin-bottom: 16px; }
+.legal-body ul li { font-size: 14.5px; color: var(--text-dim); line-height: 1.8; margin-bottom: 6px; }
+.legal-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.legal-body a:hover { color: #ff8a82; }
+.legal-body strong { color: var(--text); font-weight: 600; }
+.legal-highlight {
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: 8px;
+  padding: 16px 20px; margin: 20px 0;
+  font-size: 14px; color: var(--text-dim); line-height: 1.7;
+}
+.legal-contact-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px; margin-top: 40px;
+}
+.legal-contact-box h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 10px; }
+.legal-contact-box p { font-size: 13.5px; color: var(--text-dim); margin: 0; }
+.legal-contact-box a { color: var(--accent); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 32px; max-width: 800px; margin: 0 auto; }
+.footer-legal-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-legal-links a { font-size: 12px; color: var(--text-muted); transition: color 0.2s; }
+.footer-legal-links a:hover { color: var(--text); }
+.footer-copy { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); margin-top: 12px; }
+
+/* BOTTOM NAV */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; height: 64px; background: rgba(8,8,16,0.97); backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: stretch; }
+.bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; }
+.bottom-nav-item svg { width: 20px; height: 20px; }
+@media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
+@media (max-width: 600px) { .legal-hero, .legal-body { padding-left: 20px; padding-right: 20px; } nav { padding: 0 16px; } footer { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">MOV<span>X</span>IO</a>
+  <a href="javascript:history.back()" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back
+  </a>
+</nav>
+
+
+<div class="legal-hero">
+  <div class="legal-eyebrow">Legal</div>
+  <h1 class="legal-title">Terms of Use</h1>
+  <div class="legal-updated">Last updated: January 1, 2025</div>
+</div>
+
+<div class="legal-body">
+  <div class="legal-highlight">
+    By using MOVXIO, you agree to these terms. Please read them carefully. If you do not agree, do not use the platform.
+  </div>
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>These Terms of Use ("Terms") govern your access to and use of MOVXIO ("the Platform," "we," "us," or "our"). By accessing or using MOVXIO, you agree to be bound by these Terms and our Privacy Policy.</p>
+
+  <h2>2. Use of the Platform</h2>
+  <p>MOVXIO grants you a limited, non-exclusive, non-transferable, revocable license to access and use the Platform for personal, non-commercial purposes. You agree not to:</p>
+  <ul>
+    <li>Download, copy, reproduce, or redistribute any content from MOVXIO without authorization</li>
+    <li>Use any automated tools, bots, scrapers, or crawlers to access the Platform</li>
+    <li>Attempt to bypass, disable, or circumvent any security or access controls</li>
+    <li>Use the Platform for any unlawful purpose or in violation of any applicable laws</li>
+    <li>Transmit any viruses, malware, or other harmful code through the Platform</li>
+    <li>Impersonate any person or entity or misrepresent your affiliation with any person or entity</li>
+  </ul>
+
+  <h2>3. Content</h2>
+  <p>All films, images, and other media content available on MOVXIO are either licensed, in the public domain, or hosted with the permission of the rights holders. MOVXIO does not claim ownership of any third-party content.</p>
+  <p>User-generated content (reviews, ratings, comments) remains the property of the user. By submitting content, you grant MOVXIO a worldwide, royalty-free license to display and use that content on the Platform.</p>
+
+  <h2>4. Intellectual Property</h2>
+  <p>The MOVXIO name, logo, design, and original software are the intellectual property of MOVXIO and may not be used without prior written permission. All film content is the property of their respective copyright holders.</p>
+
+  <h2>5. Advertising</h2>
+  <p>MOVXIO is a free, ad-supported platform. By using MOVXIO, you consent to the display of advertisements. We are not responsible for the content of third-party advertisements.</p>
+
+  <h2>6. Disclaimer of Warranties</h2>
+  <p>MOVXIO is provided "as is" and "as available" without warranties of any kind, either express or implied. We do not warrant that the Platform will be uninterrupted, error-free, or free of viruses or other harmful components.</p>
+
+  <h2>7. Limitation of Liability</h2>
+  <p>To the fullest extent permitted by law, MOVXIO shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or relating to your use of the Platform.</p>
+
+  <h2>8. DMCA &amp; Copyright</h2>
+  <p>We respect intellectual property rights. If you believe content on MOVXIO infringes your copyright, please review our <a href="dmca.html">DMCA Policy</a> for instructions on submitting a takedown notice.</p>
+
+  <h2>9. Termination</h2>
+  <p>We reserve the right to restrict or terminate access to the Platform at any time, for any reason, without notice.</p>
+
+  <h2>10. Governing Law</h2>
+  <p>These Terms shall be governed by and construed in accordance with applicable laws. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the competent courts.</p>
+
+  <h2>11. Changes to Terms</h2>
+  <p>We reserve the right to modify these Terms at any time. Continued use of the Platform after changes constitutes acceptance of the new Terms.</p>
+
+  <div class="legal-contact-box">
+    <h3>Questions About These Terms?</h3>
+    <p>Contact us at <a href="mailto:legal@movxio.com">legal@movxio.com</a></p>
+  </div>
+</div>
+
+
+<footer>
+  <div class="footer-legal-links">
+    <a href="about.html">About</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Use</a>
+    <a href="dmca.html">DMCA</a>
+    <a href="index.html">← Back to MOVXIO</a>
+  </div>
+  <div class="footer-copy">© 2025 MOVXIO. All rights reserved.</div>
+</footer>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="browse.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Browse
+  </a>
+  <a href="search.html" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Search
+  </a>
+  <a href="browse.html?watchlist=1" class="bottom-nav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    Watchlist
+  </a>
+</nav>
+
+</body>
+</html>
