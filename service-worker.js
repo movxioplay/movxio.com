@@ -7,7 +7,7 @@
  *  - Everything else               → Network First with cache fallback
  */
 
-const SW_VERSION    = 'movxio-v1';
+const SW_VERSION    = 'movxio-v2';
 const SHELL_CACHE   = `${SW_VERSION}-shell`;
 const IMAGE_CACHE   = `${SW_VERSION}-images`;
 const RUNTIME_CACHE = `${SW_VERSION}-runtime`;
@@ -113,8 +113,9 @@ async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
   if (cached) return cached;
   try {
-    const response = await fetch(request);
-    if (response.ok) {
+    const response = await fetch(request, { redirect: 'follow' });
+    // Only cache final, non-redirected, successful responses
+    if (response.ok && response.type !== 'opaqueredirect' && response.redirected === false) {
       const cache = await caches.open(cacheName);
       cache.put(request, response.clone());
     }
@@ -130,8 +131,8 @@ async function cacheFirst(request, cacheName) {
 /** Network First — try network, fall back to cache */
 async function networkFirst(request, cacheName, maxEntries) {
   try {
-    const response = await fetch(request);
-    if (response.ok) {
+    const response = await fetch(request, { redirect: 'follow' });
+    if (response.ok && response.type !== 'opaqueredirect' && response.redirected === false) {
       const cache = await caches.open(cacheName);
       await cache.put(request, response.clone());
       await trimCache(cacheName, maxEntries);
@@ -148,8 +149,8 @@ async function staleWhileRevalidate(request, cacheName, maxEntries) {
   const cache  = await caches.open(cacheName);
   const cached = await cache.match(request);
 
-  const fetchPromise = fetch(request).then(async response => {
-    if (response.ok) {
+  const fetchPromise = fetch(request, { redirect: 'follow' }).then(async response => {
+    if (response.ok && response.type !== 'opaqueredirect' && response.redirected === false) {
       await cache.put(request, response.clone());
       await trimCache(cacheName, maxEntries);
     }
