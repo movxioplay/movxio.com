@@ -861,6 +861,188 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 }
 .next-ep-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 .next-ep-btn svg { width: 14px; fill: currentColor; }
+
+/* ══════════════════════════════════════
+   REVIEWS / COMMENTS
+══════════════════════════════════════ */
+.reviews-section {
+  max-width: 1600px; margin: 0 auto;
+  padding: 32px 20px 40px;
+  border-top: 1px solid var(--border);
+}
+.reviews-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+}
+.reviews-title {
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 18px; letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 10px;
+}
+.reviews-title .review-count {
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  font-weight: 400; color: var(--text-muted);
+}
+.reviews-avg {
+  display: flex; align-items: center; gap: 8px;
+}
+.reviews-avg .avg-score {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: 28px; color: var(--gold); letter-spacing: -0.04em;
+}
+.reviews-avg .avg-stars { font-size: 16px; color: var(--gold); }
+.reviews-avg .avg-label {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* Write review form */
+.review-form-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; margin-bottom: 28px;
+}
+.review-form-title {
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 14px; margin-bottom: 14px; color: var(--text);
+}
+/* Star picker */
+.star-picker {
+  display: flex; gap: 4px; margin-bottom: 14px;
+}
+.star-btn {
+  font-size: 24px; background: none; border: none;
+  cursor: pointer; color: var(--border); transition: all 0.1s;
+  padding: 2px; line-height: 1;
+}
+.star-btn.active, .star-btn.hover { color: var(--gold); transform: scale(1.15); }
+.star-btn:hover { transform: scale(1.2); }
+
+.review-name-input, .review-textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; outline: none;
+  transition: border 0.2s;
+}
+.review-name-input {
+  padding: 11px 14px; font-size: 14px;
+  margin-bottom: 10px; min-height: 44px;
+}
+.review-textarea {
+  padding: 12px 14px; font-size: 14px;
+  resize: vertical; min-height: 90px;
+  margin-bottom: 12px; display: block;
+}
+.review-name-input:focus, .review-textarea:focus {
+  border-color: var(--accent);
+}
+.review-form-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.review-char-count {
+  font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted);
+}
+.review-submit-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff;
+  border: none; padding: 11px 22px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.review-submit-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+.review-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.review-already-msg {
+  font-size: 12px; color: var(--green);
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Space Mono', monospace;
+}
+
+/* Review cards */
+.reviews-list { display: flex; flex-direction: column; gap: 14px; }
+.review-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px;
+  animation: fadeUpReview 0.3s ease both;
+}
+@keyframes fadeUpReview { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.review-card-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 12px; margin-bottom: 10px;
+}
+.review-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: 14px; color: #fff; flex-shrink: 0;
+}
+.review-author-wrap { flex: 1; min-width: 0; }
+.review-author {
+  font-weight: 600; font-size: 14px; color: var(--text);
+  font-family: 'Syne', sans-serif; letter-spacing: -0.01em;
+}
+.review-date {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); margin-top: 2px;
+}
+.review-stars { font-size: 14px; color: var(--gold); flex-shrink: 0; }
+.review-body {
+  font-size: 13.5px; color: var(--text-dim); line-height: 1.7;
+}
+.review-helpful {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.review-helpful-label {
+  font-size: 11px; color: var(--text-muted);
+  font-family: 'Space Mono', monospace;
+}
+.helpful-btn {
+  background: none; border: 1px solid var(--border); color: var(--text-muted);
+  padding: 4px 12px; border-radius: 20px; font-size: 11px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.helpful-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+.helpful-btn.voted { border-color: var(--green); color: var(--green); background: rgba(45,212,160,0.06); }
+
+/* Load more reviews */
+.reviews-load-more {
+  text-align: center; margin-top: 20px;
+}
+.load-more-btn {
+  background: none; border: 1px solid var(--border); color: var(--text-dim);
+  padding: 11px 28px; border-radius: 8px; font-size: 13px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.load-more-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+/* Empty reviews state */
+.reviews-empty {
+  text-align: center; padding: 32px; color: var(--text-muted);
+  font-family: 'Space Mono', monospace; font-size: 11px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* Rating breakdown bar */
+.rating-breakdown { margin-bottom: 20px; }
+.rating-bar-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 5px;
+}
+.rating-bar-label {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); width: 20px; text-align: right; flex-shrink: 0;
+}
+.rating-bar-track {
+  flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden;
+}
+.rating-bar-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.6s ease; }
+.rating-bar-count {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); width: 24px; flex-shrink: 0;
+}
+
 </style>
 </head>
 <body>
@@ -1133,6 +1315,71 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
     <div style="margin-top:20px;background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.07);border-radius:6px;min-height:200px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;" id="adWatchSidebar">Advertisement</div>
   </div><!-- /master-sidebar -->
 </div><!-- /master-layout -->
+
+
+<!-- ══ REVIEWS & RATINGS SECTION ══ -->
+<div class="reviews-section" id="reviewsSection" style="display:none;">
+  <!-- Header -->
+  <div class="reviews-header">
+    <div class="reviews-title">
+      Reviews
+      <span class="review-count" id="reviewCount"></span>
+    </div>
+    <div class="reviews-avg" id="reviewsAvg" style="display:none;">
+      <div>
+        <div class="avg-score" id="avgScore">—</div>
+        <div class="avg-label">avg rating</div>
+      </div>
+      <div class="avg-stars" id="avgStars"></div>
+    </div>
+  </div>
+
+  <!-- Rating breakdown bars -->
+  <div class="rating-breakdown" id="ratingBreakdown" style="display:none;">
+    <div class="rating-bar-row" id="bar5"><div class="rating-bar-label">5★</div><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%"></div></div><div class="rating-bar-count">0</div></div>
+    <div class="rating-bar-row" id="bar4"><div class="rating-bar-label">4★</div><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%"></div></div><div class="rating-bar-count">0</div></div>
+    <div class="rating-bar-row" id="bar3"><div class="rating-bar-label">3★</div><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%"></div></div><div class="rating-bar-count">0</div></div>
+    <div class="rating-bar-row" id="bar2"><div class="rating-bar-label">2★</div><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%"></div></div><div class="rating-bar-count">0</div></div>
+    <div class="rating-bar-row" id="bar1"><div class="rating-bar-label">1★</div><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%"></div></div><div class="rating-bar-count">0</div></div>
+  </div>
+
+  <!-- Write a review -->
+  <div class="review-form-wrap" id="reviewFormWrap">
+    <div class="review-form-title">Write a Review</div>
+    <div class="star-picker" id="starPicker">
+      <button class="star-btn" data-star="1">★</button>
+      <button class="star-btn" data-star="2">★</button>
+      <button class="star-btn" data-star="3">★</button>
+      <button class="star-btn" data-star="4">★</button>
+      <button class="star-btn" data-star="5">★</button>
+    </div>
+    <input type="text" class="review-name-input" id="reviewName" placeholder="Your name (optional)" maxlength="40" autocomplete="off">
+    <textarea class="review-textarea" id="reviewText" placeholder="Share your thoughts about this film..." maxlength="800"></textarea>
+    <div class="review-form-footer">
+      <span class="review-char-count"><span id="reviewCharCount">0</span>/800</span>
+      <button class="review-submit-btn" id="reviewSubmitBtn" onclick="submitReview()">
+        <svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+        Post Review
+      </button>
+    </div>
+  </div>
+
+  <!-- Already reviewed message -->
+  <div id="alreadyReviewed" style="display:none; margin-bottom:20px;">
+    <div class="review-already-msg">
+      <svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      You've already reviewed this film. Thanks for the feedback!
+    </div>
+  </div>
+
+  <!-- Reviews list -->
+  <div class="reviews-list" id="reviewsList"></div>
+
+  <!-- Load more -->
+  <div class="reviews-load-more" id="reviewsLoadMore" style="display:none;">
+    <button class="load-more-btn" onclick="loadMoreReviews()">Load More Reviews</button>
+  </div>
+</div>
 
 <div class="more-section" id="moreSection" style="display:none;">
   <div class="more-title">More to Watch</div>
@@ -2189,6 +2436,220 @@ function getEpisodeSavedPosition(seriesId, ep) {
 }
 
 
+
+// ══════════════════════════════════════════════════════════════
+// REVIEWS & RATINGS
+// ══════════════════════════════════════════════════════════════
+var selectedRating  = 0;
+var allReviews      = [];
+var reviewsPerPage  = 5;
+var reviewsShown    = 5;
+var hasReviewed     = false;
+var reviewFilmId    = null;
+
+// ── Star picker interaction ────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  var stars = document.querySelectorAll('.star-btn');
+  stars.forEach(function(btn) {
+    btn.addEventListener('mouseenter', function() {
+      var h = parseInt(btn.dataset.star);
+      stars.forEach(function(s) { s.classList.toggle('hover', parseInt(s.dataset.star) <= h); });
+    });
+    btn.addEventListener('mouseleave', function() {
+      stars.forEach(function(s) { s.classList.remove('hover'); s.classList.toggle('active', parseInt(s.dataset.star) <= selectedRating); });
+    });
+    btn.addEventListener('click', function() {
+      selectedRating = parseInt(btn.dataset.star);
+      stars.forEach(function(s) { s.classList.toggle('active', parseInt(s.dataset.star) <= selectedRating); s.classList.remove('hover'); });
+    });
+  });
+
+  // Char counter
+  var ta = document.getElementById('reviewText');
+  if (ta) {
+    ta.addEventListener('input', function() {
+      var cc = document.getElementById('reviewCharCount');
+      if (cc) cc.textContent = ta.value.length;
+    });
+  }
+});
+
+// ── Load reviews from Supabase ─────────────────────────────────
+async function loadReviewsForFilm(filmId) {
+  reviewFilmId = filmId;
+  try {
+    var res = await fetch(
+      CONFIG.SUPABASE_URL + '/rest/v1/reviews?film_id=eq.' + filmId + '&select=*&order=created_at.desc',
+      { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY } }
+    );
+    if (!res.ok) return;
+    allReviews = await res.json();
+    renderReviews();
+    renderRatingBreakdown();
+    checkAlreadyReviewed(filmId);
+  } catch(e) { console.warn('Reviews load error:', e); }
+  document.getElementById('reviewsSection').style.display = 'block';
+}
+
+function renderReviews() {
+  var list  = document.getElementById('reviewsList');
+  var count = document.getElementById('reviewCount');
+  if (!list) return;
+
+  if (count) count.textContent = '(' + allReviews.length + ')';
+
+  if (!allReviews.length) {
+    list.innerHTML = '<div class="reviews-empty">No reviews yet — be the first!</div>';
+    document.getElementById('reviewsAvg').style.display = 'none';
+    document.getElementById('ratingBreakdown').style.display = 'none';
+    return;
+  }
+
+  // Average rating
+  var rated   = allReviews.filter(function(r){ return r.rating > 0; });
+  var avg     = rated.length ? (rated.reduce(function(s,r){ return s+r.rating; }, 0) / rated.length) : 0;
+  var avgEl   = document.getElementById('avgScore');
+  var starsEl = document.getElementById('avgStars');
+  if (avgEl) avgEl.textContent  = avg.toFixed(1);
+  if (starsEl) starsEl.textContent = renderStars(Math.round(avg));
+  document.getElementById('reviewsAvg').style.display = rated.length ? 'flex' : 'none';
+
+  // Render cards
+  reviewsShown = reviewsPerPage;
+  renderReviewCards();
+}
+
+// renderReviewCards moved below
+
+function renderStars(n) {
+  var s = '';
+  for (var i = 1; i <= 5; i++) s += (i <= n ? '★' : '☆');
+  return s;
+}
+
+function renderRatingBreakdown() {
+  var rated = allReviews.filter(function(r){ return r.rating > 0; });
+  if (!rated.length) { document.getElementById('ratingBreakdown').style.display = 'none'; return; }
+  document.getElementById('ratingBreakdown').style.display = 'block';
+  [5,4,3,2,1].forEach(function(star) {
+    var cnt  = rated.filter(function(r){ return r.rating === star; }).length;
+    var pct  = Math.round((cnt / rated.length) * 100);
+    var row  = document.getElementById('bar' + star);
+    if (!row) return;
+    row.querySelector('.rating-bar-fill').style.width = pct + '%';
+    row.querySelector('.rating-bar-count').textContent = cnt;
+  });
+}
+
+function loadMoreReviews() {
+  reviewsShown += reviewsPerPage;
+  renderReviewCards();
+}
+
+// ── Check if user already reviewed ────────────────────────────
+function checkAlreadyReviewed(filmId) {
+  var fp  = getFingerprint();
+  var mine = allReviews.find(function(r){ return r.fingerprint === fp; });
+  hasReviewed = !!mine;
+  document.getElementById('reviewFormWrap').style.display  = hasReviewed ? 'none' : 'block';
+  document.getElementById('alreadyReviewed').style.display = hasReviewed ? 'block' : 'none';
+}
+
+// ── Submit review ──────────────────────────────────────────────
+async function submitReview() {
+  if (!reviewFilmId) return;
+  var body = (document.getElementById('reviewText').value || '').trim();
+  if (!body) { alert('Please write something before posting.'); return; }
+  if (selectedRating === 0) { alert('Please select a star rating.'); return; }
+
+  var btn = document.getElementById('reviewSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Posting...';
+
+  var fp   = getFingerprint();
+  var name = (document.getElementById('reviewName').value || '').trim() || 'Anonymous';
+
+  var data = {
+    film_id:     reviewFilmId,
+    fingerprint: fp,
+    author_name: name,
+    rating:      selectedRating,
+    body:        body,
+  };
+
+  try {
+    var res = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/reviews', {
+      method: 'POST',
+      headers: {
+        'apikey': CONFIG.SUPABASE_KEY,
+        'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      var newReview = await res.json();
+      var review = Array.isArray(newReview) ? newReview[0] : newReview;
+      review = Object.assign({ created_at: new Date().toISOString(), helpful_count: 0 }, data, review);
+      allReviews.unshift(review);
+      renderReviews();
+      renderRatingBreakdown();
+      hasReviewed = true;
+      document.getElementById('reviewFormWrap').style.display  = 'none';
+      document.getElementById('alreadyReviewed').style.display = 'block';
+      showReviewToast('Review posted! Thanks for sharing.');
+    } else {
+      var err = await res.json();
+      // Duplicate fingerprint — already reviewed
+      if (err.code === '23505') {
+        hasReviewed = true;
+        document.getElementById('reviewFormWrap').style.display  = 'none';
+        document.getElementById('alreadyReviewed').style.display = 'block';
+      } else {
+        showReviewToast('Could not post review. Please try again.', true);
+        btn.disabled = false; btn.textContent = 'Post Review';
+      }
+    }
+  } catch(e) {
+    showReviewToast('Connection error. Please try again.', true);
+    btn.disabled = false; btn.textContent = 'Post Review';
+  }
+}
+
+// ── Mark helpful ───────────────────────────────────────────────
+async function markHelpful(reviewId, btn) {
+  var key = 'mvx_hlp_' + reviewId;
+  if (localStorage.getItem(key) === '1') return;
+  localStorage.setItem(key, '1');
+  btn.classList.add('voted');
+
+  try {
+    // Increment helpful_count via RPC
+    await fetch(CONFIG.SUPABASE_URL + '/rest/v1/rpc/increment_helpful', {
+      method: 'POST',
+      headers: {
+        'apikey': CONFIG.SUPABASE_KEY,
+        'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ review_id: reviewId })
+    });
+    // Update UI optimistically
+    var current = parseInt(btn.textContent.replace('👍 ', '')) || 0;
+    btn.textContent = '👍 ' + (current + 1);
+  } catch(e) {}
+}
+
+function showReviewToast(msg, isError) {
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:800;background:var(--surface);border:1px solid ' + (isError ? 'var(--accent)' : 'var(--green)') + ';color:' + (isError ? 'var(--accent)' : 'var(--green)') + ';padding:12px 22px;border-radius:8px;font-size:14px;font-weight:500;font-family:DM Sans,sans-serif;box-shadow:0 8px 32px rgba(0,0,0,0.5);white-space:nowrap;';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ if(t.parentNode) t.remove(); }, 3500);
+}
+
 // ── Main ──────────────────────────────────────────────────────
 async function init() {
   try {
@@ -2215,6 +2676,7 @@ async function init() {
     const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
     renderRelated(films, film.id, genres);
     loadReactions(film.id);
+    loadReviewsForFilm(film.id);
 
     // ── Series: fetch episodes and build selector ──
     if (film.type === 'series') {
