@@ -957,6 +957,35 @@ CREATE POLICY "Auth manage banners" ON banners
         </div>
 
         <div class="sql-step">
+          <div class="sql-step-title">Step 7 — Reviews & Ratings</div>
+          <div class="sql-step-desc">Run this to enable film reviews and star ratings.</div>
+          <div class="sql-copy-wrap">
+            <button class="sql-copy-btn" onclick="copySQL(6)">Copy</button>
+            <pre class="sql-block" id="sql-6">-- Reviews table
+CREATE TABLE IF NOT EXISTS reviews (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  film_id uuid REFERENCES films(id) ON DELETE CASCADE,
+  fingerprint text NOT NULL,
+  author_name text,
+  rating integer CHECK (rating BETWEEN 1 AND 5),
+  body text NOT NULL CHECK (char_length(body) >= 10),
+  helpful_count integer DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  UNIQUE(film_id, fingerprint)
+);
+
+ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read reviews" ON reviews FOR SELECT USING (true);
+CREATE POLICY "Auth insert reviews" ON reviews FOR INSERT WITH CHECK (true);
+
+-- Increment helpful count function
+CREATE OR REPLACE FUNCTION increment_helpful(review_id uuid)
+RETURNS void LANGUAGE sql AS
+99 UPDATE reviews SET helpful_count = helpful_count + 1 WHERE id = review_id; 99;</pre>
+          </div>
+        </div>
+
+        <div class="sql-step">
           <div class="sql-step-title">Step 6 — TV Series support</div>
           <div class="sql-step-desc">Run this to add series/episode support.</div>
           <div class="sql-copy-wrap">
