@@ -747,6 +747,120 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
   .master-sidebar { border-left: none; border-top: 1px solid var(--border); position: static; max-height: none; }
 }
 @media (max-height: 500px) and (orientation: landscape) { .master-sidebar { display: none; } }
+
+/* ══════════════════════════════════════
+   EPISODE SELECTOR (TV Series)
+══════════════════════════════════════ */
+.series-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(61,127,255,0.12); border: 1px solid rgba(61,127,255,0.25);
+  color: #7aabff; border-radius: 4px; padding: 2px 8px;
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.episode-selector {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 16px 0;
+  overflow: hidden;
+}
+
+.ep-selector-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.ep-selector-label {
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted);
+}
+.ep-current-info {
+  font-size: 12px; color: var(--text-dim); font-family: 'Space Mono', monospace;
+}
+
+/* Season tabs */
+.season-tabs-wrap {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none;
+}
+.season-tabs-wrap::-webkit-scrollbar { display: none; }
+.season-tab-btn {
+  padding: 10px 18px; border: none; background: none;
+  color: var(--text-muted); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  border-bottom: 2px solid transparent; transition: all 0.15s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.season-tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.season-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Episode list */
+.episode-list-wrap {
+  max-height: 260px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.episode-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.15s; text-decoration: none;
+}
+.episode-item:last-child { border-bottom: none; }
+.episode-item:hover { background: rgba(255,255,255,0.04); }
+.episode-item.active { background: rgba(232,71,63,0.08); }
+.episode-item.active .ep-num { color: var(--accent); }
+.ep-thumb-wrap {
+  width: 80px; height: 45px; border-radius: 5px;
+  overflow: hidden; flex-shrink: 0; background: var(--surface);
+  position: relative;
+}
+.ep-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.ep-thumb-ph {
+  width: 100%; height: 100%; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 16px; opacity: 0.2;
+}
+.ep-play-icon {
+  position: absolute; inset: 0; background: rgba(8,8,16,0.5);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.15s;
+}
+.episode-item:hover .ep-play-icon { opacity: 1; }
+.episode-item.active .ep-play-icon { opacity: 1; background: rgba(232,71,63,0.4); }
+.ep-play-icon svg { width: 16px; fill: #fff; }
+.ep-info { flex: 1; min-width: 0; }
+.ep-num {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); margin-bottom: 2px;
+}
+.ep-title {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: 'Syne', sans-serif; letter-spacing: -0.01em;
+}
+.ep-dur {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: var(--text-muted); margin-top: 2px;
+}
+.ep-watched-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+}
+
+/* Next episode button */
+.next-ep-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(232,71,63,0.1); border: 1px solid rgba(232,71,63,0.25);
+  color: #ff8a82; padding: 10px 18px; border-radius: 40px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.next-ep-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.next-ep-btn svg { width: 14px; fill: currentColor; }
 </style>
 </head>
 <body>
@@ -984,6 +1098,28 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
           </a>
         </div>
       </div>
+
+      <!-- ══ EPISODE SELECTOR (series only) ══ -->
+      <div id="episodeSelector" style="display:none; padding: 0 0 16px;">
+        <div class="episode-selector">
+          <div class="ep-selector-header">
+            <span class="ep-selector-label">Episodes</span>
+            <span class="ep-current-info" id="epCurrentInfo"></span>
+          </div>
+          <!-- Season tabs -->
+          <div class="season-tabs-wrap" id="seasonTabsWatch"></div>
+          <!-- Episode list -->
+          <div class="episode-list-wrap" id="episodeListWatch"></div>
+        </div>
+        <!-- Next episode button -->
+        <div id="nextEpWrap" style="display:none; margin-top:10px;">
+          <button class="next-ep-btn" onclick="playNextEpisode()">
+            <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+            Next Episode: <span id="nextEpTitle"></span>
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1419,9 +1555,14 @@ async function incrementViews(fid) {
 }
 
 // ── Init Player ───────────────────────────────────────────────
-function initPlayer(film, videoUrl) {
+function initPlayer(film, videoUrl, episode) {
   currentFilm = film;
-  document.getElementById('playerTitleText').textContent = film.title;
+  if (episode) {
+    document.getElementById('playerTitleText').textContent =
+      film.title + ' · S' + episode.season + 'E' + episode.episode + ' — ' + episode.title;
+  } else {
+    document.getElementById('playerTitleText').textContent = film.title;
+  }
 
   const loading = document.getElementById('playerLoading');
   const noVideo = document.getElementById('noVideo');
@@ -1518,7 +1659,9 @@ function initPlayer(film, videoUrl) {
     showControls();
 
     // Resume banner
-    const saved = getSavedPosition(film.id);
+    const saved = episode
+      ? getEpisodeSavedPosition(film.id, episode)
+      : getSavedPosition(film.id);
     if (saved && saved > 30) {
       document.getElementById('resumeTime').textContent = formatTime(saved);
       document.getElementById('resumeBtn').dataset.pos = saved;
@@ -1565,7 +1708,7 @@ function initPlayer(film, videoUrl) {
     lastSave = now;
     const pos = Math.floor(player.currentTime());
     const dur = Math.floor(player.duration() || 0);
-    if (pos > 0) savePosition(film.id, pos, dur);
+    if (pos > 0) { if (episode) saveEpisodePosition(film.id, episode, pos, dur); else savePosition(film.id, pos, dur); }
   });
 
   player.one('play', () => incrementViews(film.id));
@@ -1588,7 +1731,13 @@ function renderInfo(film) {
 
   const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
 
-  document.getElementById('filmEyebrow').textContent = genres[0] || 'Now Streaming';
+  const isSeries = film.type === 'series';
+  const eyebrowEl = document.getElementById('filmEyebrow');
+  if (isSeries) {
+    eyebrowEl.innerHTML = '<span class="series-badge">📺 TV Series</span>';
+  } else {
+    eyebrowEl.textContent = genres[0] || 'Now Streaming';
+  }
   document.getElementById('filmTitle').textContent = film.title;
   // Info title bar
   const infoTitleBar = document.getElementById('infoTitleBar');
@@ -1627,6 +1776,7 @@ function renderInfo(film) {
   if (film.imdb_rating)   rows.push({ key: 'IMDb',     val: `<span class="meta-imdb"><span class="star">★</span> ${esc(String(film.imdb_rating))}/10</span>` });
   if (film.content_rating)rows.push({ key: 'Rating',   val: `<span class="meta-badge" style="background:rgba(255,255,255,0.08);color:var(--text-dim);">${esc(film.content_rating)}</span>` });
   rows.push({ key: 'Quality', val: '<span class="meta-badge hd">HD</span>&nbsp;&nbsp;<span class="meta-badge free">Free</span>' });
+  if (isSeries && film.total_seasons) rows.push({ key: 'Seasons', val: '<span style="color:var(--blue);">' + film.total_seasons + ' Season' + (film.total_seasons > 1 ? 's' : '') + '</span>' });
   if (film.views)         rows.push({ key: 'Views',    val: `<span class="meta-views-badge">${Number(film.views).toLocaleString()}</span>` });
 
   document.getElementById('filmMetaTable').innerHTML = rows.map(r =>
@@ -1832,6 +1982,213 @@ function toggleDesc() {
   b.textContent = expanded ? 'Show less ↑' : 'Show more ↓';
 }
 
+
+// ══════════════════════════════════════════════════════════════
+// TV SERIES — EPISODE SELECTOR
+// ══════════════════════════════════════════════════════════════
+var allEpisodes    = [];
+var currentSeason  = 1;
+var currentEpisode = null;
+var currentSeries  = null;
+
+async function fetchEpisodes(seriesId) {
+  try {
+    var res = await fetch(
+      CONFIG.SUPABASE_URL + '/rest/v1/episodes?series_id=eq.' + seriesId + '&select=*&order=season.asc,episode.asc',
+      { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY } }
+    );
+    if (!res.ok) return [];
+    return await res.json();
+  } catch(e) { return []; }
+}
+
+function buildEpisodeSelector(series, episodes) {
+  currentSeries = series;
+  allEpisodes   = episodes;
+  var selector  = document.getElementById('episodeSelector');
+  if (!selector || !episodes.length) return;
+  var seasons   = [];
+  episodes.forEach(function(e) { if (seasons.indexOf(e.season) === -1) seasons.push(e.season); });
+  seasons.sort(function(a,b){return a-b;});
+  selector.style.display = 'block';
+  var params    = new URLSearchParams(location.search);
+  currentSeason = parseInt(params.get('season')) || seasons[0];
+  var epNum     = parseInt(params.get('ep')) || 1;
+  currentEpisode = episodes.find(function(e){ return e.season===currentSeason && e.episode===epNum; })
+                || episodes.find(function(e){ return e.season===currentSeason; })
+                || episodes[0];
+  renderSeasonTabsWatch(seasons);
+  renderEpisodeListWatch(currentSeason);
+  updateNextEpButton();
+}
+
+function renderSeasonTabsWatch(seasons) {
+  var wrap = document.getElementById('seasonTabsWatch');
+  if (!wrap) return;
+  wrap.innerHTML = seasons.map(function(s) {
+    return '<button class="season-tab-btn ' + (s===currentSeason?'active':'') + '" onclick="switchWatchSeason(' + s + ')">Season ' + s + '</button>';
+  }).join('');
+}
+
+function switchWatchSeason(s) {
+  currentSeason = s;
+  document.querySelectorAll('.season-tab-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.textContent.trim() === 'Season ' + s);
+  });
+  renderEpisodeListWatch(s);
+}
+
+function renderEpisodeListWatch(season) {
+  var list = document.getElementById('episodeListWatch');
+  if (!list) return;
+  var eps = allEpisodes.filter(function(e){ return e.season===season; });
+  list.innerHTML = eps.map(function(ep) {
+    var isActive  = currentEpisode && ep.id === currentEpisode.id;
+    var dur       = ep.duration_secs ? formatDur(ep.duration_secs) : '';
+    var thumbHtml = ep.thumbnail_url
+      ? '<img src="' + esc(ep.thumbnail_url) + '" alt="" loading="lazy">'
+      : '<div class="ep-thumb-ph">🎬</div>';
+    var watched   = isEpisodeWatched(ep);
+    return '<div class="episode-item' + (isActive?' active':'') + '" data-epid="' + ep.id + '" onclick="(function(el){var ep=allEpisodes.find(function(e){return e.id===el.dataset.epid;});playEpisode(ep);})(this)">' +
+      '<div class="ep-thumb-wrap">' + thumbHtml + '<div class="ep-play-icon"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div></div>' +
+      '<div class="ep-info">' +
+        '<div class="ep-num">S'+ep.season+' E'+ep.episode+(watched?' ✓':'')+'</div>' +
+        '<div class="ep-title">' + esc(ep.title) + '</div>' +
+        (dur ? '<div class="ep-dur">'+dur+'</div>' : '') +
+      '</div>' +
+      (watched ? '<div class="ep-watched-dot"></div>' : '') +
+    '</div>';
+  }).join('');
+  setTimeout(function() {
+    var active = list.querySelector('.episode-item.active');
+    if (active) active.scrollIntoView({ block: 'nearest' });
+  }, 100);
+}
+
+function isEpisodeWatched(ep) {
+  try {
+    var key  = 'mvx_pos_' + (currentSeries ? currentSeries.id : '') + '_s'+ep.season+'e'+ep.episode;
+    var data = JSON.parse(localStorage.getItem(key)||'null');
+    return data && data.dur && data.pos >= data.dur * 0.9;
+  } catch { return false; }
+}
+
+function updateEpCurrentInfo() {
+  var el = document.getElementById('epCurrentInfo');
+  if (el && currentEpisode) el.textContent = 'S'+currentEpisode.season+' E'+currentEpisode.episode+' — '+currentEpisode.title;
+}
+
+function updateNextEpButton() {
+  var wrap = document.getElementById('nextEpWrap');
+  var titleEl = document.getElementById('nextEpTitle');
+  if (!wrap || !titleEl || !currentEpisode || !allEpisodes.length) return;
+  var idx  = allEpisodes.findIndex(function(e){ return e.id === currentEpisode.id; });
+  var next = allEpisodes[idx + 1];
+  if (next) {
+    wrap.style.display = 'block';
+    titleEl.textContent = 'S'+next.season+'E'+next.episode+' — '+next.title;
+    wrap._nextEp = next;
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+function playEpisode(ep) {
+  if (!ep) return;
+  currentEpisode = ep;
+  if (ep.season !== currentSeason) { currentSeason = ep.season; renderSeasonTabsWatch([...new Set(allEpisodes.map(function(e){return e.season;}))].sort()); }
+  renderEpisodeListWatch(currentSeason);
+
+  var params = new URLSearchParams(location.search);
+  params.set('season', ep.season); params.set('ep', ep.episode);
+  history.replaceState(null, '', location.pathname + '?' + params.toString());
+
+  var titleEl = document.getElementById('playerTitleText');
+  if (titleEl) titleEl.textContent = (currentSeries ? currentSeries.title : '') + ' · S'+ep.season+'E'+ep.episode+' — '+ep.title;
+
+  updateEpCurrentInfo();
+  updateNextEpButton();
+
+  if (player) { player.dispose(); player = null; }
+  var container = document.getElementById('playerContainer');
+  var oldVideo  = document.getElementById('movxioPlayer');
+  if (oldVideo) oldVideo.remove();
+  var newVideo    = document.createElement('video');
+  newVideo.id     = 'movxioPlayer';
+  newVideo.className = 'video-js';
+  newVideo.setAttribute('playsinline','');
+  newVideo.setAttribute('preload','metadata');
+  container.appendChild(newVideo);
+
+  var loading = document.getElementById('playerLoading');
+  var noVideo = document.getElementById('noVideo');
+  if (loading) loading.style.display = 'flex';
+  if (noVideo) noVideo.style.display = 'none';
+
+  initPlayer(currentSeries, ep.hls_url||null, ep);
+  document.getElementById('playerContainer').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function playNextEpisode() {
+  var wrap = document.getElementById('nextEpWrap');
+  if (wrap && wrap._nextEp) playEpisode(wrap._nextEp);
+}
+
+function setupAutoNextEpisode() {
+  if (!player) return;
+  player.on('ended', function() {
+    var wrap = document.getElementById('nextEpWrap');
+    if (wrap && wrap._nextEp) showNextEpToast(wrap._nextEp);
+  });
+}
+
+function showNextEpToast(nextEp) {
+  var old = document.getElementById('nextEpToast');
+  if (old) old.remove();
+  var toast = document.createElement('div');
+  toast.id  = 'nextEpToast';
+  toast.style.cssText = 'position:absolute;bottom:90px;left:50%;transform:translateX(-50%);z-index:20;background:rgba(8,8,18,0.96);border:1px solid rgba(232,71,63,0.3);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:14px;font-size:13px;white-space:nowrap;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,0.6);';
+
+  var label = document.createElement('span');
+  label.style.color = 'var(--text-dim)';
+  label.innerHTML = 'Next: <strong style="color:var(--text)">S' + nextEp.season + 'E' + nextEp.episode + '</strong>';
+
+  var playBtn = document.createElement('button');
+  playBtn.textContent = 'Play Now';
+  playBtn.style.cssText = 'background:var(--accent);color:#fff;border:none;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;';
+  playBtn.addEventListener('click', function() { playEpisode(nextEp); toast.remove(); });
+
+  var closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  closeBtn.style.cssText = 'background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;padding:0 4px;';
+  closeBtn.addEventListener('click', function() { toast.remove(); });
+
+  toast.appendChild(label);
+  toast.appendChild(playBtn);
+  toast.appendChild(closeBtn);
+  document.getElementById('playerContainer').appendChild(toast);
+  setTimeout(function(){ if (toast.parentNode) toast.remove(); }, 8000);
+}
+
+function saveEpisodePosition(seriesId, ep, pos, dur) {
+  try {
+    var key = 'mvx_pos_' + seriesId + '_s'+ep.season+'e'+ep.episode;
+    localStorage.setItem(key, JSON.stringify({ pos:pos, dur:dur, ts:Date.now() }));
+  } catch {}
+}
+
+function getEpisodeSavedPosition(seriesId, ep) {
+  try {
+    var key  = 'mvx_pos_' + seriesId + '_s'+ep.season+'e'+ep.episode;
+    var data = JSON.parse(localStorage.getItem(key)||'null');
+    if (!data) return null;
+    if (Date.now() - data.ts > 30*24*60*60*1000) return null;
+    if (data.dur && data.pos >= data.dur - 60) return null;
+    return data.pos;
+  } catch { return null; }
+}
+
+
 // ── Main ──────────────────────────────────────────────────────
 async function init() {
   try {
@@ -1859,6 +2216,35 @@ async function init() {
     renderRelated(films, film.id, genres);
     loadReactions(film.id);
 
+    // ── Series: fetch episodes and build selector ──
+    if (film.type === 'series') {
+      const episodes = await fetchEpisodes(film.id);
+      if (episodes.length) {
+        buildEpisodeSelector(film, episodes);
+        // Get starting episode from URL or first episode
+        const params   = new URLSearchParams(location.search);
+        const startSeason = parseInt(params.get('season')) || 1;
+        const startEp    = parseInt(params.get('ep')) || 1;
+        const startEpisode = episodes.find(e => e.season === startSeason && e.episode === startEp)
+                          || episodes[0];
+        currentEpisode = startEpisode;
+        updateEpCurrentInfo();
+        updateNextEpButton();
+
+        // Play starting episode
+        let videoUrl = startEpisode.hls_url || null;
+        if (videoUrl && slugFromUrl(videoUrl)) {
+          const ltEl = document.getElementById('loadingText');
+          if (ltEl) ltEl.textContent = 'Preparing stream...';
+          const signed = await getSignedUrl(slugFromUrl(videoUrl));
+          if (signed) videoUrl = signed;
+        }
+        initPlayer(film, videoUrl, startEpisode);
+        return; // skip movie init below
+      }
+    }
+
+    // ── Movie: play film's own hls_url ──
     let videoUrl = film.hls_url || null;
     if (videoUrl && slugFromUrl(videoUrl)) {
       const ltEl = document.getElementById('loadingText');
