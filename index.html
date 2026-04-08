@@ -1246,6 +1246,16 @@ footer {
   .trailer-actions { gap: 8px; }
   .trailer-watch-btn, .trailer-more-btn { padding: 11px 16px; font-size: 13px; }
 }
+
+/* ── RECOMMENDATION ROW ── */
+.reco-section { display: none; }
+.reco-section.show { display: block; }
+.reco-because {
+  font-family: 'Space Mono', monospace; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text-muted); margin-bottom: 4px;
+}
+.reco-because strong { color: var(--accent); }
 </style>
 </head>
 <body>
@@ -1379,6 +1389,26 @@ footer {
   </div>
   <div class="film-row-wrap" style="padding:0 32px 8px;">
     <div class="film-row" id="recentRow"></div>
+  </div>
+</div>
+
+<!-- ============ BECAUSE YOU WATCHED ============ -->
+<div id="recoSection" class="reco-section">
+  <div class="section" style="padding-bottom:0;">
+    <div class="section-header">
+      <div class="section-title">
+        Because You Watched
+        <span class="label">For You</span>
+      </div>
+      <a href="browse.html" class="section-link">
+        Browse all
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="reco-because" id="recoBecause"></div>
+  </div>
+  <div class="film-row-wrap" style="padding:0 32px 8px;">
+    <div class="film-row" id="recoRow"></div>
   </div>
 </div>
 
@@ -1751,6 +1781,56 @@ function mobileSearchGo() {
   if (q) window.location.href = `search.html?q=${encodeURIComponent(q)}`;
 }
 
+
+// ══════════════════════════════════════════════════════════════
+// RECOMMENDATION ENGINE — Because You Watched
+// ══════════════════════════════════════════════════════════════
+function buildRecommendations(films) {
+  // Get watch history from localStorage
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem('mvx_history') || '[]'); } catch {}
+  if (!history.length) return;
+
+  // Find the most recently watched film that exists in our library
+  var seedFilm = null;
+  for (var i = 0; i < history.length; i++) {
+    var f = films.find(function(x){ return x.id === history[i]; });
+    if (f) { seedFilm = f; break; }
+  }
+  if (!seedFilm) return;
+
+  // Get seed genres
+  var seedGenres = (seedFilm.genre || '').split(',').map(function(g){ return g.trim().toLowerCase(); }).filter(Boolean);
+  if (!seedGenres.length) return;
+
+  // Score every other film by genre overlap + recency + IMDb
+  var candidates = films
+    .filter(function(f){ return f.id !== seedFilm.id && history.indexOf(f.id) === -1; })
+    .map(function(f) {
+      var fGenres   = (f.genre || '').split(',').map(function(g){ return g.trim().toLowerCase(); });
+      var overlap   = fGenres.filter(function(g){ return seedGenres.indexOf(g) !== -1; }).length;
+      var score     = overlap * 10
+                    + (f.imdb_rating ? parseFloat(f.imdb_rating) : 0)
+                    + (f.featured ? 3 : 0)
+                    + (f.views ? Math.min(f.views / 100, 5) : 0);
+      return { film: f, score: score, overlap: overlap };
+    })
+    .filter(function(x){ return x.overlap > 0; })  // must share at least 1 genre
+    .sort(function(a, b){ return b.score - a.score; })
+    .slice(0, 12);
+
+  if (!candidates.length) return;
+
+  // Render
+  var section  = document.getElementById('recoSection');
+  var row      = document.getElementById('recoRow');
+  var because  = document.getElementById('recoBecause');
+
+  because.innerHTML = 'Based on <strong>' + esc(seedFilm.title) + '</strong>';
+  row.innerHTML     = candidates.map(function(c, i){ return filmCard(c.film, i); }).join('');
+  section.classList.add('show');
+}
+
 async function init() {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     renderDemoState();
@@ -1770,6 +1850,9 @@ async function init() {
 
   // Recently viewed
   renderRecentlyViewed(allFilms);
+
+  // Recommendation engine — "Because you watched X"
+  buildRecommendations(allFilms);
 
   // Watchlist row
   renderWatchlistRow(allFilms);
