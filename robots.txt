@@ -1,0 +1,17 @@
+# MOVXIO robots.txt
+# https://www.movxio.com
+
+User-agent: *
+Allow: /
+
+# Block admin panel from indexing
+Disallow: /admin.html
+
+# Block watch page without ID (no content without a film ID)
+Disallow: /watch.html$
+
+# Allow film pages with IDs
+Allow: /watch.html?id=
+
+# Sitemap location
+Sitemap: https://www.movxio.com/sitemap.xml
