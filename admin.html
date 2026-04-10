@@ -1409,6 +1409,17 @@ function filterFilmTable() {
 }
 
 // ── FORM OPEN/CLOSE ───────────────────────────────────────────
+// ── Country hint helper ──────────────────────────────────────
+function updateCountryHint() {
+  const selected = Array.from(document.querySelectorAll('#countryCheckboxes input:checked')).map(cb => cb.value);
+  const hint = document.getElementById('countryHint');
+  if (!hint) return;
+  hint.textContent = selected.length ? selected.join(', ') : 'No countries selected';
+}
+document.addEventListener('change', function(e) {
+  if (e.target.closest && e.target.closest('#countryCheckboxes')) updateCountryHint();
+});
+
 function openForm() {
   editingId = null;
   document.getElementById('form-title').textContent = 'Add New Title';
