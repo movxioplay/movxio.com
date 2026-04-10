@@ -1294,11 +1294,17 @@ async function supaFetch(path, method = 'GET', body = null) {
       'apikey': SUPABASE_KEY,
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
+      'Prefer': 'return=representation',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
     }
   };
   if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, opts);
+  // Add cache-bust timestamp to GET requests so browser never serves stale data
+  const url = method === 'GET'
+    ? `${SUPABASE_URL}/rest/v1/${path}${path.includes('?') ? '&' : '?'}_cb=${Date.now()}`
+    : `${SUPABASE_URL}/rest/v1/${path}`;
+  const res = await fetch(url, opts);
   if (!res.ok) throw new Error(await res.text());
   const txt = await res.text();
   return txt ? JSON.parse(txt) : [];
