@@ -152,6 +152,32 @@ td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: rgba(255,255,255,0.02); }
 .row-thumb { width: 36px; height: 54px; object-fit: cover; border-radius: 3px; background: var(--surface2); }
+
+/* ── Bulk action bar ── */
+.bulk-bar { display:none; align-items:center; gap:10px; padding:10px 16px; background:rgba(232,184,75,0.07); border:1px solid rgba(232,184,75,0.18); border-radius:10px; margin-bottom:12px; flex-wrap:wrap; }
+.bulk-bar.visible { display:flex; }
+.bulk-bar .bulk-count { font-size:13px; color:var(--gold); font-weight:600; margin-right:4px; }
+.bulk-bar .btn-bulk { padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; border:none; cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; min-height:36px; }
+.bulk-bar .btn-bulk-status { background:rgba(255,255,255,0.07); color:var(--text); }
+.bulk-bar .btn-bulk-status:hover { background:rgba(255,255,255,0.12); }
+.bulk-bar .btn-bulk-delete { background:rgba(232,71,63,0.15); color:#ff8a82; }
+.bulk-bar .btn-bulk-delete:hover { background:rgba(232,71,63,0.25); }
+.bulk-bar .btn-bulk-cancel { background:none; color:var(--muted); font-size:11px; margin-left:auto; }
+.row-check { width:16px; height:16px; accent-color:var(--gold); cursor:pointer; }
+/* ── Duplicate button ── */
+.btn-dupe { padding:5px 10px; border-radius:6px; font-size:11px; font-weight:600; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.05); color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+.btn-dupe:hover { background:rgba(255,255,255,0.1); color:var(--text); }
+/* ── Analytics chart ── */
+.analytics-section { margin-bottom:24px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; }
+.analytics-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.analytics-title select { background:var(--bg); border:1px solid var(--border); color:var(--muted); padding:5px 10px; border-radius:6px; font-size:12px; font-family:'DM Sans',sans-serif; outline:none; }
+.chart-wrap { width:100%; overflow-x:auto; }
+.chart-bars { display:flex; align-items:flex-end; gap:6px; height:140px; padding-bottom:24px; position:relative; min-width:300px; }
+.chart-bar-col { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:28px; }
+.chart-bar { width:100%; border-radius:4px 4px 0 0; background:linear-gradient(to top, var(--accent), rgba(232,71,63,0.4)); transition:height 0.4s ease; cursor:default; position:relative; min-height:2px; }
+.chart-bar:hover::after { content:attr(data-val); position:absolute; top:-22px; left:50%; transform:translateX(-50%); background:rgba(8,8,16,0.9); color:#fff; font-size:10px; padding:2px 6px; border-radius:4px; white-space:nowrap; font-family:'Space Mono',monospace; }
+.chart-label { font-size:9px; color:var(--muted); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; margin-top:-20px; }
+
 .badge-hls { background: rgba(45,212,160,0.1); color: var(--green); border: 1px solid rgba(45,212,160,0.2); padding: 3px 9px; border-radius: 8px; font-size: 11px; }
 .badge-no-video { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.2); padding: 3px 9px; border-radius: 8px; font-size: 11px; }
 .views-count { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted); }
@@ -372,25 +398,56 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
         <div class="form-row">
           <div class="form-group">
-            <label>Country of Origin</label>
-            <select id="f-country">
-              <option value="">Select country...</option>
-              <option>United States</option><option>United Kingdom</option><option>Canada</option>
-              <option>Australia</option><option>France</option><option>Germany</option>
-              <option>Italy</option><option>Spain</option><option>Japan</option><option>South Korea</option>
-              <option>China</option><option>India</option><option>Sri Lanka</option>
-              <option>Brazil</option><option>Mexico</option><option>Argentina</option>
-              <option>Sweden</option><option>Norway</option><option>Denmark</option>
-              <option>Netherlands</option><option>Belgium</option><option>Switzerland</option>
-              <option>Austria</option><option>Poland</option><option>Russia</option>
-              <option>Turkey</option><option>Iran</option><option>Israel</option>
-              <option>Nigeria</option><option>South Africa</option><option>Egypt</option>
-              <option>Thailand</option><option>Indonesia</option><option>Philippines</option>
-              <option>Hong Kong</option><option>Taiwan</option><option>New Zealand</option>
-              <option>Ireland</option><option>Portugal</option><option>Greece</option>
-              <option>Czech Republic</option><option>Romania</option><option>Hungary</option>
-              <option>Pakistan</option><option>Bangladesh</option><option>Other</option>
-            </select>
+            <label>Country of Origin <span style="font-size:11px;color:var(--muted);font-weight:400;">(select all that apply)</span></label>
+            <div class="genre-checkboxes" id="countryCheckboxes">
+              <label class="genre-cb"><input type="checkbox" value="United States"><span>🇺🇸 United States</span></label>
+              <label class="genre-cb"><input type="checkbox" value="United Kingdom"><span>🇬🇧 United Kingdom</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Canada"><span>🇨🇦 Canada</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Australia"><span>🇦🇺 Australia</span></label>
+              <label class="genre-cb"><input type="checkbox" value="New Zealand"><span>🇳🇿 New Zealand</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Ireland"><span>🇮🇪 Ireland</span></label>
+              <label class="genre-cb"><input type="checkbox" value="France"><span>🇫🇷 France</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Germany"><span>🇩🇪 Germany</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Italy"><span>🇮🇹 Italy</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Spain"><span>🇪🇸 Spain</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Portugal"><span>🇵🇹 Portugal</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Netherlands"><span>🇳🇱 Netherlands</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Belgium"><span>🇧🇪 Belgium</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Switzerland"><span>🇨🇭 Switzerland</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Austria"><span>🇦🇹 Austria</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Sweden"><span>🇸🇪 Sweden</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Norway"><span>🇳🇴 Norway</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Denmark"><span>🇩🇰 Denmark</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Poland"><span>🇵🇱 Poland</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Czech Republic"><span>🇨🇿 Czech Republic</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Romania"><span>🇷🇴 Romania</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Hungary"><span>🇭🇺 Hungary</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Greece"><span>🇬🇷 Greece</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Russia"><span>🇷🇺 Russia</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Turkey"><span>🇹🇷 Turkey</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Israel"><span>🇮🇱 Israel</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Iran"><span>🇮🇷 Iran</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Japan"><span>🇯🇵 Japan</span></label>
+              <label class="genre-cb"><input type="checkbox" value="South Korea"><span>🇰🇷 South Korea</span></label>
+              <label class="genre-cb"><input type="checkbox" value="China"><span>🇨🇳 China</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Hong Kong"><span>🇭🇰 Hong Kong</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Taiwan"><span>🇹🇼 Taiwan</span></label>
+              <label class="genre-cb"><input type="checkbox" value="India"><span>🇮🇳 India</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Sri Lanka"><span>🇱🇰 Sri Lanka</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Pakistan"><span>🇵🇰 Pakistan</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Bangladesh"><span>🇧🇩 Bangladesh</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Thailand"><span>🇹🇭 Thailand</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Indonesia"><span>🇮🇩 Indonesia</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Philippines"><span>🇵🇭 Philippines</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Brazil"><span>🇧🇷 Brazil</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Mexico"><span>🇲🇽 Mexico</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Argentina"><span>🇦🇷 Argentina</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Nigeria"><span>🇳🇬 Nigeria</span></label>
+              <label class="genre-cb"><input type="checkbox" value="South Africa"><span>🇿🇦 South Africa</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Egypt"><span>🇪🇬 Egypt</span></label>
+              <label class="genre-cb"><input type="checkbox" value="Other"><span>🌐 Other</span></label>
+            </div>
+            <div class="form-hint" id="countryHint">No countries selected</div>
           </div>
           <div class="form-group">
             <label>Duration (minutes)</label>
@@ -465,7 +522,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <div class="form-group">
           <label>Select all that apply</label>
           <div class="genre-checkboxes" id="genreCheckboxes">
+            <div style="width:100%;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);opacity:0.6;padding:2px 0 4px;font-weight:600;">Core Genres</div>
             <label class="genre-cb"><input type="checkbox" value="action"><span>💥 Action</span></label>
+            <label class="genre-cb"><input type="checkbox" value="action-adventure"><span>🎬 Action &amp; Adventure</span></label>
             <label class="genre-cb"><input type="checkbox" value="adventure"><span>🌍 Adventure</span></label>
             <label class="genre-cb"><input type="checkbox" value="animation"><span>🎨 Animation</span></label>
             <label class="genre-cb"><input type="checkbox" value="biography"><span>📖 Biography</span></label>
@@ -475,17 +534,34 @@ tr:hover td { background: rgba(255,255,255,0.02); }
             <label class="genre-cb"><input type="checkbox" value="drama"><span>🎭 Drama</span></label>
             <label class="genre-cb"><input type="checkbox" value="family"><span>👨‍👩‍👧 Family</span></label>
             <label class="genre-cb"><input type="checkbox" value="fantasy"><span>🧙 Fantasy</span></label>
-            <label class="genre-cb"><input type="checkbox" value="history"><span>🏛️ History</span></label>
             <label class="genre-cb"><input type="checkbox" value="horror"><span>👻 Horror</span></label>
-            <label class="genre-cb"><input type="checkbox" value="music"><span>🎵 Music</span></label>
-            <label class="genre-cb"><input type="checkbox" value="mystery"><span>🔍 Mystery</span></label>
             <label class="genre-cb"><input type="checkbox" value="romance"><span>💖 Romance</span></label>
             <label class="genre-cb"><input type="checkbox" value="sci-fi"><span>🚀 Sci-Fi</span></label>
+            <label class="genre-cb"><input type="checkbox" value="thriller"><span>🔪 Thriller</span></label>
+            <div style="width:100%;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);opacity:0.6;padding:8px 0 4px;font-weight:600;">Extended Genres</div>
+            <label class="genre-cb"><input type="checkbox" value="costume"><span>👘 Costume</span></label>
+            <label class="genre-cb"><input type="checkbox" value="film-noir"><span>🎞️ Film-Noir</span></label>
+            <label class="genre-cb"><input type="checkbox" value="history"><span>🏛️ History</span></label>
+            <label class="genre-cb"><input type="checkbox" value="kungfu"><span>🥋 Kung Fu</span></label>
+            <label class="genre-cb"><input type="checkbox" value="music"><span>🎵 Music</span></label>
+            <label class="genre-cb"><input type="checkbox" value="musical"><span>🎤 Musical</span></label>
+            <label class="genre-cb"><input type="checkbox" value="mystery"><span>🔍 Mystery</span></label>
+            <label class="genre-cb"><input type="checkbox" value="mythological"><span>⚡ Mythological</span></label>
+            <label class="genre-cb"><input type="checkbox" value="psychological"><span>🧠 Psychological</span></label>
+            <label class="genre-cb"><input type="checkbox" value="short"><span>⏱️ Short</span></label>
+            <label class="genre-cb"><input type="checkbox" value="sitcom"><span>📺 Sitcom</span></label>
             <label class="genre-cb"><input type="checkbox" value="sport"><span>⚽ Sport</span></label>
             <label class="genre-cb"><input type="checkbox" value="superhero"><span>🦸 Superhero</span></label>
-            <label class="genre-cb"><input type="checkbox" value="thriller"><span>🔪 Thriller</span></label>
             <label class="genre-cb"><input type="checkbox" value="war"><span>💣 War</span></label>
             <label class="genre-cb"><input type="checkbox" value="western"><span>🤠 Western</span></label>
+            <label class="genre-cb"><input type="checkbox" value="tv-movie"><span>📡 TV Movie</span></label>
+            <label class="genre-cb"><input type="checkbox" value="tv-show"><span>📺 TV Show</span></label>
+            <div style="width:100%;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);opacity:0.6;padding:8px 0 4px;font-weight:600;">TV / Reality</div>
+            <label class="genre-cb"><input type="checkbox" value="game-show"><span>🎮 Game-Show</span></label>
+            <label class="genre-cb"><input type="checkbox" value="news"><span>📰 News</span></label>
+            <label class="genre-cb"><input type="checkbox" value="reality-tv"><span>🎭 Reality-TV</span></label>
+            <label class="genre-cb"><input type="checkbox" value="talk-show"><span>🎙️ Talk-Show</span></label>
+            <div style="width:100%;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);opacity:0.6;padding:8px 0 4px;font-weight:600;">Language / Region</div>
             <label class="genre-cb"><input type="checkbox" value="sinhala"><span>🇱🇰 සිංහල</span></label>
             <label class="genre-cb"><input type="checkbox" value="tamil"><span>🇱🇰 தமிழ்</span></label>
             <label class="genre-cb"><input type="checkbox" value="hindi"><span>🇮🇳 Hindi</span></label>
@@ -563,6 +639,34 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       </div>
 
       <!-- FILM TABLE -->
+      <!-- ── Views Analytics Chart ── -->
+      <div class="analytics-section" id="analyticsSection">
+        <div class="analytics-title">
+          Top Films by Views
+          <select id="chartMetric" onchange="renderChart()">
+            <option value="views">Views</option>
+            <option value="imdb_rating">IMDb Rating</option>
+          </select>
+        </div>
+        <div class="chart-wrap">
+          <div class="chart-bars" id="chartBars"></div>
+        </div>
+      </div>
+
+      <!-- ── Bulk Action Bar ── -->
+      <div class="bulk-bar" id="bulkBar">
+        <span class="bulk-count" id="bulkCount">0 selected</span>
+        <select id="bulkStatusSelect" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:6px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;">
+          <option value="">Change status to...</option>
+          <option value="active">Active</option>
+          <option value="coming_soon">Coming Soon</option>
+          <option value="draft">Draft</option>
+        </select>
+        <button class="btn-bulk btn-bulk-status" onclick="bulkChangeStatus()">Apply</button>
+        <button class="btn-bulk btn-bulk-delete" onclick="bulkDelete()">🗑 Delete Selected</button>
+        <button class="btn-bulk btn-bulk-cancel" onclick="clearSelection()">✕ Cancel</button>
+      </div>
+
       <div class="table-controls">
         <div class="search-input-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -574,6 +678,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
           <option value="coming_soon">Coming Soon</option>
           <option value="draft">Draft</option>
         </select>
+        <button onclick="exportCSV()" style="display:flex;align-items:center;gap:6px;padding:10px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--muted);border-radius:8px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all 0.15s;min-height:44px;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">
+          <svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </button>
       </div>
 
       <div class="table-wrap">
@@ -583,7 +691,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         <table class="film-table" id="film-table">
           <thead>
             <tr>
-              <th></th>
+              <th><input type="checkbox" class="row-check" id="selectAll" title="Select all" onchange="toggleSelectAll(this.checked)"></th>
               <th>Title</th>
               <th>Genre</th>
               <th>Country</th>
@@ -1252,7 +1360,7 @@ function renderFilmTable(films) {
 
   if (!filtered.length) {
     document.getElementById('film-list').innerHTML = `<div class="empty-state"><div class="icon">🎬</div><p>No films found.</p></div>`;
-    document.getElementById('films-tbody').innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:40px;">No films found.</td></tr>`;
+    document.getElementById('films-tbody').innerHTML = `<tr><td colspan="11" style="text-align:center;color:var(--muted);padding:40px;">No films found.</td></tr>`;
     return;
   }
 
@@ -1272,8 +1380,8 @@ function renderFilmTable(films) {
 
   // Desktop table
   document.getElementById('films-tbody').innerHTML = filtered.map(f => `
-    <tr>
-      <td>${f.thumbnail_url ? `<img class="row-thumb" src="${f.thumbnail_url}" alt="">` : '🎬'}</td>
+    <tr data-id="${f.id}">
+      <td><input type="checkbox" class="row-check film-check" value="${f.id}" onchange="onRowCheck()"></td>
       <td>
         <strong>${f.title}</strong>
         <span class="badge-${f.type === 'series' ? 'series' : 'movie'}" style="margin-left:6px;font-size:9px;">${f.type === 'series' ? '📺 Series' : '🎬'}</span>
@@ -1290,6 +1398,7 @@ function renderFilmTable(films) {
       <td><span class="badge-status badge-${(f.status||'active').replace('_','-')}">${(f.status||'active').replace('_',' ')}</span></td>
       <td><div style="display:flex;gap:6px;">
         <button class="btn-edit" onclick='editFilm(${JSON.stringify(f)})'>Edit</button>
+        <button class="btn-dupe" onclick='dupeFilm(${JSON.stringify(f)})' title="Duplicate">⧉</button>
         <button class="btn-delete" onclick="deleteFilm('${f.id}')">Del</button>
       </div></td>
     </tr>`).join('');
@@ -1307,11 +1416,13 @@ function openForm() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  ['f-country','f-content-rating','f-status','f-badge','f-series-status'].forEach(id => {
+  ['f-content-rating','f-status','f-badge','f-series-status'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { if (id === 'f-status') el.value = 'active'; else el.value = ''; }
   });
   document.querySelectorAll('#genreCheckboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
+  document.querySelectorAll('#countryCheckboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
+  updateCountryHint();
   document.getElementById('f-featured').checked = false;
   document.getElementById('subtitle-list').innerHTML = '';
   subtitleCount = 0;
@@ -1340,7 +1451,12 @@ function editFilm(film) {
   document.getElementById('f-actors').value    = film.actors || '';
   document.getElementById('f-imdb').value      = film.imdb_rating || '';
   document.getElementById('f-trailer').value   = film.trailer_url || '';
-  document.getElementById('f-country').value   = film.country || '';
+  // populate country checkboxes
+  const countrySaved = (film.country || '').split(',').map(c => c.trim());
+  document.querySelectorAll('#countryCheckboxes input[type=checkbox]').forEach(cb => {
+    cb.checked = countrySaved.includes(cb.value);
+  });
+  updateCountryHint();
   document.getElementById('f-content-rating').value = film.content_rating || '';
   document.getElementById('f-status').value    = film.status || 'active';
   document.getElementById('f-badge').value     = film.badge || '';
@@ -1412,7 +1528,7 @@ async function saveFilm() {
     year:          parseInt(document.getElementById('f-year').value) || null,
     genre:         Array.from(document.querySelectorAll('#genreCheckboxes input:checked')).map(cb => cb.value).join(',') || null,
     language:      document.getElementById('f-lang').value || null,
-    country:       document.getElementById('f-country').value || null,
+    country:       Array.from(document.querySelectorAll('#countryCheckboxes input:checked')).map(cb => cb.value).join(',') || null,
     director:      document.getElementById('f-director').value || null,
     actors:        document.getElementById('f-actors').value || null,
     hls_url:       document.getElementById('f-hls').value || null,
@@ -1864,184 +1980,182 @@ function toast(msg, err = false) {
 }
 </script>
 
-<!-- ══ PWA — Service Worker + Install Prompt ══ -->
+<script>
+
+// ════════════════════════════════════════════════════════════
+// PASS 5 FEATURES
+// ════════════════════════════════════════════════════════════
+
+// ── Views Analytics Chart ────────────────────────────────────
+function renderChart() {
+  const metric  = document.getElementById('chartMetric')?.value || 'views';
+  const films   = [...allFilmsCache]
+    .filter(f => metric === 'imdb_rating' ? f.imdb_rating : (f.views || 0) > 0)
+    .sort((a, b) => (b[metric] || 0) - (a[metric] || 0))
+    .slice(0, 10);
+
+  const bars = document.getElementById('chartBars');
+  if (!bars || !films.length) return;
+
+  const max = Math.max(...films.map(f => parseFloat(f[metric]) || 0)) || 1;
+
+  bars.innerHTML = films.map(f => {
+    const val  = parseFloat(f[metric]) || 0;
+    const pct  = Math.round((val / max) * 100);
+    const disp = metric === 'views' ? (val > 999 ? (val/1000).toFixed(1)+'K' : val) : val.toFixed(1);
+    const name = f.title.length > 12 ? f.title.slice(0, 11) + '…' : f.title;
+    return `
+      <div class="chart-bar-col">
+        <div class="chart-bar" style="height:${Math.max(pct, 2)}%" data-val="${disp}"></div>
+        <div class="chart-label" title="${f.title}">${name}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Bulk Selection ───────────────────────────────────────────
+let selectedIds = new Set();
+
+function onRowCheck() {
+  selectedIds = new Set(
+    Array.from(document.querySelectorAll('.film-check:checked')).map(cb => cb.value)
+  );
+  updateBulkBar();
+}
+
+function toggleSelectAll(checked) {
+  document.querySelectorAll('.film-check').forEach(cb => {
+    cb.checked = checked;
+    checked ? selectedIds.add(cb.value) : selectedIds.delete(cb.value);
+  });
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar   = document.getElementById('bulkBar');
+  const count = document.getElementById('bulkCount');
+  if (!bar) return;
+  const n = selectedIds.size;
+  bar.classList.toggle('visible', n > 0);
+  if (count) count.textContent = n + ' selected';
+}
+
+function clearSelection() {
+  selectedIds.clear();
+  document.querySelectorAll('.film-check, #selectAll').forEach(cb => cb.checked = false);
+  updateBulkBar();
+}
+
+async function bulkChangeStatus() {
+  const status = document.getElementById('bulkStatusSelect').value;
+  if (!status) { toast('Pick a status first', true); return; }
+  if (!selectedIds.size) return;
+  if (!confirm(`Change ${selectedIds.size} film(s) to "${status}"?`)) return;
+  let ok = 0, fail = 0;
+  for (const id of selectedIds) {
+    try {
+      await supaFetch(`films?id=eq.${id}`, 'PATCH', { status });
+      ok++;
+    } catch { fail++; }
+  }
+  toast(`Updated ${ok} film(s)${fail ? ', ' + fail + ' failed' : ''}`);
+  clearSelection();
+  loadFilms();
+}
+
+async function bulkDelete() {
+  if (!selectedIds.size) return;
+  if (!confirm(`Permanently delete ${selectedIds.size} film(s)? This cannot be undone.`)) return;
+  let ok = 0, fail = 0;
+  for (const id of selectedIds) {
+    try { await supaFetch(`films?id=eq.${id}`, 'DELETE'); ok++; }
+    catch { fail++; }
+  }
+  toast(`Deleted ${ok} film(s)${fail ? ', ' + fail + ' failed' : ''}`);
+  clearSelection();
+  loadFilms();
+}
+
+// ── Duplicate Film ───────────────────────────────────────────
+async function dupeFilm(film) {
+  const clone = { ...film };
+  delete clone.id;
+  delete clone.created_at;
+  delete clone.updated_at;
+  clone.title  = 'Copy of ' + clone.title;
+  clone.status = 'draft';
+  clone.views  = 0;
+  clone.featured = false;
+  try {
+    await supaFetch('films', 'POST', clone);
+    toast('Film duplicated as Draft ✓');
+    loadFilms();
+  } catch(e) {
+    // local fallback
+    clone.id = 'local_' + Date.now();
+    localFilms.unshift(clone);
+    saveLocal();
+    allFilmsCache = localFilms;
+    renderFilmTable(localFilms);
+    renderChart();
+    toast('Duplicated (local) ✓');
+  }
+}
+
+// ── CSV Export ───────────────────────────────────────────────
+function exportCSV() {
+  const films = allFilmsCache;
+  if (!films.length) { toast('No films to export', true); return; }
+
+  const cols = ['id','title','type','year','genre','language','country',
+                'director','actors','imdb_rating','content_rating','status',
+                'badge','featured','views','hls_url','trailer_url','thumbnail_url','description'];
+
+  const escape = v => {
+    if (v === null || v === undefined) return '';
+    const s = String(v);
+    return s.includes(',') || s.includes('"') || s.includes('\n')
+      ? '"' + s.replace(/"/g, '""') + '"'
+      : s;
+  };
+
+  const rows = [
+    cols.join(','),
+    ...films.map(f => cols.map(c => escape(f[c])).join(','))
+  ];
+
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'movxio-films-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV exported (' + films.length + ' films) ✓');
+}
+
+// ── Hook chart render into loadFilms ─────────────────────────
+const _origLoadFilms = loadFilms;
+// Patch: re-render chart after films load (done via allFilmsCache update in loadFilms)
+// We override renderFilmTable to also trigger chart
+const _origRenderFilmTable = renderFilmTable;
+window.renderFilmTable = function(films) {
+  _origRenderFilmTable(films);
+  renderChart();
+};
+
+</script>
+
+<!-- ══ PWA — Service Worker Cleanup ══ -->
 <script>
 (function() {
-  // ── Register Service Worker ──────────────────────────────
+  // Unregister any existing service workers — SW removed due to caching issues
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => {
-          console.log('[MOVXIO] SW registered:', reg.scope);
-
-          // Check for updates every 30 minutes
-          setInterval(() => reg.update(), 30 * 60 * 1000);
-
-          // New version available — show update toast
-          reg.addEventListener('updatefound', () => {
-            const newWorker = reg.installing;
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                showPWAToast('🔄 New version available — ', 'Refresh', () => location.reload());
-              }
-            });
-          });
-        })
-        .catch(err => console.warn('[MOVXIO] SW registration failed:', err));
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      registrations.forEach(function(reg) {
+        reg.unregister();
+      });
     });
   }
-
-  // ── Install Prompt (Add to Home Screen) ─────────────────
-  let deferredPrompt = null;
-  let promptShown    = false;
-
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-
-    // Show banner after 30 seconds if user hasn't dismissed before
-    const dismissed = localStorage.getItem('mvx_pwa_dismissed');
-    if (!dismissed && !promptShown) {
-      setTimeout(() => showInstallBanner(), 30000);
-    }
-  });
-
-  window.addEventListener('appinstalled', () => {
-    deferredPrompt = null;
-    const banner = document.getElementById('pwaInstallBanner');
-    if (banner) banner.remove();
-    localStorage.setItem('mvx_pwa_installed', '1');
-    console.log('[MOVXIO] PWA installed!');
-  });
-
-  // ── iOS detection (no beforeinstallprompt on Safari) ────
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches
-    || window.navigator.standalone === true;
-
-  if (isIOS && !isStandalone) {
-    const dismissed = localStorage.getItem('mvx_pwa_dismissed');
-    if (!dismissed) {
-      setTimeout(() => showIOSBanner(), 5000);
-    }
-  }
-
-  // ── Install Banner (Android / Desktop) ──────────────────
-  function showInstallBanner() {
-    if (document.getElementById('pwaInstallBanner') || promptShown) return;
-    promptShown = true;
-
-    const banner = document.createElement('div');
-    banner.id = 'pwaInstallBanner';
-    banner.style.cssText = `
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      z-index: 800; background: #141418; border: 1px solid rgba(232,71,63,0.3);
-      border-radius: 14px; padding: 14px 16px; display: flex; align-items: center;
-      gap: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
-      backdrop-filter: blur(20px); max-width: calc(100vw - 40px); width: 360px;
-      animation: pwaSlideUp 0.4s cubic-bezier(0.34,1.2,0.64,1);
-      font-family: 'DM Sans', sans-serif;
-    `;
-    banner.innerHTML = `
-      <div style="width:44px;height:44px;border-radius:10px;background:#080810;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">🎬</div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:13px;color:#f0eee8;margin-bottom:2px;">Install MOVXIO</div>
-        <div style="font-size:11px;color:#6b6980;line-height:1.4;">Add to home screen for the best experience</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
-        <button id="pwaInstallBtn" style="background:#e8473f;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Install</button>
-        <button id="pwaDismissBtn" style="background:none;border:1px solid rgba(255,255,255,0.1);color:#6b6980;padding:5px 14px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;">Not now</button>
-      </div>
-    `;
-
-    document.body.appendChild(banner);
-
-    document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const result = await deferredPrompt.userChoice;
-      console.log('[MOVXIO] PWA install choice:', result.outcome);
-      deferredPrompt = null;
-      banner.remove();
-    });
-
-    document.getElementById('pwaDismissBtn').addEventListener('click', () => {
-      banner.remove();
-      localStorage.setItem('mvx_pwa_dismissed', Date.now());
-    });
-  }
-
-  // ── iOS Banner (Safari-specific instructions) ────────────
-  function showIOSBanner() {
-    if (document.getElementById('pwaIOSBanner')) return;
-
-    const banner = document.createElement('div');
-    banner.id = 'pwaIOSBanner';
-    banner.style.cssText = `
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      z-index: 800; background: #141418; border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px; padding: 14px 16px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-      backdrop-filter: blur(20px); max-width: calc(100vw - 40px); width: 340px;
-      animation: pwaSlideUp 0.4s cubic-bezier(0.34,1.2,0.64,1);
-      font-family: 'DM Sans', sans-serif;
-    `;
-    banner.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-weight:700;font-size:13px;color:#f0eee8;">Install MOVXIO on iPhone</div>
-        <button onclick="this.closest('#pwaIOSBanner').remove();localStorage.setItem('mvx_pwa_dismissed',Date.now());" style="background:none;border:none;color:#6b6980;font-size:18px;cursor:pointer;padding:0;line-height:1;">✕</button>
-      </div>
-      <div style="font-size:12px;color:#9997b0;line-height:1.6;">
-        Tap <strong style="color:#f0eee8;">Share</strong> 
-        <span style="background:rgba(255,255,255,0.08);border-radius:4px;padding:1px 6px;font-size:14px;">⎋</span> 
-        then <strong style="color:#f0eee8;">"Add to Home Screen"</strong> 
-        <span style="font-size:13px;">⊕</span> to install MOVXIO as an app.
-      </div>
-      <div style="margin-top:10px;text-align:center;">
-        <div style="width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid rgba(255,255,255,0.15);margin:0 auto;"></div>
-      </div>
-    `;
-    document.body.appendChild(banner);
-
-    // Auto-dismiss after 10 seconds
-    setTimeout(() => { if (banner.parentNode) banner.remove(); }, 10000);
-  }
-
-  // ── PWA Toast (for update notifications) ────────────────
-  function showPWAToast(msg, action, callback) {
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-      z-index: 800; background: #141418; border: 1px solid rgba(45,212,160,0.3);
-      border-radius: 10px; padding: 12px 16px; display: flex; align-items: center;
-      gap: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: calc(100vw - 40px);
-      font-family: 'DM Sans', sans-serif; font-size: 13px; color: #f0eee8;
-      animation: pwaSlideUp 0.3s ease;
-    `;
-    toast.innerHTML = `
-      <span>${msg}</span>
-      <button style="background:#2dd4a0;color:#000;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">${action}</button>
-    `;
-    toast.querySelector('button').addEventListener('click', () => { callback(); toast.remove(); });
-    document.body.appendChild(toast);
-    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 8000);
-  }
-
-  // ── Inject animation keyframe ────────────────────────────
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes pwaSlideUp {
-      from { opacity:0; transform:translateX(-50%) translateY(20px); }
-      to   { opacity:1; transform:translateX(-50%) translateY(0); }
-    }
-    @media (min-width: 768px) {
-      #pwaInstallBanner, #pwaIOSBanner {
-        bottom: 24px !important;
-      }
-    }
-  `;
-  document.head.appendChild(style);
-
 })();
 </script>
 
