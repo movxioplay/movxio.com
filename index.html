@@ -1428,21 +1428,31 @@ footer {
 <!-- ============ GENRE PILLS ============ -->
 <div class="genre-strip" style="padding-top:40px;">
   <div class="genre-pills" id="genrePills">
-    <button class="genre-pill active" data-genre="all" onclick="filterGenre(this,'all')"><span class="icon">🎬</span> All</button>
-    <button class="genre-pill" data-genre="action" onclick="filterGenre(this,'action')"><span class="icon">💥</span> Action</button>
-    <button class="genre-pill" data-genre="drama" onclick="filterGenre(this,'drama')"><span class="icon">🎭</span> Drama</button>
-    <button class="genre-pill" data-genre="comedy" onclick="filterGenre(this,'comedy')"><span class="icon">😄</span> Comedy</button>
-    <button class="genre-pill" data-genre="thriller" onclick="filterGenre(this,'thriller')"><span class="icon">🔪</span> Thriller</button>
-    <button class="genre-pill" data-genre="horror" onclick="filterGenre(this,'horror')"><span class="icon">👻</span> Horror</button>
-    <button class="genre-pill" data-genre="sci-fi" onclick="filterGenre(this,'sci-fi')"><span class="icon">🚀</span> Sci-Fi</button>
-    <button class="genre-pill" data-genre="romance" onclick="filterGenre(this,'romance')"><span class="icon">💖</span> Romance</button>
-    <button class="genre-pill" data-genre="crime" onclick="filterGenre(this,'crime')"><span class="icon">🔫</span> Crime</button>
-    <button class="genre-pill" data-genre="animation" onclick="filterGenre(this,'animation')"><span class="icon">🎨</span> Animation</button>
-    <button class="genre-pill" data-genre="documentary" onclick="filterGenre(this,'documentary')"><span class="icon">📽️</span> Documentary</button>
-    <button class="genre-pill" data-genre="hindi" onclick="filterGenre(this,'hindi')"><span class="icon">🇮🇳</span> Hindi</button>
-    <button class="genre-pill" data-genre="korean" onclick="filterGenre(this,'korean')"><span class="icon">🇰🇷</span> Korean</button>
-    <button class="genre-pill" data-genre="sinhala" onclick="filterGenre(this,'sinhala')"><span class="icon">🇱🇰</span> සිංහල</button>
-    <button class="genre-pill" data-genre="tamil" onclick="filterGenre(this,'tamil')"><span class="icon">🇱🇰</span> தமிழ்</button>
+    <button class="genre-pill active" data-genre="all"           onclick="filterGenre(this,'all')">          <span class="icon">🎬</span> All</button>
+    <button class="genre-pill"        data-genre="action"        onclick="filterGenre(this,'action')">       <span class="icon">💥</span> Action</button>
+    <button class="genre-pill"        data-genre="drama"         onclick="filterGenre(this,'drama')">        <span class="icon">🎭</span> Drama</button>
+    <button class="genre-pill"        data-genre="comedy"        onclick="filterGenre(this,'comedy')">       <span class="icon">😄</span> Comedy</button>
+    <button class="genre-pill"        data-genre="thriller"      onclick="filterGenre(this,'thriller')">     <span class="icon">🔪</span> Thriller</button>
+    <button class="genre-pill"        data-genre="horror"        onclick="filterGenre(this,'horror')">       <span class="icon">👻</span> Horror</button>
+    <button class="genre-pill"        data-genre="sci-fi"        onclick="filterGenre(this,'sci-fi')">       <span class="icon">🚀</span> Sci-Fi</button>
+    <button class="genre-pill"        data-genre="romance"       onclick="filterGenre(this,'romance')">      <span class="icon">💖</span> Romance</button>
+    <button class="genre-pill"        data-genre="crime"         onclick="filterGenre(this,'crime')">        <span class="icon">🔫</span> Crime</button>
+    <button class="genre-pill"        data-genre="animation"     onclick="filterGenre(this,'animation')">    <span class="icon">🎨</span> Animation</button>
+    <button class="genre-pill"        data-genre="documentary"   onclick="filterGenre(this,'documentary')">  <span class="icon">📽️</span> Documentary</button>
+    <button class="genre-pill"        data-genre="biography"     onclick="filterGenre(this,'biography')">    <span class="icon">📖</span> Biography</button>
+    <button class="genre-pill"        data-genre="mystery"       onclick="filterGenre(this,'mystery')">      <span class="icon">🔍</span> Mystery</button>
+    <button class="genre-pill"        data-genre="fantasy"       onclick="filterGenre(this,'fantasy')">      <span class="icon">🧙</span> Fantasy</button>
+    <button class="genre-pill"        data-genre="war"           onclick="filterGenre(this,'war')">          <span class="icon">💣</span> War</button>
+    <button class="genre-pill"        data-genre="history"       onclick="filterGenre(this,'history')">      <span class="icon">🏛️</span> History</button>
+    <button class="genre-pill"        data-genre="musical"       onclick="filterGenre(this,'musical')">      <span class="icon">🎤</span> Musical</button>
+    <button class="genre-pill"        data-genre="kungfu"        onclick="filterGenre(this,'kungfu')">       <span class="icon">🥋</span> Kung Fu</button>
+    <button class="genre-pill"        data-genre="psychological" onclick="filterGenre(this,'psychological')"><span class="icon">🧠</span> Psychological</button>
+    <button class="genre-pill"        data-genre="sinhala"       onclick="filterGenre(this,'sinhala')">      <span class="icon">🇱🇰</span> සිංහල</button>
+    <button class="genre-pill"        data-genre="tamil"         onclick="filterGenre(this,'tamil')">        <span class="icon">🇱🇰</span> தமிழ்</button>
+    <button class="genre-pill"        data-genre="hindi"         onclick="filterGenre(this,'hindi')">        <span class="icon">🇮🇳</span> Hindi</button>
+    <button class="genre-pill"        data-genre="korean"        onclick="filterGenre(this,'korean')">       <span class="icon">🇰🇷</span> Korean</button>
+    <button class="genre-pill"        data-genre="japanese"      onclick="filterGenre(this,'japanese')">     <span class="icon">🇯🇵</span> Japanese</button>
+    <a class="genre-pill" href="browse.html" style="text-decoration:none;">                                  <span class="icon">＋</span> More Genres</a>
   </div>
 </div>
 
@@ -1521,6 +1531,12 @@ footer {
     <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text-dim);margin-bottom:8px;">No films in this genre yet</div>
     <div style="font-size:13px;">Check back soon or explore another category</div>
   </div>
+  <div id="browseAllCta" style="display:none;justify-content:center;padding:32px 0 8px;">
+    <a href="browse.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid rgba(255,255,255,0.08);color:var(--text);padding:14px 28px;border-radius:40px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(232,71,63,0.5)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='var(--text)'">
+      Browse Full Library
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
 </section>
 
 <!-- ============ FOOTER ============ -->
@@ -1545,7 +1561,7 @@ footer {
         <h4>Info</h4>
         <ul>
           <li><a href="about.html">About</a></li>
-          <li><a href="mailto:hello@movxio.com">Contact</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#b0d8d5dcdcdff0dddfc6c8d9df9ed3dfdd">Contact</a></li>
           <li><a href="privacy.html">Privacy Policy</a></li>
           <li><a href="terms.html">Terms of Use</a></li>
           <li><a href="dmca.html">DMCA</a></li>
@@ -1554,13 +1570,13 @@ footer {
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 MOVXIO. Free streaming platform.</p>
+    <p>© 2025–2026 MOVXIO. Free streaming platform.</p>
     <p>No account required · No subscription · No cost</p>
   </div>
 </footer>
 
 <!-- ============ SUPABASE + JS ============ -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================================
 // CONFIG — paste your Supabase credentials in admin settings
 // ============================================================
@@ -1684,7 +1700,7 @@ function cardToggleWl(btn, id) {
 function renderWatchlistRow(films) {
   const ids = getWatchlist();
   if (!ids.length) { document.getElementById('watchlistSection').style.display = 'none'; return; }
-  const wlFilms = ids.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 12);
+  const wlFilms = ids.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 8);
   if (!wlFilms.length) { document.getElementById('watchlistSection').style.display = 'none'; return; }
   document.getElementById('watchlistSection').style.display = 'block';
   document.getElementById('watchlistRow').innerHTML = wlFilms.map((f,i) => filmCard(f,i)).join('');
@@ -1696,7 +1712,7 @@ function renderWatchlistRow(films) {
 function renderRecentlyViewed(films) {
   const history = JSON.parse(localStorage.getItem('mvx_history') || '[]');
   if (!history.length) return;
-  const recentFilms = history.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 12);
+  const recentFilms = history.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 8);
   if (!recentFilms.length) return;
   document.getElementById('recentSection').style.display = 'block';
   document.getElementById('recentRow').innerHTML = recentFilms.map((f,i) => filmCard(f,i)).join('');
@@ -1817,7 +1833,7 @@ function buildRecommendations(films) {
     })
     .filter(function(x){ return x.overlap > 0; })  // must share at least 1 genre
     .sort(function(a, b){ return b.score - a.score; })
-    .slice(0, 12);
+    .slice(0, 8);
 
   if (!candidates.length) return;
 
@@ -1943,18 +1959,28 @@ function renderAllFilms(genre) {
     ? allFilms
     : allFilms.filter(f => (f.genre||'').split(',').map(g=>g.trim()).includes(genre));
 
-  const grid = document.getElementById('allFilmsGrid');
+  const grid  = document.getElementById('allFilmsGrid');
   const empty = document.getElementById('emptyState');
   const title = document.getElementById('allFilmsTitle');
   const count = document.getElementById('filmCount');
+  const cta   = document.getElementById('browseAllCta');
+
+  const LIMIT = 30;
+  const display = filtered.slice(0, LIMIT);
 
   if (filtered.length === 0) {
     grid.innerHTML = '';
     empty.style.display = 'block';
+    if (cta) cta.style.display = 'none';
   } else {
     empty.style.display = 'none';
-    grid.innerHTML = filtered.map((f,i) => filmCard(f,i)).join('');
+    grid.innerHTML = display.map((f,i) => filmCard(f,i)).join('');
+    // Show CTA if there are more films than we're displaying
+    if (cta) cta.style.display = filtered.length > LIMIT ? 'flex' : 'none';
   }
+
+  const browseUrl = genre === 'all' ? 'browse.html' : `browse.html?genre=${encodeURIComponent(genre)}`;
+  if (cta) cta.querySelector('a').href = browseUrl;
 
   title.innerHTML = genre === 'all' ? 'All Films' : `${capitalize(genre)} Films`;
   count.textContent = `${filtered.length} film${filtered.length !== 1 ? 's' : ''}`;
@@ -1978,8 +2004,9 @@ function renderContinueWatching(films) {
 
   if (!inProgress.length) return;
 
+  const cwFilms = inProgress.slice(0, 8);
   document.getElementById('continueSection').style.display = 'block';
-  document.getElementById('continueRow').innerHTML = inProgress.map(f => {
+  document.getElementById('continueRow').innerHTML = cwFilms.map(f => {
     const pct = f._cwDur ? Math.min(100, Math.round((f._cwPos / f._cwDur) * 100)) : 0;
     const thumb = f.thumbnail_url
       ? `<img class="cw-thumb" src="${esc(f.thumbnail_url)}" alt="${esc(f.title)}" loading="lazy">`
@@ -2231,15 +2258,4 @@ document.addEventListener('keydown', e => {
   // Unregister any existing service workers to prevent caching issues
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      registrations.forEach(function(reg) {
-        reg.unregister();
-        console.log('[MOVXIO] SW unregistered:', reg.scope);
-      });
-    });
-  }
-})();
-</script>
-
-
-</body>
-</html>
+      registrations.forEach(function(reg
