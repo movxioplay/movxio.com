@@ -1381,7 +1381,10 @@ function renderFilmTable(films) {
   // Desktop table
   document.getElementById('films-tbody').innerHTML = filtered.map(f => `
     <tr data-id="${f.id}">
-      <td><input type="checkbox" class="row-check film-check" value="${f.id}" onchange="onRowCheck()"></td>
+      <td style="display:flex;align-items:center;gap:8px;padding:8px 12px;">
+        <input type="checkbox" class="row-check film-check" value="${f.id}" onchange="onRowCheck()">
+        ${f.thumbnail_url ? `<img class="row-thumb" src="${f.thumbnail_url}" alt="">` : '<div style="width:36px;height:54px;border-radius:3px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:16px;opacity:0.4;">🎬</div>'}
+      </td>
       <td>
         <strong>${f.title}</strong>
         <span class="badge-${f.type === 'series' ? 'series' : 'movie'}" style="margin-left:6px;font-size:9px;">${f.type === 'series' ? '📺 Series' : '🎬'}</span>
