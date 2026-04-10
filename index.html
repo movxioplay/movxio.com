@@ -782,23 +782,20 @@ nav {
    WIDE ROW (horizontal scroll)
 ======================================== */
 .film-row-wrap {
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 8px;
-  margin: 0 -8px;
-  padding: 0 8px;
+  padding: 0 32px 8px;
 }
-.film-row-wrap::-webkit-scrollbar { display: none; }
-
 .film-row {
-  display: flex;
-  gap: 14px;
-  width: max-content;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
 }
 .film-row .film-card {
-  width: 160px;
-  flex-shrink: 0;
+  width: 100%;
 }
+@media (max-width: 1100px) { .film-row { grid-template-columns: repeat(5, 1fr); } }
+@media (max-width: 860px)  { .film-row { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 640px)  { .film-row { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 420px)  { .film-row { grid-template-columns: repeat(2, 1fr); } }
 
 /* ========================================
    STATS BAR
@@ -1018,8 +1015,7 @@ footer {
 ======================================== */
 .cw-card {
   position: relative;
-  width: 160px;
-  flex-shrink: 0;
+  width: 100%;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
@@ -1374,7 +1370,7 @@ footer {
       <div class="section-title">Continue Watching <span class="label">Resume</span></div>
     </div>
   </div>
-  <div class="film-row-wrap" style="padding:0 32px 8px;">
+  <div class="film-row-wrap">
     <div class="film-row" id="continueRow"></div>
   </div>
 </div>
@@ -1387,7 +1383,7 @@ footer {
       <button onclick="clearHistory()" style="background:none;border:none;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;">Clear</button>
     </div>
   </div>
-  <div class="film-row-wrap" style="padding:0 32px 8px;">
+  <div class="film-row-wrap">
     <div class="film-row" id="recentRow"></div>
   </div>
 </div>
@@ -1407,7 +1403,7 @@ footer {
     </div>
     <div class="reco-because" id="recoBecause"></div>
   </div>
-  <div class="film-row-wrap" style="padding:0 32px 8px;">
+  <div class="film-row-wrap">
     <div class="film-row" id="recoRow"></div>
   </div>
 </div>
@@ -1420,7 +1416,7 @@ footer {
       <a href="browse.html?watchlist=1" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
   </div>
-  <div class="film-row-wrap" style="padding:0 32px 8px;">
+  <div class="film-row-wrap">
     <div class="film-row" id="watchlistRow"></div>
   </div>
 </div>
@@ -1700,7 +1696,7 @@ function cardToggleWl(btn, id) {
 function renderWatchlistRow(films) {
   const ids = getWatchlist();
   if (!ids.length) { document.getElementById('watchlistSection').style.display = 'none'; return; }
-  const wlFilms = ids.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 8);
+  const wlFilms = ids.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 12);
   if (!wlFilms.length) { document.getElementById('watchlistSection').style.display = 'none'; return; }
   document.getElementById('watchlistSection').style.display = 'block';
   document.getElementById('watchlistRow').innerHTML = wlFilms.map((f,i) => filmCard(f,i)).join('');
@@ -1712,7 +1708,7 @@ function renderWatchlistRow(films) {
 function renderRecentlyViewed(films) {
   const history = JSON.parse(localStorage.getItem('mvx_history') || '[]');
   if (!history.length) return;
-  const recentFilms = history.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 8);
+  const recentFilms = history.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 12);
   if (!recentFilms.length) return;
   document.getElementById('recentSection').style.display = 'block';
   document.getElementById('recentRow').innerHTML = recentFilms.map((f,i) => filmCard(f,i)).join('');
@@ -1833,7 +1829,7 @@ function buildRecommendations(films) {
     })
     .filter(function(x){ return x.overlap > 0; })  // must share at least 1 genre
     .sort(function(a, b){ return b.score - a.score; })
-    .slice(0, 8);
+    .slice(0, 12);
 
   if (!candidates.length) return;
 
@@ -2004,24 +2000,47 @@ function renderContinueWatching(films) {
 
   if (!inProgress.length) return;
 
-  const cwFilms = inProgress.slice(0, 8);
+  const cwFilms = inProgress.slice(0, 6);
   document.getElementById('continueSection').style.display = 'block';
-  document.getElementById('continueRow').innerHTML = cwFilms.map(f => {
-    const pct = f._cwDur ? Math.min(100, Math.round((f._cwPos / f._cwDur) * 100)) : 0;
-    const thumb = f.thumbnail_url
-      ? `<img class="cw-thumb" src="${esc(f.thumbnail_url)}" alt="${esc(f.title)}" loading="lazy">`
-      : `<div class="cw-thumb-ph">🎬</div>`;
-    return `
-      <div class="cw-card" onclick="window.location.href='watch.html?id=${esc(f.id)}'">
-        ${thumb}
-        <div class="cw-overlay">
-          <div class="cw-title">${esc(f.title)}</div>
-          <div class="cw-bar"><div class="cw-progress" style="width:${pct}%"></div></div>
-        </div>
-      </div>`;
+  document.getElementById('continueRow').innerHTML = cwFilms.map(function(f, i) {
+    var pct = f._cwDur ? Math.min(100, Math.round((f._cwPos / f._cwDur) * 100)) : 0;
+    var ph  = ['placeholder-1','placeholder-2','placeholder-3','placeholder-4'][i % 4];
+    var thumb = f.thumbnail_url
+      ? '<img src="' + esc(f.thumbnail_url) + '" alt="' + esc(f.title) + '" loading="lazy" style="width:100%;aspect-ratio:2/3;object-fit:cover;display:block;">'
+      : '<div class="card-thumb-placeholder ' + ph + '"><span class="placeholder-icon">&#127916;</span></div>';
+    var genres   = (f.genre||'').split(',').map(function(g){ return g.trim(); }).filter(Boolean);
+    var genreTags = genres.slice(0,3).map(function(g){ return '<span class="card-genre-tag">' + esc(g) + '</span>'; }).join('');
+    var saved    = isInWatchlist(f.id);
+    var wlFill   = saved ? 'var(--gold)' : 'none';
+    var wlStroke = saved ? 'var(--gold)' : '#fff';
+    var wlClass  = 'card-wl-btn' + (saved ? ' saved' : '');
+    var wlTitle  = saved ? 'Remove from watchlist' : 'Add to watchlist';
+    return ''
+      + '<div class="film-card" onclick="window.location.href=\x27watch.html?id=' + esc(f.id) + '\x27">'
+      + (f.badge ? '<div class="card-badge">' + esc(f.badge) + '</div>' : (f.featured ? '<div class="card-badge">Featured</div>' : ''))
+      + '<div class="card-thumb">'
+      + thumb
+      + '<div class="card-overlay">'
+      + '<div class="card-play"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div>'
+      + '<div class="card-overlay-title">' + esc(f.title) + '</div>'
+      + '<div class="card-overlay-meta">' + (f.year||'') + '</div>'
+      + '</div>'
+      + '<div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.12);z-index:3;">'
+      + '<div style="width:' + pct + '%;height:100%;background:var(--accent);border-radius:2px;"></div>'
+      + '</div>'
+      + '</div>'
+      + '<button onclick="event.stopPropagation();cardToggleWl(this,\x27' + esc(f.id) + '\x27)" title="' + wlTitle + '" class="' + wlClass + '" style="position:absolute;top:8px;right:8px;z-index:2;width:30px;height:30px;border-radius:50%;background:rgba(8,8,16,0.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 0.2s;">'
+      + '<svg viewBox="0 0 24 24" width="14" style="fill:' + wlFill + ';stroke:' + wlStroke + ';stroke-width:2;"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'
+      + '</button>'
+      + '<div class="card-info">'
+      + '<div class="card-title">' + esc(f.title) + '</div>'
+      + '<div class="card-meta">'
+      + '<span>' + (f.year||'') + '</span>'
+      + (f.imdb_rating ? '<span style="color:var(--gold);">&#9733;' + f.imdb_rating + '</span>' : '')
+      + genreTags
+      + '</div></div></div>';
   }).join('');
 }
-
 function filterGenre(btn, genre) {
   document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
@@ -2255,7 +2274,14 @@ document.addEventListener('keydown', e => {
 <!-- ══ PWA — Service Worker Cleanup ══ -->
 <script>
 (function() {
-  // Unregister any existing service workers to prevent caching issues
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      registrations.forEach(function(reg
+      registrations.forEach(function(reg) {
+        reg.unregister();
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
