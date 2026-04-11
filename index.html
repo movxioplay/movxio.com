@@ -781,23 +781,56 @@ nav {
 /* ========================================
    WIDE ROW (horizontal scroll)
 ======================================== */
-.film-row-wrap {
-  padding: 0 32px 8px;
+/* ── Horizontal scroll row ── */
+.film-row-outer {
+  position: relative;
   max-width: 1400px;
   margin: 0 auto;
+  padding: 0 32px 8px;
 }
+.film-row-wrap {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  padding-bottom: 8px;
+}
+.film-row-wrap::-webkit-scrollbar { display: none; }
 .film-row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
+  display: flex;
+  gap: 14px;
+  width: max-content;
 }
 .film-row .film-card {
-  width: 100%;
+  width: 180px;
+  flex-shrink: 0;
 }
-@media (max-width: 1100px) { .film-row { grid-template-columns: repeat(5, 1fr); } }
-@media (max-width: 860px)  { .film-row { grid-template-columns: repeat(4, 1fr); } }
-@media (max-width: 640px)  { .film-row { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 420px)  { .film-row { grid-template-columns: repeat(2, 1fr); } }
+/* Arrow buttons — desktop hover only */
+.row-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-60%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(14,14,26,0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s;
+  backdrop-filter: blur(8px);
+}
+.row-arrow:hover { background: rgba(232,71,63,0.85); border-color: var(--accent); }
+.row-arrow.left  { left: 0; }
+.row-arrow.right { right: 0; }
+.film-row-outer:hover .row-arrow { opacity: 1; }
+@media (max-width: 768px) { .row-arrow { display: none; } }
+@media (max-width: 480px) { .film-row .film-card { width: 140px; } }
 
 /* ========================================
    STATS BAR
@@ -1372,8 +1405,12 @@ footer {
       <div class="section-title">Continue Watching <span class="label">Resume</span></div>
     </div>
   </div>
-  <div class="film-row-wrap">
-    <div class="film-row" id="continueRow"></div>
+  <div class="film-row-outer">
+    <button class="row-arrow left" onclick="scrollRow(this,-1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="film-row-wrap" id="continueRowWrap">
+      <div class="film-row" id="continueRow"></div>
+    </div>
+    <button class="row-arrow right" onclick="scrollRow(this,1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
   </div>
 </div>
 
@@ -1385,8 +1422,12 @@ footer {
       <button onclick="clearHistory()" style="background:none;border:none;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;">Clear</button>
     </div>
   </div>
-  <div class="film-row-wrap">
-    <div class="film-row" id="recentRow"></div>
+  <div class="film-row-outer">
+    <button class="row-arrow left" onclick="scrollRow(this,-1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="film-row-wrap" id="recentRowWrap">
+      <div class="film-row" id="recentRow"></div>
+    </div>
+    <button class="row-arrow right" onclick="scrollRow(this,1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
   </div>
 </div>
 
@@ -1405,8 +1446,12 @@ footer {
     </div>
     <div class="reco-because" id="recoBecause"></div>
   </div>
-  <div class="film-row-wrap">
-    <div class="film-row" id="recoRow"></div>
+  <div class="film-row-outer">
+    <button class="row-arrow left" onclick="scrollRow(this,-1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="film-row-wrap" id="recoRowWrap">
+      <div class="film-row" id="recoRow"></div>
+    </div>
+    <button class="row-arrow right" onclick="scrollRow(this,1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
   </div>
 </div>
 
@@ -1418,124 +1463,28 @@ footer {
       <a href="browse.html?watchlist=1" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
   </div>
-  <div class="film-row-wrap">
-    <div class="film-row" id="watchlistRow"></div>
-  </div>
-</div>
-
-<!-- ============ GENRE PILLS ============ -->
-<div class="genre-strip" style="padding-top:40px;">
-  <div class="genre-pills" id="genrePills">
-    <button class="genre-pill active" data-genre="all"           onclick="filterGenre(this,'all')">          <span class="icon">🎬</span> All</button>
-    <button class="genre-pill"        data-genre="action"        onclick="filterGenre(this,'action')">       <span class="icon">💥</span> Action</button>
-    <button class="genre-pill"        data-genre="drama"         onclick="filterGenre(this,'drama')">        <span class="icon">🎭</span> Drama</button>
-    <button class="genre-pill"        data-genre="comedy"        onclick="filterGenre(this,'comedy')">       <span class="icon">😄</span> Comedy</button>
-    <button class="genre-pill"        data-genre="thriller"      onclick="filterGenre(this,'thriller')">     <span class="icon">🔪</span> Thriller</button>
-    <button class="genre-pill"        data-genre="horror"        onclick="filterGenre(this,'horror')">       <span class="icon">👻</span> Horror</button>
-    <button class="genre-pill"        data-genre="sci-fi"        onclick="filterGenre(this,'sci-fi')">       <span class="icon">🚀</span> Sci-Fi</button>
-    <button class="genre-pill"        data-genre="romance"       onclick="filterGenre(this,'romance')">      <span class="icon">💖</span> Romance</button>
-    <button class="genre-pill"        data-genre="crime"         onclick="filterGenre(this,'crime')">        <span class="icon">🔫</span> Crime</button>
-    <button class="genre-pill"        data-genre="animation"     onclick="filterGenre(this,'animation')">    <span class="icon">🎨</span> Animation</button>
-    <button class="genre-pill"        data-genre="documentary"   onclick="filterGenre(this,'documentary')">  <span class="icon">📽️</span> Documentary</button>
-    <button class="genre-pill"        data-genre="biography"     onclick="filterGenre(this,'biography')">    <span class="icon">📖</span> Biography</button>
-    <button class="genre-pill"        data-genre="mystery"       onclick="filterGenre(this,'mystery')">      <span class="icon">🔍</span> Mystery</button>
-    <button class="genre-pill"        data-genre="fantasy"       onclick="filterGenre(this,'fantasy')">      <span class="icon">🧙</span> Fantasy</button>
-    <button class="genre-pill"        data-genre="war"           onclick="filterGenre(this,'war')">          <span class="icon">💣</span> War</button>
-    <button class="genre-pill"        data-genre="history"       onclick="filterGenre(this,'history')">      <span class="icon">🏛️</span> History</button>
-    <button class="genre-pill"        data-genre="musical"       onclick="filterGenre(this,'musical')">      <span class="icon">🎤</span> Musical</button>
-    <button class="genre-pill"        data-genre="kungfu"        onclick="filterGenre(this,'kungfu')">       <span class="icon">🥋</span> Kung Fu</button>
-    <button class="genre-pill"        data-genre="psychological" onclick="filterGenre(this,'psychological')"><span class="icon">🧠</span> Psychological</button>
-    <button class="genre-pill"        data-genre="sinhala"       onclick="filterGenre(this,'sinhala')">      <span class="icon">🇱🇰</span> සිංහල</button>
-    <button class="genre-pill"        data-genre="tamil"         onclick="filterGenre(this,'tamil')">        <span class="icon">🇱🇰</span> தமிழ்</button>
-    <button class="genre-pill"        data-genre="hindi"         onclick="filterGenre(this,'hindi')">        <span class="icon">🇮🇳</span> Hindi</button>
-    <button class="genre-pill"        data-genre="korean"        onclick="filterGenre(this,'korean')">       <span class="icon">🇰🇷</span> Korean</button>
-    <button class="genre-pill"        data-genre="japanese"      onclick="filterGenre(this,'japanese')">     <span class="icon">🇯🇵</span> Japanese</button>
-    <a class="genre-pill" href="browse.html" style="text-decoration:none;">                                  <span class="icon">＋</span> More Genres</a>
-  </div>
-</div>
-
-<!-- ============ STATS BAR ============ -->
-<div class="stats-bar">
-  <div class="stat-item">
-    <div class="stat-value" id="statMovies">0</div>
-    <div class="stat-label">Movies</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-value">$<span>0</span></div>
-    <div class="stat-label">Cost to Watch</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-value">0<span>%</span></div>
-    <div class="stat-label">Signup Required</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-value">∞</div>
-    <div class="stat-label">Free, Forever</div>
-  </div>
-</div>
-
-<!-- ============ FEATURED FILMS ============ -->
-<section class="section">
-  <div class="section-header">
-    <div class="section-title">Featured Films <span class="label">Pick of the Week</span></div>
-    <a href="browse.html" class="section-link">
-      View all
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
-  <div class="film-grid featured" id="featuredGrid">
-    <!-- Populated by JS -->
-    <div class="film-card stagger" style="animation-delay:0.1s">
-      <div class="card-thumb"><div class="card-thumb-placeholder placeholder-1"><span class="placeholder-icon">🎬</span></div></div>
-      <div class="card-info"><div class="card-title">Loading...</div></div>
+  <div class="film-row-outer">
+    <button class="row-arrow left" onclick="scrollRow(this,-1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="film-row-wrap" id="watchlistRowWrap">
+      <div class="film-row" id="watchlistRow"></div>
     </div>
-  </div>
-</section>
-
-<!-- ============ LATEST ADDITIONS ============ -->
-<section class="section" style="padding-top:16px;">
-  <div class="section-header">
-    <div class="section-title">Latest Additions <span class="label">New</span></div>
-    <a href="browse.html?sort=latest" class="section-link">
-      View all
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
-  <div class="film-row-wrap">
-    <div class="film-row" id="latestRow">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-</section>
-
-<!-- ============ AD SLOT ============ -->
-<div style="padding: 0 32px;">
-  <div class="ad-slot ad-slot-inline">
-    <span>Advertisement</span>
+    <button class="row-arrow right" onclick="scrollRow(this,1)"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
   </div>
 </div>
 
-<!-- ============ ALL FILMS (filtered) ============ -->
-<section class="section" id="allFilmsSection">
-  <div class="section-header">
-    <div class="section-title" id="allFilmsTitle">All Films</div>
-    <span class="section-link" id="filmCount" style="cursor:default;"></span>
-  </div>
-  <div class="film-grid" id="allFilmsGrid">
-    <!-- Populated by JS -->
-  </div>
-  <div id="emptyState" style="display:none; text-align:center; padding:60px 0; color:var(--text-muted);">
-    <div style="font-size:40px;margin-bottom:16px;">🎬</div>
-    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text-dim);margin-bottom:8px;">No films in this genre yet</div>
-    <div style="font-size:13px;">Check back soon or explore another category</div>
-  </div>
-  <div id="browseAllCta" style="display:none;justify-content:center;padding:32px 0 8px;">
-    <a href="browse.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid rgba(255,255,255,0.08);color:var(--text);padding:14px 28px;border-radius:40px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(232,71,63,0.5)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)';this.style.color='var(--text)'">
-      Browse Full Library
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
-</section>
+<!-- ── Browse CTA ── -->
+<div style="max-width:1400px;margin:0 auto;padding:48px 32px 16px;">
+  <a href="browse.html" style="display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(232,71,63,0.12) 0%,rgba(61,127,255,0.08) 100%);border:1px solid rgba(232,71,63,0.2);border-radius:16px;padding:28px 36px;text-decoration:none;transition:all 0.25s;gap:20px;" onmouseover="this.style.borderColor='rgba(232,71,63,0.5)';this.style.background='linear-gradient(135deg,rgba(232,71,63,0.18) 0%,rgba(61,127,255,0.12) 100%)'" onmouseout="this.style.borderColor='rgba(232,71,63,0.2)';this.style.background='linear-gradient(135deg,rgba(232,71,63,0.12) 0%,rgba(61,127,255,0.08) 100%)'">
+    <div>
+      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;">Browse the Full Library</div>
+      <div style="font-size:14px;color:var(--text-muted);">Search, filter by genre, country, year and language — all free, no signup.</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;background:var(--accent);color:#fff;padding:12px 24px;border-radius:40px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;">
+      Browse All Films
+      <svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </div>
+  </a>
+</div>
 
 <!-- ============ FOOTER ============ -->
 <footer>
@@ -1698,7 +1647,7 @@ function cardToggleWl(btn, id) {
 function renderWatchlistRow(films) {
   const ids = getWatchlist();
   if (!ids.length) { document.getElementById('watchlistSection').style.display = 'none'; return; }
-  const wlFilms = ids.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 12);
+  const wlFilms = ids.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 20);
   if (!wlFilms.length) { document.getElementById('watchlistSection').style.display = 'none'; return; }
   document.getElementById('watchlistSection').style.display = 'block';
   document.getElementById('watchlistRow').innerHTML = wlFilms.map((f,i) => filmCard(f,i)).join('');
@@ -1710,7 +1659,7 @@ function renderWatchlistRow(films) {
 function renderRecentlyViewed(films) {
   const history = JSON.parse(localStorage.getItem('mvx_history') || '[]');
   if (!history.length) return;
-  const recentFilms = history.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 12);
+  const recentFilms = history.map(id => films.find(f => f.id === id)).filter(Boolean).slice(0, 20);
   if (!recentFilms.length) return;
   document.getElementById('recentSection').style.display = 'block';
   document.getElementById('recentRow').innerHTML = recentFilms.map((f,i) => filmCard(f,i)).join('');
@@ -1800,49 +1749,73 @@ function mobileSearchGo() {
 // RECOMMENDATION ENGINE — Because You Watched
 // ══════════════════════════════════════════════════════════════
 function buildRecommendations(films) {
-  // Get watch history from localStorage
+  // Get full watch history from localStorage
   var history = [];
   try { history = JSON.parse(localStorage.getItem('mvx_history') || '[]'); } catch {}
   if (!history.length) return;
 
-  // Find the most recently watched film that exists in our library
-  var seedFilm = null;
-  for (var i = 0; i < history.length; i++) {
-    var f = films.find(function(x){ return x.id === history[i]; });
-    if (f) { seedFilm = f; break; }
-  }
-  if (!seedFilm) return;
+  // ── Build genre frequency map from FULL history (not just last film) ──
+  var genreCount = {};
+  var watchedFilms = [];
+  history.forEach(function(id) {
+    var f = films.find(function(x){ return x.id === id; });
+    if (!f) return;
+    watchedFilms.push(f);
+    (f.genre || '').split(',').forEach(function(g) {
+      g = g.trim().toLowerCase();
+      if (g) genreCount[g] = (genreCount[g] || 0) + 1;
+    });
+  });
+  if (!watchedFilms.length) return;
 
-  // Get seed genres
-  var seedGenres = (seedFilm.genre || '').split(',').map(function(g){ return g.trim().toLowerCase(); }).filter(Boolean);
-  if (!seedGenres.length) return;
+  // Top 3 genres by frequency — these define this user's taste
+  var topGenres = Object.keys(genreCount)
+    .sort(function(a, b){ return genreCount[b] - genreCount[a]; })
+    .slice(0, 3);
+  if (!topGenres.length) return;
 
-  // Score every other film by genre overlap + recency + IMDb
+  // Seed label = most recently watched film (for the "Based on X" label)
+  var seedFilm = watchedFilms[0];
+
+  // Score every unwatched film by weighted genre overlap
   var candidates = films
-    .filter(function(f){ return f.id !== seedFilm.id && history.indexOf(f.id) === -1; })
+    .filter(function(f){ return history.indexOf(f.id) === -1; })
     .map(function(f) {
-      var fGenres   = (f.genre || '').split(',').map(function(g){ return g.trim().toLowerCase(); });
-      var overlap   = fGenres.filter(function(g){ return seedGenres.indexOf(g) !== -1; }).length;
-      var score     = overlap * 10
-                    + (f.imdb_rating ? parseFloat(f.imdb_rating) : 0)
-                    + (f.featured ? 3 : 0)
-                    + (f.views ? Math.min(f.views / 100, 5) : 0);
-      return { film: f, score: score, overlap: overlap };
+      var fGenres = (f.genre || '').split(',').map(function(g){ return g.trim().toLowerCase(); });
+      // Weighted overlap: top genre = 3pts, 2nd = 2pts, 3rd = 1pt
+      var score = 0;
+      topGenres.forEach(function(g, rank) {
+        if (fGenres.indexOf(g) !== -1) score += (3 - rank) * 10;
+      });
+      // Bonus: IMDb, featured, views
+      score += (f.imdb_rating ? parseFloat(f.imdb_rating) : 0);
+      score += (f.featured ? 3 : 0);
+      score += (f.views ? Math.min(f.views / 100, 5) : 0);
+      return { film: f, score: score };
     })
-    .filter(function(x){ return x.overlap > 0; })  // must share at least 1 genre
+    .filter(function(x){ return x.score > 0; })
     .sort(function(a, b){ return b.score - a.score; })
-    .slice(0, 12);
+    .slice(0, 20);
 
   if (!candidates.length) return;
 
   // Render
-  var section  = document.getElementById('recoSection');
-  var row      = document.getElementById('recoRow');
-  var because  = document.getElementById('recoBecause');
+  var section = document.getElementById('recoSection');
+  var row     = document.getElementById('recoRow');
+  var because = document.getElementById('recoBecause');
 
-  because.innerHTML = 'Based on <strong>' + esc(seedFilm.title) + '</strong>';
-  row.innerHTML     = candidates.map(function(c, i){ return filmCard(c.film, i); }).join('');
+  // Show top 3 genre labels
+  var genreLabels = topGenres.map(function(g){ return g.charAt(0).toUpperCase() + g.slice(1); }).join(', ');
+  because.innerHTML = 'Your taste: <strong>' + genreLabels + '</strong>';
+  row.innerHTML = candidates.map(function(c, i){ return filmCard(c.film, i); }).join('');
   section.classList.add('show');
+}
+
+// ── Row scroll arrow handler ─────────────────────────────────
+function scrollRow(btn, dir) {
+  var outer = btn.closest('.film-row-outer');
+  var wrap  = outer.querySelector('.film-row-wrap');
+  wrap.scrollBy({ left: dir * 620, behavior: 'smooth' });
 }
 
 async function init() {
@@ -2002,7 +1975,7 @@ function renderContinueWatching(films) {
 
   if (!inProgress.length) return;
 
-  const cwFilms = inProgress.slice(0, 6);
+  const cwFilms = inProgress.slice(0, 20);
   document.getElementById('continueSection').style.display = 'block';
   document.getElementById('continueRow').innerHTML = cwFilms.map(function(f, i) {
     var pct = f._cwDur ? Math.min(100, Math.round((f._cwPos / f._cwDur) * 100)) : 0;
@@ -2047,7 +2020,7 @@ function filterGenre(btn, genre) {
   document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   renderAllFilms(genre);
-  document.getElementById('allFilmsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  window.location.href = 'browse.html';
 }
 
 function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -2071,7 +2044,7 @@ function renderDemoState() {
 // ── TRAILER MODAL ────────────────────────────────────────────
 function openMoreInfo() {
   if (currentHeroFilm) openTrailer(currentHeroFilm);
-  else document.getElementById('allFilmsSection').scrollIntoView({ behavior: 'smooth' });
+  else window.location.href = 'browse.html';
 }
 
 function openTrailer(film) {
