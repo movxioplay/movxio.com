@@ -506,11 +506,12 @@ document.addEventListener('click', e => {
 
 // ── MAIN SEARCH INPUT ─────────────────────────────────────────
 document.getElementById('mainSearch').addEventListener('input', e => {
-  const q = e.target.value.trim();
+  const raw = e.target.value;      // preserve spaces as typed
+  const q   = raw.trim();          // trimmed only for logic
   currentQuery = q;
 
   // Show/hide clear button
-  document.getElementById('searchClear').classList.toggle('show', q.length > 0);
+  document.getElementById('searchClear').classList.toggle('show', raw.length > 0);
 
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
@@ -526,7 +527,7 @@ document.getElementById('mainSearch').addEventListener('input', e => {
 // ── RUN SEARCH ────────────────────────────────────────────────
 function runSearch(q) {
   currentQuery = q;
-  document.getElementById('mainSearch').value = q;
+  // Don't overwrite input value — preserves spaces and cursor position
   document.getElementById('searchClear').classList.toggle('show', q.length > 0);
   document.getElementById('suggestionsList').classList.remove('open');
 
