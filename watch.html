@@ -72,8 +72,6 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   background: #000;
   width: 100%;
   position: relative;
-  margin-top: 3px;
-  box-shadow: 0 -3px 0 0 rgba(232,71,63,0.35), inset 0 4px 24px rgba(0,0,0,0.6);
 }
 
 /* Hide Video.js default UI completely */
@@ -94,11 +92,11 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   cursor: none;
   aspect-ratio: unset !important;
 }
+/* Only the actual video element gets a black bg (for letterbox bars during playback) */
+.video-js video { background: #000; }
 
-/* Fix 2: poster fills frame — bump specificity to override Video.js internals */
-.video-js .vjs-poster,
-.video-js.vjs-paused .vjs-poster,
-.video-js.vjs-has-started.vjs-paused .vjs-poster {
+/* Fix 2: poster image fills frame — no letterbox on backdrop */
+.video-js .vjs-poster {
   background-size: cover !important;
   background-position: center center !important;
   display: block !important;
@@ -127,7 +125,7 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   animation: initPlayPulse 2.2s ease-in-out infinite;
 }
 
-/* Fix 4: blurred poster fallback background layer */
+/* Fix 4: blurred poster fallback background layer — always shown before play */
 #playerBgBlur {
   position: absolute;
   inset: 0;
@@ -141,7 +139,8 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   transition: opacity 0.4s ease;
 }
 #playerBgBlur.visible { opacity: 1; }
-#playerContainer.is-playing #playerBgBlur { opacity: 0; }
+/* Hide blur bg once video is actually playing */
+#playerContainer.is-playing #playerBgBlur { opacity: 0; transition: opacity 0.6s ease; }
 
 /* Portrait mobile — fill width */
 @media (max-width: 600px) {
@@ -855,8 +854,9 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
   display: grid;
   grid-template-columns: 1fr 320px;
   align-items: start;
-  max-width: 1600px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   min-height: calc(100vh - 64px);
 }
 .master-main { min-width: 0; }
@@ -2261,11 +2261,12 @@ function initPlayer(film, videoUrl, episode) {
   const posterImg = film.backdrop_url || film.thumbnail_url;
   if (posterImg) player.poster(posterImg);
 
-  // Fix 4: blurred poster fallback — show when no backdrop, hide once playing
+  // Fix 4: blurred poster bg — always shown before play to fill letterbox bars
   const bgBlur = document.getElementById('playerBgBlur');
   if (bgBlur) {
-    if (!film.backdrop_url && film.thumbnail_url) {
-      bgBlur.style.backgroundImage = `url('${film.thumbnail_url}')`;
+    const blurSrc = film.backdrop_url || film.thumbnail_url;
+    if (blurSrc) {
+      bgBlur.style.backgroundImage = `url('${blurSrc}')`;
       bgBlur.classList.add('visible');
     } else {
       bgBlur.classList.remove('visible');
