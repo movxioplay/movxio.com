@@ -322,6 +322,54 @@ function highlight(text, query) {
   const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return esc(text).replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
 }
+// ── Fuzzy / typo-tolerant matching ───────────────────────────
+// Levenshtein distance between two strings
+function levenshtein(a, b) {
+  var m = a.length, n = b.length;
+  var dp = [];
+  for (var i = 0; i <= m; i++) {
+    dp[i] = [i];
+    for (var j = 1; j <= n; j++) {
+      dp[i][j] = i === 0 ? j
+        : j === 0 ? i
+        : a[i-1] === b[j-1] ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+// fuzzyMatch: returns score > 0 if query fuzzy-matches target
+// Score: 3 = exact substring, 2 = word boundary fuzzy, 1 = whole-field fuzzy
+function fuzzyMatch(target, query) {
+  if (!target || !query) return 0;
+  var t = target.toLowerCase();
+  var q = query.toLowerCase();
+  // Exact substring — best
+  if (t.includes(q)) return 3;
+  // Check each word in target against query
+  var words = t.split(/[\s,]+/).filter(Boolean);
+  for (var i = 0; i < words.length; i++) {
+    var w = words[i];
+    // Query is prefix of word (kung → kungfu)
+    if (w.startsWith(q)) return 3;
+    // Fuzzy within a word — allow 1 edit per 4 chars, max 2
+    var maxDist = Math.min(2, Math.floor(q.length / 4));
+    if (maxDist > 0 && levenshtein(w.slice(0, q.length + 1), q) <= maxDist) return 2;
+  }
+  // Whole-field fuzzy — allow up to 2 edits on short queries
+  if (q.length >= 4) {
+    var maxDist2 = q.length <= 5 ? 1 : 2;
+    // Slide query over target looking for a fuzzy window match
+    for (var start = 0; start <= t.length - q.length + 2; start++) {
+      var window = t.slice(start, start + q.length + 1);
+      if (levenshtein(window, q) <= maxDist2) return 1;
+    }
+  }
+  return 0;
+}
+
+
 
 // ── STATE ─────────────────────────────────────────────────────
 let allFilms = [];
@@ -399,8 +447,11 @@ function renderSuggestions(q) {
   if (!q || q.length < 2) { list.classList.remove('open'); return; }
 
   const matches = allFilms
-    .filter(f => f.title.toLowerCase().includes(q.toLowerCase()))
-    .slice(0, 6);
+    .map(f => ({ film: f, score: fuzzyMatch(f.title, q) }))
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6)
+    .map(x => x.film);
 
   if (!matches.length) { list.classList.remove('open'); return; }
 
@@ -490,35 +541,39 @@ function runSearch(q) {
   const country = document.getElementById('filterCountry').value;
   const sort    = document.getElementById('filterSort').value;
 
-  // Match across multiple fields
+  // Match across multiple fields — exact + fuzzy typo tolerance
   const qLow = q.toLowerCase();
   let results = allFilms.filter(f => {
-    const inTitle    = f.title?.toLowerCase().includes(qLow);
-    const inDesc     = f.description?.toLowerCase().includes(qLow);
-    const inDirector = f.director?.toLowerCase().includes(qLow);
-    const inActors   = f.actors?.toLowerCase().includes(qLow);
-    const inGenre    = f.genre?.toLowerCase().includes(qLow);
-    const matchQ = inTitle || inDesc || inDirector || inActors || inGenre;
+    const titleScore  = fuzzyMatch(f.title, q);
+    const dirScore    = fuzzyMatch(f.director, q);
+    const actorScore  = fuzzyMatch(f.actors, q);
+    const genreScore  = fuzzyMatch(f.genre, q);
+    const descScore   = f.description?.toLowerCase().includes(qLow) ? 3 : 0;
+    const matchQ = titleScore || dirScore || actorScore || genreScore || descScore;
 
     const matchGenre   = !genre   || (f.genre||'').split(',').map(g=>g.trim()).includes(genre);
     const matchYear    = !year    ? true : year === 'older' ? (f.year && f.year < 2020) : String(f.year) === year;
-    const matchCountry = !country || (f.country||'') === country;
+    const matchCountry = !country || (f.country||'').split(',').map(c=>c.trim()).includes(country);
 
     return matchQ && matchGenre && matchYear && matchCountry;
   });
 
-  // Score by relevance — title match ranked higher
+  // Score by relevance — exact matches rank above fuzzy, title ranks above other fields
   results = results.map(f => ({
     ...f,
-    _score: (f.title?.toLowerCase().includes(qLow) ? 10 : 0)
-          + (f.director?.toLowerCase().includes(qLow) ? 5 : 0)
-          + (f.actors?.toLowerCase().includes(qLow) ? 4 : 0)
-          + (f.genre?.toLowerCase().includes(qLow) ? 3 : 0)
+    _titleScore:  fuzzyMatch(f.title, q),
+    _dirScore:    fuzzyMatch(f.director, q),
+    _actorScore:  fuzzyMatch(f.actors, q),
+    _genreScore:  fuzzyMatch(f.genre, q),
+    _score: (fuzzyMatch(f.title, q)     * 10)
+          + (fuzzyMatch(f.director, q)  * 5)
+          + (fuzzyMatch(f.actors, q)    * 4)
+          + (fuzzyMatch(f.genre, q)     * 3)
           + (f.description?.toLowerCase().includes(qLow) ? 1 : 0),
-    _matchField: f.title?.toLowerCase().includes(qLow) ? 'title'
-               : f.director?.toLowerCase().includes(qLow) ? 'director'
-               : f.actors?.toLowerCase().includes(qLow) ? 'cast'
-               : f.genre?.toLowerCase().includes(qLow) ? 'genre'
+    _matchField: fuzzyMatch(f.title, q)    ? 'title'
+               : fuzzyMatch(f.director, q) ? 'director'
+               : fuzzyMatch(f.actors, q)   ? 'cast'
+               : fuzzyMatch(f.genre, q)    ? 'genre'
                : 'description'
   }));
 
@@ -675,30 +730,13 @@ async function init() {
 init();
 </script>
 
-<!-- ══ PWA — Service Worker + Install Prompt ══ -->
+<!-- ══ PWA — Service Worker Cleanup ══ -->
 <script>
 (function() {
-  // ── Register Service Worker ──────────────────────────────
+  // Unregister any existing service workers — SW removed due to caching issues
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => {
-          console.log('[MOVXIO] SW registered:', reg.scope);
-
-          // Check for updates every 30 minutes
-          setInterval(() => reg.update(), 30 * 60 * 1000);
-
-          // New version available — show update toast
-          reg.addEventListener('updatefound', () => {
-            const newWorker = reg.installing;
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                showPWAToast('🔄 New version available — ', 'Refresh', () => location.reload());
-              }
-            });
-          });
-        })
-        .catch(err => console.warn('[MOVXIO] SW registration failed:', err));
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      registrations.forEach(function(reg) { reg.unregister(); });
     });
   }
 
@@ -855,5 +893,6 @@ init();
 
 })();
 </script>
+
 </body>
 </html>
