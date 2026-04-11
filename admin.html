@@ -317,6 +317,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
     <button class="sidebar-item" data-page="sql" onclick="showPage('sql')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>SQL Setup
     </button>
+    <button class="sidebar-item" data-page="push" onclick="showPage('push')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Push Notify
+    </button>
     <button class="sidebar-item" data-page="deploy" onclick="showPage('deploy')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Deploy Guide
     </button>
@@ -1218,6 +1222,98 @@ wrangler r2 bucket list</div>
   </button>
 </div>
 
+
+    <!-- ══════════════════════════════════════════ -->
+    <div id="page-push" class="page-content">
+      <div class="page-header">
+        <div class="page-title">Push <span>Notifications</span></div>
+        <button class="btn-primary" onclick="sendPushNotification()">
+          <svg width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Now
+        </button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+
+        <!-- Compose panel -->
+        <div class="settings-form">
+          <div class="settings-title">Compose Notification</div>
+
+          <div class="form-group">
+            <label>Title <span style="color:var(--accent)">*</span></label>
+            <input id="push-title" type="text" placeholder="e.g. New Film Added!" maxlength="60"
+              oninput="updatePushPreview()" style="font-size:14px;">
+            <div class="settings-hint" id="push-title-count">0 / 60</div>
+          </div>
+
+          <div class="form-group">
+            <label>Message <span style="color:var(--accent)">*</span></label>
+            <textarea id="push-body" placeholder="e.g. Avatar: Fire and Ash is now streaming free on MOVXIO!"
+              maxlength="140" rows="3" oninput="updatePushPreview()"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:10px 12px;font-size:14px;font-family:'DM Sans',sans-serif;resize:vertical;outline:none;"></textarea>
+            <div class="settings-hint" id="push-body-count">0 / 140</div>
+          </div>
+
+          <div class="form-group">
+            <label>Link (optional)</label>
+            <input id="push-url" type="text" placeholder="e.g. watch.html?id=FILM_UUID"
+              style="font-size:14px;">
+            <div class="settings-hint">Leave blank to link to homepage</div>
+          </div>
+
+          <div class="form-group">
+            <label>Icon URL (optional)</label>
+            <input id="push-icon" type="text" placeholder="https://... film poster or leave blank for MOVXIO logo"
+              style="font-size:14px;">
+          </div>
+        </div>
+
+        <!-- Preview + stats panel -->
+        <div>
+          <div class="settings-form" style="margin-bottom:16px;">
+            <div class="settings-title">Preview</div>
+            <div id="pushPreview" style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;margin-top:8px;">
+              <div style="width:40px;height:40px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🎬</div>
+              <div style="flex:1;min-width:0;">
+                <div id="preview-title" style="font-weight:700;font-size:13px;color:#fff;margin-bottom:3px;">Your notification title</div>
+                <div id="preview-body" style="font-size:12px;color:rgba(255,255,255,0.6);line-height:1.4;">Your notification message will appear here...</div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:6px;">movxio.com · now</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-form">
+            <div class="settings-title">Subscribers</div>
+            <div id="pushSubCount" style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--gold);margin:8px 0 4px;">—</div>
+            <div style="font-size:12px;color:var(--muted);">Users subscribed to push notifications</div>
+            <button onclick="loadPushStats()" style="margin-top:12px;background:none;border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">↺ Refresh count</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Send log -->
+      <div class="settings-form">
+        <div class="settings-title">Send Log</div>
+        <div id="pushLog" style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);min-height:40px;margin-top:8px;line-height:1.8;">No notifications sent yet this session.</div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="settings-form" style="margin-top:16px;">
+        <div class="settings-title">How push notifications work</div>
+        <p class="settings-hint" style="line-height:1.8;">
+          Users who visit MOVXIO and accept the browser notification prompt are subscribed via the PWA install flow.
+          Their subscription data is stored in the <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;">push_subscriptions</code> Supabase table.
+          When you click Send Now, this admin panel posts to your Cloudflare Worker which delivers the notification to all subscribers via the Web Push Protocol.
+          <br><br>
+          <strong style="color:var(--text);">Required:</strong> VAPID keys set in your Cloudflare Worker environment variables
+          (<code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;">VAPID_PUBLIC</code>,
+          <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;">VAPID_PRIVATE</code>,
+          <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;">VAPID_SUBJECT</code>).
+          See the Deploy Guide for setup instructions.
+        </p>
+      </div>
+    </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1265,7 +1361,7 @@ async function doLogin() {
 function logout() { SESSION_TOKEN = null; location.reload(); }
 
 // ── PAGE NAVIGATION ───────────────────────────────────────────
-const ALL_PAGES = ['films','banners','ads','settings','sql','deploy'];
+const ALL_PAGES = ['films','banners','ads','settings','sql','deploy','push'];
 
 function showPage(p) {
   ALL_PAGES.forEach(name => {
@@ -2158,6 +2254,106 @@ const _origRenderFilmTable = renderFilmTable;
 window.renderFilmTable = function(films) {
   _origRenderFilmTable(films);
   renderChart();
+};
+
+
+// ── PUSH NOTIFICATIONS ─────────────────────────────────────────
+
+function updatePushPreview() {
+  var title = document.getElementById('push-title').value;
+  var body  = document.getElementById('push-body').value;
+  document.getElementById('preview-title').textContent = title || 'Your notification title';
+  document.getElementById('preview-body').textContent  = body  || 'Your notification message will appear here...';
+  document.getElementById('push-title-count').textContent = title.length + ' / 60';
+  document.getElementById('push-body-count').textContent  = body.length  + ' / 140';
+}
+
+async function loadPushStats() {
+  try {
+    var data = await supaFetch('push_subscriptions?select=id');
+    var count = Array.isArray(data) ? data.length : 0;
+    document.getElementById('pushSubCount').textContent = count.toLocaleString();
+  } catch {
+    document.getElementById('pushSubCount').textContent = '—';
+  }
+}
+
+function logPush(msg, ok) {
+  var log = document.getElementById('pushLog');
+  var now = new Date().toLocaleTimeString();
+  var line = now + '  ' + (ok ? '✓' : '✗') + '  ' + msg;
+  log.innerHTML = line + '<br>' + (log.innerHTML === 'No notifications sent yet this session.' ? '' : log.innerHTML);
+}
+
+async function sendPushNotification() {
+  var title = document.getElementById('push-title').value.trim();
+  var body  = document.getElementById('push-body').value.trim();
+  var url   = document.getElementById('push-url').value.trim()   || '/';
+  var icon  = document.getElementById('push-icon').value.trim()  || '/favicon-192x192.png';
+
+  if (!title) { toast('Title is required'); return; }
+  if (!body)  { toast('Message is required'); return; }
+
+  if (!WORKER_URL) {
+    toast('Worker URL not set — go to Settings');
+    logPush('Failed — WORKER_URL not configured in Settings', false);
+    return;
+  }
+
+  var btn = document.querySelector('#page-push .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+  try {
+    // Fetch all subscriptions from Supabase
+    var subs = await supaFetch('push_subscriptions?select=*&status=eq.active');
+    if (!subs || !subs.length) {
+      toast('No active subscribers yet');
+      logPush('No active subscribers found', false);
+      return;
+    }
+
+    // POST to Cloudflare Worker push endpoint
+    var res = await fetch(WORKER_URL + '/push', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        body,
+        url:  url.startsWith('http') ? url : 'https://movxio.com/' + url.replace(/^\//, ''),
+        icon,
+        subscriptions: subs,
+      }),
+    });
+
+    var result = await res.json().catch(() => ({}));
+    var sent = result.sent || 0;
+    var failed = result.failed || 0;
+
+    if (res.ok) {
+      toast('Sent to ' + sent + ' subscribers' + (failed ? ' (' + failed + ' failed)' : '') + ' ✓');
+      logPush('Sent "' + title + '" → ' + sent + ' delivered, ' + failed + ' failed', true);
+      // Clear form
+      document.getElementById('push-title').value = '';
+      document.getElementById('push-body').value  = '';
+      document.getElementById('push-url').value   = '';
+      document.getElementById('push-icon').value  = '';
+      updatePushPreview();
+    } else {
+      throw new Error(result.error || 'Worker returned ' + res.status);
+    }
+  } catch (err) {
+    toast('Send failed: ' + err.message);
+    logPush('Error: ' + err.message, false);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send Now'; }
+  }
+}
+
+// Load push stats when page becomes active
+var _origShowPage = showPage;
+showPage = function(p) {
+  _origShowPage(p);
+  if (p === 'push') loadPushStats();
 };
 
 </script>
