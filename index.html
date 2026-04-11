@@ -1497,7 +1497,7 @@ footer {
 <section class="section" id="featuredSection">
   <div class="section-header">
     <div class="section-title">Featured Films <span class="label">Pick of the Week</span></div>
-    <a href="browse.html" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <a href="browse.html?featured=true" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
   </div>
   <div class="film-grid featured" id="featuredGrid">
     <!-- Populated by JS -->
@@ -1508,7 +1508,7 @@ footer {
 <section class="section" id="latestSection">
   <div class="section-header">
     <div class="section-title">Latest Additions <span class="label">New</span></div>
-    <a href="browse.html" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    <a href="browse.html?sort=latest" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
   </div>
   <div class="film-grid" id="latestRow">
     <!-- Populated by JS -->
@@ -1851,6 +1851,12 @@ function buildRecommendations(films) {
   var genreLabels = topGenres.map(function(g){ return g.charAt(0).toUpperCase() + g.slice(1); }).join(', ');
   because.innerHTML = 'Your taste: <strong>' + genreLabels + '</strong>';
   row.innerHTML = candidates.map(function(c, i){ return filmCard(c.film, i); }).join('');
+  // Update Browse all link with top genre so it filters correctly
+  var recoLink = section.querySelector('.section-link');
+  if (recoLink && topGenres.length) {
+    recoLink.href = 'browse.html?genre=' + encodeURIComponent(topGenres[0]);
+    recoLink.title = 'Browse all ' + topGenres[0] + ' films';
+  }
   section.classList.add('show');
 }
 
@@ -1918,7 +1924,7 @@ async function init() {
   document.getElementById('featuredGrid').innerHTML = gridFilms.map((f,i) => filmCard(f,i)).join('');
 
   // Latest row (newest 12)
-  document.getElementById('latestRow').innerHTML = allFilms.slice(0, 12).map((f,i) => filmCard(f,i)).join('');
+  document.getElementById('latestRow').innerHTML = allFilms.slice(0, 18).map((f,i) => filmCard(f,i)).join('');
 
 }
 
