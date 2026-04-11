@@ -11,7 +11,11 @@
 <meta property="og:title" content="Watch Free — MOVXIO">
 <meta property="og:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta property="og:site_name" content="MOVXIO">
+<meta property="og:image" content="">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -625,6 +629,7 @@ body.theater-mode .player-section { position: fixed; top: 0; left: 0; right: 0; 
 body.theater-mode #playerContainer { max-height: 100vh; }
 body.theater-mode nav { opacity: 0; pointer-events: none; }
 body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
+body.theater-mode #backdropHero { display: none !important; }
 .ctrl-btn.active { color: var(--accent, #e8473f) !important; }
 
 /* ── Quality menu ── */
@@ -796,7 +801,7 @@ body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
   nav { display: none; }
   .player-section { height: 100svh; }
   #playerContainer { aspect-ratio: unset; height: 100svh; width: 100vw; }
-  .content-outer, .ad-slot, footer, .more-section { display: none; }
+  .content-outer, .ad-slot, footer, .more-section, #backdropHero { display: none; }
 }
 
 /* ══════════════════════════════════════
@@ -1125,6 +1130,131 @@ body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
   color: var(--text-muted); width: 24px; flex-shrink: 0;
 }
 
+/* ══════════════════════════════════════════
+   BACKDROP HERO
+══════════════════════════════════════════ */
+#backdropHero {
+  position: relative;
+  width: 100%;
+  height: clamp(260px, 42vw, 520px);
+  overflow: hidden;
+  display: none; /* shown by JS once image is ready */
+  background: #000;
+}
+
+/* The actual image — fills the container */
+#backdropImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  /* blurred-poster fallback gets extra blur applied via JS class */
+  transition: opacity 0.5s ease;
+  opacity: 0;
+}
+#backdropImg.loaded { opacity: 1; }
+#backdropImg.is-poster {
+  filter: blur(22px) saturate(1.3);
+  transform: scale(1.08); /* hide blur edges */
+}
+
+/* Multi-layer cinematic gradient overlay */
+#backdropHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right,  rgba(8,8,16,0.70) 0%, rgba(8,8,16,0.20) 55%, rgba(8,8,16,0.55) 100%),
+    linear-gradient(to top,    rgba(8,8,16,1.00) 0%, rgba(8,8,16,0.55) 28%, rgba(8,8,16,0.05) 60%, transparent 100%),
+    linear-gradient(to bottom, rgba(8,8,16,0.50) 0%, transparent 25%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Content sitting on top of image+overlay */
+#backdropContent {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 32px 28px;
+  gap: 22px;
+}
+
+/* Small poster thumbnail in the hero */
+#backdropPoster {
+  flex-shrink: 0;
+  width: 90px;
+  aspect-ratio: 2/3;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+  background: var(--surface2);
+  display: none; /* shown only when thumbnail_url exists */
+}
+#backdropPoster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Text block in the hero */
+#backdropText { min-width: 0; }
+#backdropEyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--accent); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 8px;
+}
+#backdropEyebrow::after {
+  content: ''; height: 1px; width: 36px; background: rgba(232,71,63,0.35);
+}
+#backdropTitle {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(20px, 3.5vw, 42px); letter-spacing: -0.03em; line-height: 1.05;
+  color: #fff; margin-bottom: 8px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: min(680px, 75vw);
+}
+#backdropMeta {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,0.55); letter-spacing: 0.04em;
+}
+#backdropMeta .bm-sep { opacity: 0.3; }
+#backdropMeta .bm-imdb { color: var(--gold); }
+#backdropMeta .bm-badge {
+  background: rgba(232,71,63,0.18); color: #ff8a82;
+  border: 1px solid rgba(232,71,63,0.28);
+  padding: 1px 8px; border-radius: 4px; font-size: 9px; letter-spacing: 0.08em;
+}
+
+/* Watch Now button in hero */
+#backdropWatchBtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 14px;
+  background: var(--accent); color: #fff; border: none;
+  padding: 11px 22px; border-radius: 40px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 24px rgba(232,71,63,0.45);
+}
+#backdropWatchBtn:hover { background: var(--accent2); transform: translateY(-1px); }
+#backdropWatchBtn svg { width: 13px; }
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  #backdropHero { height: clamp(200px, 55vw, 300px); }
+  #backdropContent { padding: 0 16px 20px; gap: 14px; }
+  #backdropPoster { width: 64px; }
+  #backdropTitle { font-size: clamp(16px, 5vw, 22px); }
+  #backdropMeta { font-size: 9px; gap: 6px; }
+  #backdropWatchBtn { padding: 9px 16px; font-size: 12px; margin-top: 10px; }
+}
+@media (max-width: 380px) {
+  #backdropPoster { display: none !important; }
+}
+
 </style>
 </head>
 <body>
@@ -1140,6 +1270,25 @@ body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
     Browse
   </a>
 </nav>
+
+<!-- ══ BACKDROP HERO ══ -->
+<div id="backdropHero">
+  <img id="backdropImg" src="" alt="" draggable="false">
+  <div id="backdropContent">
+    <div id="backdropPoster">
+      <img id="backdropPosterImg" src="" alt="">
+    </div>
+    <div id="backdropText">
+      <div id="backdropEyebrow">Now Streaming</div>
+      <div id="backdropTitle">Loading...</div>
+      <div id="backdropMeta"></div>
+      <button id="backdropWatchBtn" onclick="document.getElementById('playerContainer').scrollIntoView({behavior:'smooth'})">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Watch Now
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ══ PLAYER ══ -->
 <div class="master-layout">
@@ -1566,7 +1715,7 @@ body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
         <h4>Info</h4>
         <ul>
           <li><a href="about.html">About</a></li>
-          <li><a href="mailto:hello@movxio.com">Contact</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#fc9499909093bc91938a849593d29f9391">Contact</a></li>
           <li><a href="privacy.html">Privacy Policy</a></li>
           <li><a href="terms.html">Terms of Use</a></li>
           <li><a href="dmca.html">DMCA</a></li>
@@ -1580,7 +1729,7 @@ body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const CONFIG = {
   SUPABASE_URL:  localStorage.getItem('cv_url')    || 'https://kncqgatjjcezlnwwikqm.supabase.co',
   SUPABASE_KEY:  localStorage.getItem('cv_key')    || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc',
@@ -2335,6 +2484,68 @@ function initPlayer(film, videoUrl, episode) {
   player.one('play', () => incrementViews(film.id));
 }
 
+// ── Render backdrop hero ──────────────────────────────────────
+function renderBackdrop(film) {
+  const hero      = document.getElementById('backdropHero');
+  const img       = document.getElementById('backdropImg');
+  const posterWrap= document.getElementById('backdropPoster');
+  const posterImg = document.getElementById('backdropPosterImg');
+  const titleEl   = document.getElementById('backdropTitle');
+  const eyebrowEl = document.getElementById('backdropEyebrow');
+  const metaEl    = document.getElementById('backdropMeta');
+  if (!hero || !img) return;
+
+  // Decide image source: real backdrop → poster fallback
+  const hasBackdrop = !!(film.backdrop_url && film.backdrop_url.trim());
+  const imgSrc = hasBackdrop ? film.backdrop_url : (film.thumbnail_url || '');
+  if (!imgSrc) return; // nothing to show
+
+  // Apply blur class only when using poster as backdrop
+  if (!hasBackdrop) img.classList.add('is-poster');
+  else img.classList.remove('is-poster');
+
+  // Load image, reveal hero on load
+  img.onload = function() {
+    img.classList.add('loaded');
+    hero.style.display = 'block';
+  };
+  img.onerror = function() { hero.style.display = 'none'; };
+  img.src = imgSrc;
+
+  // Small poster thumbnail (only when we have one and using a real backdrop)
+  if (film.thumbnail_url && hasBackdrop) {
+    posterImg.src = film.thumbnail_url;
+    posterImg.alt = film.title || '';
+    posterWrap.style.display = 'block';
+  } else {
+    posterWrap.style.display = 'none';
+  }
+
+  // Title
+  if (titleEl) titleEl.textContent = film.title || '';
+
+  // Eyebrow
+  if (eyebrowEl) {
+    const genres = (film.genre || '').split(',').map(g => g.trim()).filter(Boolean);
+    eyebrowEl.textContent = film.type === 'series' ? '📺 TV Series' : (genres[0] || 'Now Streaming');
+  }
+
+  // Meta chips
+  if (metaEl) {
+    const parts = [];
+    if (film.year)         parts.push(`<span>${film.year}</span>`);
+    if (film.duration_secs) {
+      const h = Math.floor(film.duration_secs / 3600);
+      const m = Math.floor((film.duration_secs % 3600) / 60);
+      parts.push(`<span>${h > 0 ? h+'h '+m+'m' : m+'m'}</span>`);
+    }
+    if (film.imdb_rating)  parts.push(`<span class="bm-imdb">★ ${film.imdb_rating}</span>`);
+    if (film.content_rating) parts.push(`<span class="bm-badge">${film.content_rating}</span>`);
+    if (film.language)     parts.push(`<span>${film.language}</span>`);
+    metaEl.innerHTML = parts.join('<span class="bm-sep"> · </span>');
+  }
+}
+
 // ── Render film info ──────────────────────────────────────────
 function renderInfo(film) {
   // Dynamic SEO — safe null checks on every querySelector
@@ -2346,7 +2557,10 @@ function renderInfo(film) {
   const _ogDesc   = document.querySelector('meta[property="og:description"]');
   if (_ogDesc)   _ogDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
   const _ogImg    = document.querySelector('meta[property="og:image"]');
-  if (_ogImg && film.thumbnail_url) _ogImg.setAttribute('content', film.thumbnail_url);
+  const _twImg    = document.querySelector('meta[name="twitter:image"]');
+  const _ogImgSrc = film.backdrop_url || film.thumbnail_url;
+  if (_ogImg && _ogImgSrc) _ogImg.setAttribute('content', _ogImgSrc);
+  if (_twImg && _ogImgSrc) _twImg.setAttribute('content', _ogImgSrc);
   const _twTitle  = document.querySelector('meta[name="twitter:title"]');
   if (_twTitle)  _twTitle.setAttribute('content', `${film.title} — Watch Free`);
 
@@ -2406,6 +2620,9 @@ function renderInfo(film) {
 
   // Watchlist nav button
   updateNavWlBtn(isInWatchlist(film.id));
+
+  // Render backdrop hero (above the player)
+  renderBackdrop(film);
 }
 
 // ── Render related — sorted by matching genre ─────────────────
@@ -3248,7 +3465,6 @@ async function submitReport() {
   }
 })();
 </script>
-
 
 </body>
 </html>
