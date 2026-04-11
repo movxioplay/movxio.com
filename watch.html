@@ -110,6 +110,8 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   overflow: hidden;
   cursor: none;
   min-height: 0;
+  /* Cap height so player doesn't dominate the full viewport */
+  max-height: calc(100vh - 160px);
 }
 #playerContainer.controls-visible { cursor: default; }
 
