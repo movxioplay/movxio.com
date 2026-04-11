@@ -1472,6 +1472,49 @@ footer {
   </div>
 </div>
 
+
+<!-- ── Stats Bar ── -->
+<div class="stats-bar" style="max-width:1400px;margin:0 auto 48px;border-radius:12px;">
+  <div class="stat-item">
+    <div class="stat-num" id="statMovies">—</div>
+    <div class="stat-label">Movies</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">$0</div>
+    <div class="stat-label">Cost to Watch</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">0%</div>
+    <div class="stat-label">Signup Required</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Free. Forever</div>
+  </div>
+</div>
+
+<!-- ── Featured Films ── -->
+<section class="section" id="featuredSection">
+  <div class="section-header">
+    <div class="section-title">Featured Films <span class="label">Pick of the Week</span></div>
+    <a href="browse.html" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="film-grid featured" id="featuredGrid">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
+<!-- ── Latest Additions ── -->
+<section class="section" id="latestSection">
+  <div class="section-header">
+    <div class="section-title">Latest Additions <span class="label">New</span></div>
+    <a href="browse.html" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  </div>
+  <div class="film-grid" id="latestRow">
+    <!-- Populated by JS -->
+  </div>
+</section>
+
 <!-- ── Browse CTA ── -->
 <div style="max-width:1400px;margin:0 auto;padding:48px 32px 16px;">
   <a href="browse.html" style="display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(232,71,63,0.12) 0%,rgba(61,127,255,0.08) 100%);border:1px solid rgba(232,71,63,0.2);border-radius:16px;padding:28px 36px;text-decoration:none;transition:all 0.25s;gap:20px;" onmouseover="this.style.borderColor='rgba(232,71,63,0.5)';this.style.background='linear-gradient(135deg,rgba(232,71,63,0.18) 0%,rgba(61,127,255,0.12) 100%)'" onmouseout="this.style.borderColor='rgba(232,71,63,0.2)';this.style.background='linear-gradient(135deg,rgba(232,71,63,0.12) 0%,rgba(61,127,255,0.08) 100%)'">
@@ -1877,8 +1920,6 @@ async function init() {
   // Latest row (newest 12)
   document.getElementById('latestRow').innerHTML = allFilms.slice(0, 12).map((f,i) => filmCard(f,i)).join('');
 
-  // All films grid
-  renderAllFilms('all');
 }
 
 function renderHero(film) {
@@ -1924,38 +1965,6 @@ function renderHero(film) {
   updateHeroWlBtn(isInWatchlist(film.id));
 }
 
-function renderAllFilms(genre) {
-  currentGenre = genre;
-  const filtered = genre === 'all'
-    ? allFilms
-    : allFilms.filter(f => (f.genre||'').split(',').map(g=>g.trim()).includes(genre));
-
-  const grid  = document.getElementById('allFilmsGrid');
-  const empty = document.getElementById('emptyState');
-  const title = document.getElementById('allFilmsTitle');
-  const count = document.getElementById('filmCount');
-  const cta   = document.getElementById('browseAllCta');
-
-  const LIMIT = 30;
-  const display = filtered.slice(0, LIMIT);
-
-  if (filtered.length === 0) {
-    grid.innerHTML = '';
-    empty.style.display = 'block';
-    if (cta) cta.style.display = 'none';
-  } else {
-    empty.style.display = 'none';
-    grid.innerHTML = display.map((f,i) => filmCard(f,i)).join('');
-    // Show CTA if there are more films than we're displaying
-    if (cta) cta.style.display = filtered.length > LIMIT ? 'flex' : 'none';
-  }
-
-  const browseUrl = genre === 'all' ? 'browse.html' : `browse.html?genre=${encodeURIComponent(genre)}`;
-  if (cta) cta.querySelector('a').href = browseUrl;
-
-  title.innerHTML = genre === 'all' ? 'All Films' : `${capitalize(genre)} Films`;
-  count.textContent = `${filtered.length} film${filtered.length !== 1 ? 's' : ''}`;
-}
 
 // ============================================================
 // CONTINUE WATCHING
@@ -2019,7 +2028,6 @@ function renderContinueWatching(films) {
 function filterGenre(btn, genre) {
   document.querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  renderAllFilms(genre);
   window.location.href = 'browse.html';
 }
 
@@ -2037,7 +2045,6 @@ function renderDemoState() {
       <a href="admin.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:10px 22px;border-radius:6px;font-weight:600;font-size:13px;">Open Admin Panel</a>
     </div>`;
   document.getElementById('latestRow').innerHTML = '';
-  document.getElementById('allFilmsGrid').innerHTML = '';
   document.getElementById('statMovies').textContent = '—';
 }
 
