@@ -1150,15 +1150,10 @@ body.theater-mode #backdropHero { display: none !important; }
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  /* blurred-poster fallback gets extra blur applied via JS class */
   transition: opacity 0.5s ease;
   opacity: 0;
 }
 #backdropImg.loaded { opacity: 1; }
-#backdropImg.is-poster {
-  filter: blur(22px) saturate(1.3);
-  transform: scale(1.08); /* hide blur edges */
-}
 
 /* Multi-layer cinematic gradient overlay */
 #backdropHero::after {
@@ -2495,14 +2490,11 @@ function renderBackdrop(film) {
   const metaEl    = document.getElementById('backdropMeta');
   if (!hero || !img) return;
 
-  // Decide image source: real backdrop → poster fallback
+  // Only show hero when a real backdrop_url exists
   const hasBackdrop = !!(film.backdrop_url && film.backdrop_url.trim());
-  const imgSrc = hasBackdrop ? film.backdrop_url : (film.thumbnail_url || '');
-  if (!imgSrc) return; // nothing to show
+  if (!hasBackdrop) return; // no backdrop = no hero, clean and simple
 
-  // Apply blur class only when using poster as backdrop
-  if (!hasBackdrop) img.classList.add('is-poster');
-  else img.classList.remove('is-poster');
+  const imgSrc = film.backdrop_url;
 
   // Load image, reveal hero on load
   img.onload = function() {
@@ -2558,7 +2550,7 @@ function renderInfo(film) {
   if (_ogDesc)   _ogDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
   const _ogImg    = document.querySelector('meta[property="og:image"]');
   const _twImg    = document.querySelector('meta[name="twitter:image"]');
-  const _ogImgSrc = film.backdrop_url || film.thumbnail_url;
+  const _ogImgSrc = film.backdrop_url || '';
   if (_ogImg && _ogImgSrc) _ogImg.setAttribute('content', _ogImgSrc);
   if (_twImg && _ogImgSrc) _twImg.setAttribute('content', _ogImgSrc);
   const _twTitle  = document.querySelector('meta[name="twitter:title"]');
