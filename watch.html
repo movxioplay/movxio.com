@@ -72,9 +72,8 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   background: #000;
   width: 100%;
   position: relative;
-  /* Fix 1: visual separator between nav and player */
-  border-top: 1px solid rgba(255,255,255,0.06);
-  box-shadow: inset 0 4px 24px rgba(0,0,0,0.6);
+  margin-top: 3px;
+  box-shadow: 0 -3px 0 0 rgba(232,71,63,0.35), inset 0 4px 24px rgba(0,0,0,0.6);
 }
 
 /* Hide Video.js default UI completely */
@@ -96,10 +95,15 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   aspect-ratio: unset !important;
 }
 
-/* Fix 2: poster image fills frame — no letterbox on backdrop */
-.video-js .vjs-poster {
+/* Fix 2: poster fills frame — bump specificity to override Video.js internals */
+.video-js .vjs-poster,
+.video-js.vjs-paused .vjs-poster,
+.video-js.vjs-has-started.vjs-paused .vjs-poster {
   background-size: cover !important;
   background-position: center center !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* ── PLAYER CONTAINER ── */
