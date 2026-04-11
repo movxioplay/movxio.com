@@ -470,6 +470,62 @@ nav {
 .btn-info svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 /* Hero right side — film poster */
+
+/* ── Hero trailer hover preview ── */
+.hero-poster {
+  cursor: pointer;
+}
+.hero-poster-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.hero-trailer-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+.hero-trailer-preview.visible { opacity: 1; }
+.hero-poster-img-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: opacity 0.5s ease;
+}
+.hero-poster-img-wrap.faded { opacity: 0; }
+.hero-trailer-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(8,8,16,0.82);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.hero-poster:hover .hero-trailer-badge { opacity: 1; }
+@media (max-width: 900px) {
+  .hero-trailer-preview { display: none; }
+  .hero-trailer-badge   { display: none; }
+}
+
 .hero-poster {
   position: absolute;
   right: 80px;
@@ -1499,8 +1555,18 @@ footer {
     </div>
   </div>
 
-  <div class="hero-poster" id="heroPoster">
-    <img id="heroPosterImg" alt="" onerror="this.parentElement.style.display='none'">
+  <div class="hero-poster" id="heroPoster"
+    onmouseenter="startTrailerPreview()"
+    onmouseleave="stopTrailerPreview()">
+    <div class="hero-poster-inner">
+      <div class="hero-poster-img-wrap" id="heroPosterImgWrap">
+        <img id="heroPosterImg" alt="" onerror="this.closest('.hero-poster').style.display='none'"
+          style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
+      </div>
+      <video id="heroTrailerVideo" class="hero-trailer-preview"
+        muted playsinline loop preload="none"></video>
+      <div class="hero-trailer-badge">▶ Trailer</div>
+    </div>
   </div>
 
   <div class="scroll-hint">Scroll</div>
@@ -2103,6 +2169,104 @@ function buildRecommendations(films) {
   }
   section.classList.add('show');
 }
+
+
+// ── Hero trailer hover preview ─────────────────────────────
+var _trailerHoverTimer  = null;
+var _trailerPlaying     = false;
+var _trailerCurrentId   = null;
+
+function getYouTubeId(url) {
+  if (!url) return null;
+  var m1 = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  var m2 = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+  return (m1 && m1[1]) || (m2 && m2[1]) || null;
+}
+
+function startTrailerPreview() {
+  // Desktop only — handled by CSS on mobile
+  if (window.innerWidth < 900) return;
+  var film = currentHeroFilm;
+  if (!film || !film.trailer_url) return;
+
+  // Don't restart if same film already previewing
+  if (_trailerPlaying && _trailerCurrentId === film.id) return;
+
+  // Delay 1.2s so quick mouse passes don't trigger
+  clearTimeout(_trailerHoverTimer);
+  _trailerHoverTimer = setTimeout(function() {
+    _playTrailerPreview(film);
+  }, 1200);
+}
+
+function stopTrailerPreview() {
+  clearTimeout(_trailerHoverTimer);
+  _trailerHoverTimer = null;
+
+  var video = document.getElementById('heroTrailerVideo');
+  var imgWrap = document.getElementById('heroPosterImgWrap');
+  if (!video) return;
+
+  video.pause();
+  video.src = '';
+  video.classList.remove('visible');
+  if (imgWrap) imgWrap.classList.remove('faded');
+  _trailerPlaying  = false;
+  _trailerCurrentId = null;
+}
+
+function _playTrailerPreview(film) {
+  var video   = document.getElementById('heroTrailerVideo');
+  var imgWrap = document.getElementById('heroPosterImgWrap');
+  if (!video || !film.trailer_url) return;
+
+  var ytId = getYouTubeId(film.trailer_url);
+
+  if (ytId) {
+    // YouTube — use thumbnail as poster + open trailer modal on click
+    // Can't autoplay YouTube in a <video> tag — show poster click-to-open instead
+    // Animate the badge to signal trailer available, click opens modal
+    _trailerPlaying   = true;
+    _trailerCurrentId = film.id;
+    return; // badge CSS handles the visual cue
+  }
+
+  // Self-hosted .mp4 or direct video URL — play inline
+  video.src     = film.trailer_url;
+  video.muted   = true;
+  video.loop    = true;
+  video.preload = 'auto';
+
+  video.play().then(function() {
+    video.classList.add('visible');
+    if (imgWrap) imgWrap.classList.add('faded');
+    _trailerPlaying   = true;
+    _trailerCurrentId = film.id;
+  }).catch(function() {
+    // Autoplay blocked or failed — silently ignore
+    stopTrailerPreview();
+  });
+}
+
+// Click on poster — open trailer modal if available, else go to watch
+document.getElementById('heroPoster').addEventListener('click', function() {
+  var film = currentHeroFilm;
+  if (!film) return;
+  if (film.trailer_url) {
+    stopTrailerPreview();
+    openTrailer(film);
+  } else {
+    window.location.href = film._watchLink || ('watch.html?id=' + film.id);
+  }
+});
+
+// Stop preview when carousel advances
+var _origGoSlide = goSlide;
+goSlide = function(idx) {
+  stopTrailerPreview();
+  _origGoSlide(idx);
+};
+
 
 // ── Row scroll arrow handler ─────────────────────────────────
 function scrollRow(btn, dir) {
