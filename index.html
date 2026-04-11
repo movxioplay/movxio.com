@@ -835,6 +835,46 @@ nav {
 /* ========================================
    STATS BAR
 ======================================== */
+
+/* ── Skeleton loading cards ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton-card {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.skeleton-thumb {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: linear-gradient(90deg,
+    var(--surface) 0%, var(--surface2) 40%,
+    rgba(255,255,255,0.04) 50%,
+    var(--surface2) 60%, var(--surface) 100%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.skeleton-info {
+  padding: 8px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skeleton-line {
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg,
+    var(--surface) 0%, var(--surface2) 40%,
+    rgba(255,255,255,0.04) 50%,
+    var(--surface2) 60%, var(--surface) 100%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.skeleton-line.short { width: 55%; }
+.skeleton-line.long  { width: 85%; }
+
 .stats-bar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1021,7 +1061,47 @@ footer {
 
   .section { padding: 40px 20px 24px; }
   .genre-strip { padding: 0 20px; }
-  .stats-bar { grid-template-columns: repeat(2, 1fr); margin: 0 20px 32px; }
+  
+/* ── Skeleton loading cards ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton-card {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.skeleton-thumb {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: linear-gradient(90deg,
+    var(--surface) 0%, var(--surface2) 40%,
+    rgba(255,255,255,0.04) 50%,
+    var(--surface2) 60%, var(--surface) 100%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.skeleton-info {
+  padding: 8px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skeleton-line {
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg,
+    var(--surface) 0%, var(--surface2) 40%,
+    rgba(255,255,255,0.04) 50%,
+    var(--surface2) 60%, var(--surface) 100%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.skeleton-line.short { width: 55%; }
+.skeleton-line.long  { width: 85%; }
+
+.stats-bar { grid-template-columns: repeat(2, 1fr); margin: 0 20px 32px; }
   .ad-slot-banner { margin: 0 20px; }
   footer { padding: 40px 20px 24px; }
   .footer-inner { flex-direction: column; gap: 24px; }
@@ -1034,7 +1114,47 @@ footer {
 }
 
 @media (max-width: 480px) {
-  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  
+/* ── Skeleton loading cards ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton-card {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.skeleton-thumb {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: linear-gradient(90deg,
+    var(--surface) 0%, var(--surface2) 40%,
+    rgba(255,255,255,0.04) 50%,
+    var(--surface2) 60%, var(--surface) 100%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.skeleton-info {
+  padding: 8px 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skeleton-line {
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(90deg,
+    var(--surface) 0%, var(--surface2) 40%,
+    rgba(255,255,255,0.04) 50%,
+    var(--surface2) 60%, var(--surface) 100%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.skeleton-line.short { width: 55%; }
+.skeleton-line.long  { width: 85%; }
+
+.stats-bar { grid-template-columns: repeat(2, 1fr); }
   .stat-value { font-size: 22px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn-watch, .btn-info { justify-content: center; padding: 14px 20px; }
@@ -1500,7 +1620,48 @@ footer {
     <a href="browse.html?featured=true" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
   </div>
   <div class="film-grid featured" id="featuredGrid">
-    <!-- Populated by JS -->
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1511,7 +1672,90 @@ footer {
     <a href="browse.html?sort=latest" class="section-link">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
   </div>
   <div class="film-grid" id="latestRow">
-    <!-- Populated by JS -->
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
   </div>
 </section>
 
