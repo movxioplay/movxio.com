@@ -268,6 +268,26 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
 /* ── LOAD MORE ── */
+
+/* ── New this week chip ── */
+.new-week-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px; border-radius: 8px; font-size: 13px;
+  font-family: 'DM Sans', sans-serif; font-weight: 500;
+  cursor: pointer; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-muted);
+  transition: all 0.15s; white-space: nowrap; min-height: 46px;
+}
+.new-week-chip:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+.new-week-chip.active {
+  background: rgba(45,212,160,0.1); border-color: rgba(45,212,160,0.35);
+  color: #2dd4a0;
+}
+.new-week-chip .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+
 .load-more-wrap { text-align: center; padding: 32px 0 0; }
 .btn-load-more { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 12px 32px; border-radius: 40px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
 .btn-load-more:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: var(--surface2); }
@@ -447,7 +467,7 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
           <button class="gdp-pill" data-genre="french"   onclick="setGenreDrop(this,'french','🇫🇷','French')">   <span class="icon">🇫🇷</span> French</button>
           <button class="gdp-pill" data-genre="spanish"  onclick="setGenreDrop(this,'spanish','🇪🇸','Spanish')"> <span class="icon">🇪🇸</span> Spanish</button>
         </div>
-      </div></div>
+      </div>
     </div>
   </div>
 </div>
@@ -513,6 +533,10 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
       <option value="year_desc">Year ↓</option>
       <option value="year_asc">Year ↑</option>
     </select>
+    <button class="new-week-chip" id="newWeekChip" onclick="toggleNewThisWeek()" title="Show films added in the last 7 days">
+      <span class="dot"></span>
+      New this week
+    </button>
     <div class="results-count" id="resultsCount"></div>
   </div>
 </div>
@@ -646,6 +670,8 @@ let filteredFilms = [];
 let currentPage = 1;
 let currentGenre = 'all';
 let isWatchlistMode = false;
+let isFeaturedMode = false;
+let isNewThisWeek  = false;
 
 // ── FILM CARD ─────────────────────────────────────────────────
 function filmCard(film, idx = 0) {
@@ -754,8 +780,13 @@ function filterFilms() {
   const lang    = document.getElementById('langFilter').value.toLowerCase();
   const sort    = document.getElementById('sortFilter').value;
 
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   let pool = isWatchlistMode
     ? allFilms.filter(f => getWatchlist().includes(f.id))
+    : isFeaturedMode
+    ? allFilms.filter(f => f.featured === true)
+    : isNewThisWeek
+    ? allFilms.filter(f => f.created_at && f.created_at >= sevenDaysAgo)
     : allFilms;
 
   filteredFilms = pool.filter(f => {
@@ -818,6 +849,7 @@ function loadMore() {
 function renderActiveFilters(q, country, year, lang) {
   const chips = [];
   if (currentGenre !== 'all') chips.push({ label: `Genre: ${currentGenre}`, action: "setGenreClear()" });
+  if (isNewThisWeek) chips.push({ label: 'New this week', action: "toggleNewThisWeek()" });
   if (q)       chips.push({ label: `"${q}"`,           action: "clearSearch()" });
   if (country) chips.push({ label: country,            action: "clearCountry()" });
   if (year)    chips.push({ label: year === 'older' ? 'Before 2018' : year, action: "clearYear()" });
@@ -852,6 +884,18 @@ function updateURL() {
   history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
 }
 
+function toggleNewThisWeek() {
+  isNewThisWeek = !isNewThisWeek;
+  var chip = document.getElementById('newWeekChip');
+  if (chip) chip.classList.toggle('active', isNewThisWeek);
+  // Update page header if active
+  var eyebrow = document.querySelector('.page-eyebrow');
+  if (isNewThisWeek && eyebrow) eyebrow.textContent = 'New this week';
+  else if (!isNewThisWeek && eyebrow && !isFeaturedMode) eyebrow.textContent = 'Library';
+  currentPage = 1;
+  filterFilms();
+}
+
 function readURL() {
   const params = new URLSearchParams(location.search);
 
@@ -880,6 +924,17 @@ function readURL() {
 
   // Sort
   if (params.get('sort') === 'latest') document.getElementById('sortFilter').value = 'newest';
+
+  // Featured filter
+  if (params.get('featured') === 'true') {
+    isFeaturedMode = true;
+    var eyebrow = document.querySelector('.page-eyebrow');
+    if (eyebrow) eyebrow.textContent = 'Featured';
+    var title = document.querySelector('.page-title');
+    if (title) title.innerHTML = 'Featured <span>Films</span>';
+    var subtitle = document.querySelector('.page-subtitle');
+    if (subtitle) subtitle.textContent = 'Hand-picked films — our top recommendations.';
+  }
 }
 
 // ── NAV SEARCH ───────────────────────────────────────────────
