@@ -115,6 +115,16 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .toggle input:checked + .toggle-slider { background: var(--gold); }
 .toggle input:checked + .toggle-slider::before { transform: translateX(20px); background: #000; }
 
+
+/* ── Chapter editor ── */
+.chapter-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.chapter-row { display: flex; gap: 8px; align-items: center; }
+.chapter-row .chapter-time { width: 80px; flex-shrink: 0; font-family: 'Space Mono', monospace; font-size: 13px; text-align: center; }
+.chapter-row .chapter-title { flex: 1; }
+.chapter-row .btn-remove-row { background: none; border: 1px solid rgba(255,255,255,0.08); color: var(--muted); border-radius: 6px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.chapter-row .btn-remove-row:hover { border-color: var(--accent); color: var(--accent); }
+.chapter-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
 /* ── SUBTITLE MANAGER ── */
 .subtitle-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .subtitle-row { display: flex; gap: 8px; align-items: center; }
@@ -597,6 +607,12 @@ tr:hover td { background: rgba(255,255,255,0.02); }
         </div>
 
         <div class="form-group">
+          <label>Backdrop / Banner URL <span style="font-size:10px;color:var(--muted);font-weight:400;">(optional — wide landscape image)</span></label>
+          <input type="url" id="f-backdrop" placeholder="https://videos.movxio.com/movie3/backdrop.jpg" inputmode="url" autocomplete="off">
+          <div class="form-hint">Recommended: 1280×720 or 1920×1080 landscape image. If left blank, the poster will be used as a blurred backdrop automatically.</div>
+        </div>
+
+        <div class="form-group">
           <label>Description</label>
           <textarea id="f-desc" placeholder="Short description of the film..."></textarea>
         </div>
@@ -607,6 +623,15 @@ tr:hover td { background: rgba(255,255,255,0.02); }
           <div class="subtitle-list" id="subtitle-list"></div>
           <button class="btn-add-sub" onclick="addSubtitleRow()">+ Add Subtitle Track</button>
           <div class="form-hint">Upload .vtt files to R2 then paste URL here</div>
+        </div>
+
+
+        <!-- Chapters -->
+        <div class="form-group">
+          <label>Chapter Markers</label>
+          <div class="chapter-list" id="chapter-list"></div>
+          <button class="btn-add-sub" onclick="addChapterRow()" type="button">+ Add Chapter</button>
+          <div class="chapter-hint">Time format: MM:SS or H:MM:SS &nbsp;·&nbsp; First chapter should start at 0:00</div>
         </div>
 
         <!-- VISIBILITY -->
@@ -963,7 +988,8 @@ ALTER TABLE films ADD COLUMN IF NOT EXISTS trailer_url text;
 ALTER TABLE films ADD COLUMN IF NOT EXISTS content_rating text;
 ALTER TABLE films ADD COLUMN IF NOT EXISTS badge text;
 ALTER TABLE films ADD COLUMN IF NOT EXISTS status text DEFAULT 'active';
-ALTER TABLE films ADD COLUMN IF NOT EXISTS views integer DEFAULT 0;</pre>
+ALTER TABLE films ADD COLUMN IF NOT EXISTS views integer DEFAULT 0;
+ALTER TABLE films ADD COLUMN IF NOT EXISTS backdrop_url text;</pre>
           </div>
         </div>
 
@@ -985,6 +1011,7 @@ ALTER TABLE films ADD COLUMN IF NOT EXISTS views integer DEFAULT 0;</pre>
   hls_url text,
   trailer_url text,
   thumbnail_url text,
+  backdrop_url text,
   description text,
   imdb_rating numeric(3,1),
   content_rating text,
@@ -1525,7 +1552,7 @@ document.addEventListener('change', function(e) {
 function openForm() {
   editingId = null;
   document.getElementById('form-title').textContent = 'Add New Title';
-  ['f-title','f-year','f-lang','f-duration','f-hls','f-thumb','f-desc','f-director','f-actors','f-imdb','f-trailer','f-seasons'].forEach(id => {
+  ['f-title','f-year','f-lang','f-duration','f-hls','f-thumb','f-backdrop','f-desc','f-director','f-actors','f-imdb','f-trailer','f-seasons'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -1539,6 +1566,8 @@ function openForm() {
   document.getElementById('f-featured').checked = false;
   document.getElementById('subtitle-list').innerHTML = '';
   subtitleCount = 0;
+  document.getElementById('chapter-list').innerHTML = '';
+  chapterCount = 0;
   // Reset type to movie
   setType('movie');
   resetEpisodeManager();
@@ -1559,6 +1588,7 @@ function editFilm(film) {
   document.getElementById('f-duration').value  = film.duration_secs ? Math.round(film.duration_secs / 60) : '';
   document.getElementById('f-hls').value       = film.hls_url || '';
   document.getElementById('f-thumb').value     = film.thumbnail_url || '';
+  document.getElementById('f-backdrop').value  = film.backdrop_url || '';
   document.getElementById('f-desc').value      = film.description || '';
   document.getElementById('f-director').value  = film.director || '';
   document.getElementById('f-actors').value    = film.actors || '';
@@ -1584,6 +1614,17 @@ function editFilm(film) {
   subtitleCount = 0;
   (film.subtitles || []).forEach(s => addSubtitleRow(s.lang, s.url));
 
+  // Restore chapter editor
+  document.getElementById('chapter-list').innerHTML = '';
+  chapterCount = 0;
+  var chapters = [];
+  try {
+    chapters = typeof film.chapters === 'string'
+      ? JSON.parse(film.chapters || '[]')
+      : (film.chapters || []);
+  } catch { chapters = []; }
+  chapters.forEach(function(ch) { addChapterRow(ch.time, ch.title); });
+
   // Type toggle + episodes
   const filmType = film.type || 'movie';
   setType(filmType);
@@ -1599,6 +1640,69 @@ function editFilm(film) {
 
   document.getElementById('film-form').classList.add('open');
   setTimeout(() => document.getElementById('film-form').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+
+// ── CHAPTER EDITOR ────────────────────────────────────────────
+var chapterCount = 0;
+
+function addChapterRow(timeSecs, title) {
+  chapterCount++;
+  var id = chapterCount;
+
+  // Convert seconds to MM:SS for display
+  var timeStr = '0:00';
+  if (timeSecs !== undefined && timeSecs !== null) {
+    var t = parseInt(timeSecs) || 0;
+    var h = Math.floor(t / 3600);
+    var m = Math.floor((t % 3600) / 60);
+    var s = t % 60;
+    timeStr = h > 0
+      ? h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0')
+      : m + ':' + String(s).padStart(2,'0');
+  }
+
+  var row = document.createElement('div');
+  row.className = 'chapter-row';
+  row.id = 'chapter-row-' + id;
+  row.innerHTML =
+    '<input class="chapter-time" type="text" placeholder="0:00" value="' + (timeStr || '') + '" title="Time (MM:SS or H:MM:SS)">' +
+    '<input class="chapter-title" type="text" placeholder="Chapter title..." value="' + ((title || '').replace(/"/g,'&quot;')) + '">' +
+    '<button class="btn-remove-row" onclick="removeChapterRow(' + id + ')" type="button" title="Remove">×</button>';
+
+  document.getElementById('chapter-list').appendChild(row);
+}
+
+function removeChapterRow(id) {
+  var row = document.getElementById('chapter-row-' + id);
+  if (row) row.remove();
+}
+
+function parseTimeToSecs(str) {
+  if (!str || !str.trim()) return null;
+  var parts = str.trim().split(':').map(Number);
+  if (parts.some(isNaN)) return null;
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  return null;
+}
+
+function getChapters() {
+  var rows = document.querySelectorAll('#chapter-list .chapter-row');
+  var chapters = [];
+  rows.forEach(function(row) {
+    var timeInput  = row.querySelector('.chapter-time');
+    var titleInput = row.querySelector('.chapter-title');
+    if (!timeInput || !titleInput) return;
+    var secs  = parseTimeToSecs(timeInput.value);
+    var title = titleInput.value.trim();
+    if (title && secs !== null) {
+      chapters.push({ time: secs, title: title });
+    }
+  });
+  // Sort by time ascending
+  chapters.sort(function(a, b) { return a.time - b.time; });
+  return chapters.length ? chapters : null;
 }
 
 // ── SUBTITLE ROWS ─────────────────────────────────────────────
@@ -1647,6 +1751,7 @@ async function saveFilm() {
     hls_url:       document.getElementById('f-hls').value || null,
     trailer_url:   document.getElementById('f-trailer').value || null,
     thumbnail_url: document.getElementById('f-thumb').value || null,
+    backdrop_url:  document.getElementById('f-backdrop').value || null,
     description:   document.getElementById('f-desc').value || null,
     imdb_rating:   imdbVal,
     content_rating: document.getElementById('f-content-rating').value || null,
@@ -1654,6 +1759,7 @@ async function saveFilm() {
     status:        document.getElementById('f-status').value || 'active',
     featured:      document.getElementById('f-featured').checked,
     subtitles:     getSubtitles(),
+    chapters:      getChapters(),
     duration_secs: durMins ? durMins * 60 : null,
     total_seasons: currentType === 'series' ? (parseInt((document.getElementById('f-seasons')||{}).value)||1) : null,
   };
@@ -2221,7 +2327,7 @@ function exportCSV() {
 
   const cols = ['id','title','type','year','genre','language','country',
                 'director','actors','imdb_rating','content_rating','status',
-                'badge','featured','views','hls_url','trailer_url','thumbnail_url','description'];
+                'badge','featured','views','hls_url','trailer_url','thumbnail_url','backdrop_url','description'];
 
   const escape = v => {
     if (v === null || v === undefined) return '';
