@@ -8,11 +8,13 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://movxio.com/watch.html">
 <meta property="og:type" content="website">
+<meta property="og:url" content="">
 <meta property="og:title" content="Watch Free — MOVXIO">
 <meta property="og:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta property="og:site_name" content="MOVXIO">
 <meta property="og:image" content="">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta name="twitter:image" content="">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="720">
@@ -41,6 +43,7 @@
   --blue: #3d7fff;
   --radius: 6px;
   --ctrl-h: 56px;
+  --green: #2dd4a0;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -65,7 +68,14 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 /* ═══════════════════════════════════════
    PLAYER WRAPPER
 ═══════════════════════════════════════ */
-.player-section { background: #000; width: 100%; position: relative; }
+.player-section {
+  background: #000;
+  width: 100%;
+  position: relative;
+  /* Fix 1: visual separator between nav and player */
+  border-top: 1px solid rgba(255,255,255,0.06);
+  box-shadow: inset 0 4px 24px rgba(0,0,0,0.6);
+}
 
 /* Hide Video.js default UI completely */
 .video-js .vjs-control-bar { display: none !important; }
@@ -81,9 +91,15 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   width: 100% !important;
   height: 100% !important;
   object-fit: contain;
-  background: #000;
+  background: transparent;
   cursor: none;
   aspect-ratio: unset !important;
+}
+
+/* Fix 2: poster image fills frame — no letterbox on backdrop */
+.video-js .vjs-poster {
+  background-size: cover !important;
+  background-position: center center !important;
 }
 
 /* ── PLAYER CONTAINER ── */
@@ -94,10 +110,34 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   background: #000;
   overflow: hidden;
   cursor: none;
-  /* Ensure children don't collapse it */
   min-height: 0;
 }
 #playerContainer.controls-visible { cursor: default; }
+
+/* Fix 3: initial play button pulse animation */
+@keyframes initPlayPulse {
+  0%, 100% { box-shadow: 0 0 0 12px rgba(232,71,63,0.15), 0 8px 40px rgba(232,71,63,0.5); }
+  50%       { box-shadow: 0 0 0 20px rgba(232,71,63,0.08), 0 8px 40px rgba(232,71,63,0.6); }
+}
+#initialPlayIcon {
+  animation: initPlayPulse 2.2s ease-in-out infinite;
+}
+
+/* Fix 4: blurred poster fallback background layer */
+#playerBgBlur {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(28px) brightness(0.35) saturate(1.2);
+  transform: scale(1.08);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#playerBgBlur.visible { opacity: 1; }
+#playerContainer.is-playing #playerBgBlur { opacity: 0; }
 
 /* Portrait mobile — fill width */
 @media (max-width: 600px) {
@@ -628,7 +668,7 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 body.theater-mode .player-section { position: fixed; top: 0; left: 0; right: 0; z-index: 900; background: #000; }
 body.theater-mode #playerContainer { max-height: 100vh; }
 body.theater-mode nav { opacity: 0; pointer-events: none; }
-body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
+body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
 .ctrl-btn.active { color: var(--accent, #e8473f) !important; }
 
 /* ── Quality menu ── */
@@ -1151,10 +1191,20 @@ body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
 <div class="player-section">
   <div id="playerContainer">
 
+    <!-- Fix 4: blurred poster fallback layer (shown when no backdrop) -->
+    <div id="playerBgBlur"></div>
+
+    <!-- Fix 3: persistent initial play button (shown before first play) -->
+    <div id="initialPlayBtn" style="position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.3s;">
+      <div id="initialPlayIcon" style="width:80px;height:80px;border-radius:50%;background:rgba(232,71,63,0.92);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 12px rgba(232,71,63,0.15),0 8px 40px rgba(232,71,63,0.5);transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.18s;">
+        <svg width="28" viewBox="0 0 16 16" fill="#fff" style="margin-left:4px;"><path d="M4 2l10 6-10 6V2z"/></svg>
+      </div>
+    </div>
+
     <!-- Loading -->
     <div id="playerLoading">
       <div class="spinner"></div>
-      <div class="loading-text">Loading stream...</div>
+      <div class="loading-text" id="loadingText">Loading stream...</div>
     </div>
 
     <!-- No video state -->
@@ -1437,7 +1487,7 @@ body.theater-mode .watch-layout { padding-top: calc(56.25vw + 0px); }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m7 2 0 20M17 2v20M2 12h20"/></svg>
             Browse All
           </a>
-          <button class="action-btn" onclick="openReportModal()" title="Report an issue with this film" style="color:var(--text-muted);">
+          <button class="action-btn" id="reportBtn" onclick="openReportModal()" title="Report an issue with this film" style="color:var(--text-muted);opacity:0.4;pointer-events:none;" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             Report
           </button>
@@ -1972,11 +2022,7 @@ function buildQualityMenu() {
   });
 }
 
-// Build quality menu once player has loaded metadata
-if (player) {
-  player.one('loadedmetadata', buildQualityMenu);
-  player.on('loadedmetadata', buildQualityMenu);
-}
+// Quality menu is wired inside initPlayer() once the player instance exists
 
 // ── Keyboard Shortcuts Overlay ───────────────────────────────
 function openKbOverlay()  { document.getElementById('kbOverlay').classList.add('open'); }
@@ -2053,7 +2099,7 @@ progressWrap.addEventListener('touchmove', (e) => {
   const pct = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
   progressFill.style.width = `${pct * 100}%`;
   progressThumb.style.left = `${pct * 100}%`;
-  progressTooltip.textContent = formatTime(pct * (player.duration() || 0));
+  updateProgressTooltipWithChapter(pct, player.duration() || 0);
   progressTooltip.style.left = `${pct * 100}%`;
 }, { passive: true });
 progressWrap.addEventListener('touchend', (e) => {
@@ -2211,6 +2257,25 @@ function initPlayer(film, videoUrl, episode) {
   const posterImg = film.backdrop_url || film.thumbnail_url;
   if (posterImg) player.poster(posterImg);
 
+  // Fix 4: blurred poster fallback — show when no backdrop, hide once playing
+  const bgBlur = document.getElementById('playerBgBlur');
+  if (bgBlur) {
+    if (!film.backdrop_url && film.thumbnail_url) {
+      bgBlur.style.backgroundImage = `url('${film.thumbnail_url}')`;
+      bgBlur.classList.add('visible');
+    } else {
+      bgBlur.classList.remove('visible');
+      bgBlur.style.backgroundImage = '';
+    }
+  }
+
+  // Fix 3: show persistent play button on poster state
+  const initPlayBtn = document.getElementById('initialPlayBtn');
+  if (initPlayBtn) {
+    initPlayBtn.style.opacity = '1';
+    initPlayBtn.style.pointerEvents = 'none'; // click goes through to clickOverlay
+  }
+
   // Add subtitle tracks
   const subs = film.subtitles || [];
   subs.forEach((sub, i) => {
@@ -2284,6 +2349,7 @@ function initPlayer(film, videoUrl, episode) {
     loading.style.display = 'none';
     document.getElementById('timeDur').textContent = formatTime(player.duration());
     showControls();
+    buildQualityMenu();
 
     // Resume banner
     const saved = episode
@@ -2300,6 +2366,10 @@ function initPlayer(film, videoUrl, episode) {
     document.getElementById('iconPlay').style.display = 'none';
     document.getElementById('iconPause').style.display = '';
     showControls();
+    // Hide initial play button and blur bg once playback starts
+    const initPlayBtn = document.getElementById('initialPlayBtn');
+    if (initPlayBtn) { initPlayBtn.style.opacity = '0'; }
+    playerContainer.classList.add('is-playing');
   });
 
   player.on('pause', () => {
@@ -2348,6 +2418,10 @@ function renderInfo(film) {
   document.title = `${film.title} — Watch Free on MOVXIO`;
   const _metaDesc = document.querySelector('meta[name="description"]');
   if (_metaDesc) _metaDesc.setAttribute('content', `Watch ${film.title} free on MOVXIO. No account needed.`);
+  const _canonical = document.querySelector('link[rel="canonical"]');
+  if (_canonical) _canonical.setAttribute('href', location.href);
+  const _ogUrl    = document.querySelector('meta[property="og:url"]');
+  if (_ogUrl) _ogUrl.setAttribute('content', location.href);
   const _ogTitle  = document.querySelector('meta[property="og:title"]');
   if (_ogTitle)  _ogTitle.setAttribute('content', `${film.title} — MOVXIO`);
   const _ogDesc   = document.querySelector('meta[property="og:description"]');
@@ -2359,6 +2433,8 @@ function renderInfo(film) {
   if (_twImg && _ogImgSrc) _twImg.setAttribute('content', _ogImgSrc);
   const _twTitle  = document.querySelector('meta[name="twitter:title"]');
   if (_twTitle)  _twTitle.setAttribute('content', `${film.title} — Watch Free`);
+  const _twDesc   = document.querySelector('meta[name="twitter:description"]');
+  if (_twDesc)   _twDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
 
   const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
 
@@ -2416,6 +2492,10 @@ function renderInfo(film) {
 
   // Watchlist nav button
   updateNavWlBtn(isInWatchlist(film.id));
+
+  // Enable report button now that film is loaded
+  const reportBtn = document.getElementById('reportBtn');
+  if (reportBtn) { reportBtn.disabled = false; reportBtn.style.opacity = ''; reportBtn.style.pointerEvents = ''; }
 }
 
 // ── Render related — sorted by matching genre ─────────────────
@@ -2742,6 +2822,10 @@ function playEpisode(ep) {
 
   if (player) { player.dispose(); player = null; }
   var container = document.getElementById('playerContainer');
+  // Reset play state for new episode
+  container.classList.remove('is-playing');
+  var initBtn = document.getElementById('initialPlayBtn');
+  if (initBtn) initBtn.style.opacity = '0';
   var oldVideo  = document.getElementById('movxioPlayer');
   if (oldVideo) oldVideo.remove();
   var newVideo    = document.createElement('video');
@@ -2903,7 +2987,37 @@ function renderReviews() {
   renderReviewCards();
 }
 
-// renderReviewCards moved below
+function renderReviewCards() {
+  var list = document.getElementById('reviewsList');
+  var loadMore = document.getElementById('reviewsLoadMore');
+  if (!list) return;
+
+  var visible = allReviews.slice(0, reviewsShown);
+  list.innerHTML = visible.map(function(r) {
+    var initial = (r.author_name || 'A').charAt(0).toUpperCase();
+    var date    = r.created_at ? new Date(r.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) : '';
+    var stars   = r.rating > 0 ? renderStars(r.rating) : '';
+    var helpful = r.helpful_count || 0;
+    var voted   = localStorage.getItem('mvx_hlp_' + r.id) === '1';
+    return '<div class="review-card">' +
+      '<div class="review-card-header">' +
+        '<div class="review-avatar">' + esc(initial) + '</div>' +
+        '<div class="review-author-wrap">' +
+          '<div class="review-author">' + esc(r.author_name || 'Anonymous') + '</div>' +
+          (date ? '<div class="review-date">' + date + '</div>' : '') +
+        '</div>' +
+        (stars ? '<div class="review-stars">' + stars + '</div>' : '') +
+      '</div>' +
+      '<div class="review-body">' + esc(r.body || '') + '</div>' +
+      '<div class="review-helpful">' +
+        '<span class="review-helpful-label">Helpful?</span>' +
+        '<button class="helpful-btn' + (voted ? ' voted' : '') + '" onclick="markHelpful(\'' + esc(String(r.id)) + '\', this)">👍 ' + helpful + '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  if (loadMore) loadMore.style.display = allReviews.length > reviewsShown ? 'block' : 'none';
+}
 
 function renderStars(n) {
   var s = '';
@@ -3141,6 +3255,9 @@ init();
 #shareModal.open { display: flex !important; }
 .reaction-btn.liked { background: rgba(45,212,160,0.1) !important; border-color: rgba(45,212,160,0.3) !important; color: #2dd4a0 !important; }
 .reaction-btn.disliked { background: rgba(232,71,63,0.1) !important; border-color: rgba(232,71,63,0.3) !important; color: var(--accent) !important; }
+.nav-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 14px; border-radius: 40px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; min-height: 38px; }
+.nav-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+.nav-btn svg { width: 14px; flex-shrink: 0; }
 .nav-btn.saved { color: var(--gold) !important; border-color: rgba(232,184,75,0.4) !important; background: rgba(232,184,75,0.08) !important; }
 #filmDesc.expanded { -webkit-line-clamp: unset !important; display: block !important; }
 </style>
