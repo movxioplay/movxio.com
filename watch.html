@@ -99,9 +99,6 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .video-js .vjs-poster {
   background-size: cover !important;
   background-position: center center !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
 }
 
 /* ── PLAYER CONTAINER ── */
@@ -125,7 +122,7 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   animation: initPlayPulse 2.2s ease-in-out infinite;
 }
 
-/* Fix 4: blurred poster fallback background layer — always shown before play */
+/* Fix 4: blurred poster background layer — shown before play, hidden once playing */
 #playerBgBlur {
   position: absolute;
   inset: 0;
@@ -136,11 +133,10 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   transform: scale(1.08);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.5s ease;
 }
 #playerBgBlur.visible { opacity: 1; }
-/* Hide blur bg once video is actually playing */
-#playerContainer.is-playing #playerBgBlur { opacity: 0; transition: opacity 0.6s ease; }
+#playerBgBlur.hidden  { opacity: 0 !important; transition: opacity 0.5s ease; }
 
 /* Portrait mobile — fill width */
 @media (max-width: 600px) {
@@ -2264,6 +2260,8 @@ function initPlayer(film, videoUrl, episode) {
   // Fix 4: blurred poster bg — always shown before play to fill letterbox bars
   const bgBlur = document.getElementById('playerBgBlur');
   if (bgBlur) {
+    // Always reset hidden class when loading a new film/episode
+    bgBlur.classList.remove('hidden');
     const blurSrc = film.backdrop_url || film.thumbnail_url;
     if (blurSrc) {
       bgBlur.style.backgroundImage = `url('${blurSrc}')`;
@@ -2371,10 +2369,15 @@ function initPlayer(film, videoUrl, episode) {
     document.getElementById('iconPlay').style.display = 'none';
     document.getElementById('iconPause').style.display = '';
     showControls();
-    // Hide initial play button and blur bg once playback starts
+    // Hide initial play button once playback starts
     const initPlayBtn = document.getElementById('initialPlayBtn');
     if (initPlayBtn) { initPlayBtn.style.opacity = '0'; }
     playerContainer.classList.add('is-playing');
+    // Directly hide the blur bg — swap visible to hidden so CSS transition fires
+    const bgBlur = document.getElementById('playerBgBlur');
+    if (bgBlur) { bgBlur.classList.remove('visible'); bgBlur.classList.add('hidden'); }
+    // Clear Video.js poster so it hides during playback
+    player.poster('');
   });
 
   player.on('pause', () => {
