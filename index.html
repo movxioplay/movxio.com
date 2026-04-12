@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Monetag Push Notifications -->
+<script src="https://5gvci.com/act/files/tag.min.js?z=10866978" data-cfasync="false" async></script>
 
 <!-- ══════════════════════════════════════════
      PRIMARY SEO
@@ -2679,5 +2681,48 @@ document.addEventListener('keydown', e => {
   }
 })();
 </script>
+<!-- ══ ADSTERRA SOCIAL BAR ══ -->
+<script src="https://pl29131148.profitablecpmratenetwork.com/44/a4/be/44a4be48a597891bd035368d00eb6745.js"></script>
+
+<!-- ══ MONETAG POPUNDER — First click on index ══ -->
+<script>
+(function() {
+  const DAY_KEY   = 'mvx_ad_day';
+  const COUNT_KEY = 'mvx_ad_count';
+  const today     = new Date().toDateString();
+
+  function resetIfNeeded() {
+    const lastDay = localStorage.getItem(DAY_KEY);
+    if (lastDay !== today) {
+      localStorage.setItem(DAY_KEY, today);
+      localStorage.setItem(COUNT_KEY, '0');
+    }
+  }
+
+  function getCount()  { return parseInt(localStorage.getItem(COUNT_KEY) || '0'); }
+  function bumpCount() { localStorage.setItem(COUNT_KEY, String(getCount() + 1)); }
+
+  function firePopunder() {
+    resetIfNeeded();
+    if (getCount() >= 2) return; // max 2 popunders per day across both pages
+    bumpCount();
+    (function(s) {
+      s.dataset.zone = '10865583';
+      s.src = 'https://al5sm.com/tag.min.js';
+    })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+  }
+
+  // Fire on first meaningful click only
+  // Ignore nav, search, hamburger — fire on film cards and watch buttons
+  document.addEventListener('click', function handler(e) {
+    const target = e.target.closest('a[href*="watch"], .film-card, .btn-watch, .card-play, .card-overlay');
+    if (!target) return;
+    document.removeEventListener('click', handler);
+    firePopunder();
+  });
+
+})();
+</script>
+
 </body>
 </html>
