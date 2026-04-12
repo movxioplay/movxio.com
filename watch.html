@@ -3527,7 +3527,40 @@ async function submitReport() {
 })();
 </script>
 
-<!-- ══ ADSTERRA SOCIAL BAR ══ -->
+<!-- ══ DISABLE RIGHT-CLICK & DRAG ON PLAYER ══ -->
+<script>
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    const player = document.getElementById('playerContainer');
+    if (!player) return;
+
+    // Disable right-click context menu on player
+    player.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    // Disable drag on video element
+    player.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+      return false;
+    });
+
+    // Disable long-press context menu on mobile
+    player.addEventListener('touchstart', function(e) {
+      e._touchHandled = true;
+    }, { passive: true });
+
+    // Prevent text/element selection inside player
+    player.style.userSelect = 'none';
+    player.style.webkitUserSelect = 'none';
+    player.style.MozUserSelect = 'none';
+    player.style.msUserSelect = 'none';
+  });
+})();
+</script>
+
+</body>
 <script src="https://pl29131148.profitablecpmratenetwork.com/44/a4/be/44a4be48a597891bd035368d00eb6745.js"></script>
 
 <!-- ══ MONETAG POPUNDER — Controlled firing logic ══ -->
