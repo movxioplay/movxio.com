@@ -7,7 +7,7 @@
 <meta name="description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://movxio.com/watch.html">
-<meta property="og:type" content="website">
+<meta property="og:type" content="video.movie">
 <meta property="og:url" content="">
 <meta property="og:title" content="Watch Free — MOVXIO">
 <meta property="og:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
@@ -27,6 +27,7 @@
 <!-- Video.js HLS engine (hidden, custom UI on top) -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.6.1/video-js.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.6.1/video.min.js"></script>
+<script id="jsonLd" type="application/ld+json"></script>
 
 <style>
 :root {
@@ -1265,7 +1266,8 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
           <svg width="22" viewBox="0 0 16 16" fill="#fff" style="margin-left:3px;"><path d="M4 2l10 6-10 6V2z"/></svg>
         </div>
       </div>
-      <p style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:24px;">Video coming soon</p>
+      <p id="noVideoMsg" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:24px;">Video coming soon</p>
+      <a href="browse.html" style="margin-top:14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--accent);text-decoration:none;border:1px solid rgba(232,71,63,0.3);padding:8px 20px;border-radius:40px;transition:all 0.2s;" onmouseover="this.style.background='rgba(232,71,63,0.1)'" onmouseout="this.style.background='none'">Browse Films →</a>
     </div>
 
     <!-- Buffering indicator (mid-play) -->
@@ -1704,21 +1706,38 @@ function formatDur(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); re
 function formatTime(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=Math.floor(s%60); if(h>0)return`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; return`${m}:${String(sec).padStart(2,'0')}`; }
 
 const filmId = new URLSearchParams(location.search).get('id');
-console.log('[MOVXIO] watch.html | URL:', location.href, '| filmId:', filmId);
 let player = null;
 let currentFilm = null;
 let controlsTimer = null;
 let isDragging = false;
 
 // ── Fetch ─────────────────────────────────────────────────────
-async function fetchFilms() {
-  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) return DEMO;
+async function fetchFilm(id) {
+  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) {
+    return DEMO.find(f => String(f.id) === String(id)) || DEMO[0];
+  }
   try {
-    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/films?select=*`, {
-      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
-    });
-    return res.ok ? await res.json() : DEMO;
-  } catch { return DEMO; }
+    // Fetch only the specific film by ID
+    const res = await fetch(
+      `${CONFIG.SUPABASE_URL}/rest/v1/films?id=eq.${encodeURIComponent(id)}&select=*&limit=1`,
+      { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` } }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data[0] || null;
+  } catch { return null; }
+}
+
+async function fetchRelated(genre, excludeId) {
+  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) return DEMO.filter(f => f.id !== excludeId);
+  try {
+    // Fetch a limited set of films for the sidebar and more section
+    const res = await fetch(
+      `${CONFIG.SUPABASE_URL}/rest/v1/films?id=neq.${encodeURIComponent(excludeId)}&select=id,title,year,genre,thumbnail_url,imdb_rating,views,type&order=views.desc.nullslast&limit=20`,
+      { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` } }
+    );
+    return res.ok ? await res.json() : DEMO.filter(f => f.id !== excludeId);
+  } catch { return DEMO.filter(f => f.id !== excludeId); }
 }
 
 async function getSignedUrl(slug) {
@@ -2352,7 +2371,7 @@ function initPlayer(film, videoUrl, episode) {
       item.className = 'menu-item cc-item';
       item.dataset.srclang = sub.lang.toLowerCase().slice(0,2);
       item.dataset.lang = sub.lang;
-      item.innerHTML = checkSVG + ' ' + sub.lang;
+      item.innerHTML = checkSVG + ' ' + esc(sub.lang);
       ccList.appendChild(item);
     });
 
@@ -2473,6 +2492,29 @@ function initPlayer(film, videoUrl, episode) {
 function renderInfo(film) {
   // Dynamic SEO — safe null checks on every querySelector
   document.title = `${film.title} — Watch Free on MOVXIO`;
+
+  // JSON-LD structured data for Google rich results
+  const jsonLd = document.getElementById('jsonLd');
+  if (jsonLd) {
+    jsonLd.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': film.type === 'series' ? 'TVSeries' : 'Movie',
+      'name': film.title,
+      'description': film.description || '',
+      'image': film.backdrop_url || film.thumbnail_url || '',
+      'datePublished': film.year ? String(film.year) : undefined,
+      'director': film.director ? { '@type': 'Person', 'name': film.director } : undefined,
+      'genre': (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean),
+      'contentRating': film.content_rating || undefined,
+      'aggregateRating': film.imdb_rating ? {
+        '@type': 'AggregateRating',
+        'ratingValue': film.imdb_rating,
+        'bestRating': '10',
+        'ratingCount': film.views || 1,
+        'ratingSystem': 'IMDb'
+      } : undefined,
+    });
+  }
   const _metaDesc = document.querySelector('meta[name="description"]');
   if (_metaDesc) _metaDesc.setAttribute('content', `Watch ${film.title} free on MOVXIO. No account needed.`);
   const _canonical = document.querySelector('link[rel="canonical"]');
@@ -2549,7 +2591,7 @@ function renderInfo(film) {
   if (film.imdb_rating)   rows.push({ key: 'IMDb',     val: `<span class="meta-imdb"><span class="star">★</span> ${esc(String(film.imdb_rating))}/10</span>` });
   if (film.content_rating)rows.push({ key: 'Rating',   val: `<span class="meta-badge" style="background:rgba(255,255,255,0.08);color:var(--text-dim);">${esc(film.content_rating)}</span>` });
   rows.push({ key: 'Quality', val: '<span class="meta-badge hd">HD</span>&nbsp;&nbsp;<span class="meta-badge free">Free</span>' });
-  if (isSeries && film.total_seasons) rows.push({ key: 'Seasons', val: '<span style="color:var(--blue);">' + film.total_seasons + ' Season' + (film.total_seasons > 1 ? 's' : '') + '</span>' });
+  if (isSeries && film.total_seasons) rows.push({ key: 'Seasons', val: '<span style="color:var(--blue);">' + esc(String(film.total_seasons)) + ' Season' + (film.total_seasons > 1 ? 's' : '') + '</span>' });
   if (film.views)         rows.push({ key: 'Views',    val: `<span class="meta-views-badge">${Number(film.views).toLocaleString()}</span>` });
 
   document.getElementById('filmMetaTable').innerHTML = rows.map(r =>
@@ -2565,10 +2607,10 @@ function renderInfo(film) {
 }
 
 // ── Render related — sorted by matching genre ─────────────────
-function renderRelated(films, currentId, currentGenres) {
+function renderRelated(related, currentId, currentGenres) {
   currentGenres = currentGenres || [];
-  const others = films
-    .filter(f => f.id !== currentId)
+  const others = related
+    .filter(f => String(f.id) !== String(currentId))
     .sort((a, b) => {
       const aMatch = (a.genre||'').split(',').map(g=>g.trim()).some(g => currentGenres.includes(g));
       const bMatch = (b.genre||'').split(',').map(g=>g.trim()).some(g => currentGenres.includes(g));
@@ -3013,7 +3055,7 @@ async function loadReviewsForFilm(filmId) {
   reviewFilmId = filmId;
   try {
     var res = await fetch(
-      CONFIG.SUPABASE_URL + '/rest/v1/reviews?film_id=eq.' + filmId + '&select=*&order=created_at.desc',
+      CONFIG.SUPABASE_URL + '/rest/v1/reviews?film_id=eq.' + filmId + '&select=*&order=created_at.desc&limit=100',
       { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY } }
     );
     if (!res.ok) return;
@@ -3217,28 +3259,34 @@ function showReviewToast(msg, isError) {
 // ── Main ──────────────────────────────────────────────────────
 async function init() {
   try {
-    const films = await fetchFilms();
-    console.log('[MOVXIO] Films loaded:', films.length, '| filmId:', filmId);
+    // No film ID — show not found
+    if (!filmId) {
+      document.getElementById('playerLoading').style.display = 'none';
+      document.getElementById('noVideo').style.display = 'flex';
+      const msg = document.getElementById('noVideoMsg');
+      if (msg) msg.textContent = 'No film specified';
+      return;
+    }
 
-    // Safe film lookup — String cast handles UUID vs string mismatches
-    const film = filmId
-      ? (films.find(f => String(f.id) === String(filmId)) || films[0])
-      : films[0];
+    // Fetch only this film — not the entire catalogue
+    const film = await fetchFilm(filmId);
 
     if (!film) {
       document.getElementById('playerLoading').style.display = 'none';
       document.getElementById('noVideo').style.display = 'flex';
+      const msg = document.getElementById('noVideoMsg');
+      if (msg) msg.textContent = 'Film not found';
       document.getElementById('filmTitle').textContent = 'Film not found';
       return;
     }
 
-    console.log('[MOVXIO] Rendering:', film.title, '| hls_url:', film.hls_url || 'none');
-
     trackHistory(film.id);
     renderInfo(film);
 
+    // Fetch related films in parallel with other setup — lightweight query
     const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
-    renderRelated(films, film.id, genres);
+    fetchRelated(genres[0] || '', film.id).then(related => renderRelated(related, film.id, genres));
+
     loadReactions(film.id);
     loadReviewsForFilm(film.id);
 
@@ -3247,17 +3295,15 @@ async function init() {
       const episodes = await fetchEpisodes(film.id);
       if (episodes.length) {
         buildEpisodeSelector(film, episodes);
-        // Get starting episode from URL or first episode
-        const params   = new URLSearchParams(location.search);
+        const params      = new URLSearchParams(location.search);
         const startSeason = parseInt(params.get('season')) || 1;
-        const startEp    = parseInt(params.get('ep')) || 1;
+        const startEp     = parseInt(params.get('ep')) || 1;
         const startEpisode = episodes.find(e => e.season === startSeason && e.episode === startEp)
                           || episodes[0];
         currentEpisode = startEpisode;
         updateEpCurrentInfo();
         updateNextEpButton();
 
-        // Play starting episode
         let videoUrl = startEpisode.hls_url || null;
         if (videoUrl && slugFromUrl(videoUrl)) {
           const ltEl = document.getElementById('loadingText');
@@ -3266,7 +3312,7 @@ async function init() {
           if (signed) videoUrl = signed;
         }
         initPlayer(film, videoUrl, startEpisode);
-        return; // skip movie init below
+        return;
       }
     }
 
@@ -3281,7 +3327,6 @@ async function init() {
 
     initPlayer(film, videoUrl);
   } catch(e) {
-    console.error('[MOVXIO] init() error:', e);
     document.getElementById('playerLoading').style.display = 'none';
     document.getElementById('noVideo').style.display = 'flex';
   }
