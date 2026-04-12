@@ -933,40 +933,6 @@ nav {
 .skeleton-line.short { width: 55%; }
 .skeleton-line.long  { width: 85%; }
 
-.stats-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  margin: 0 32px 48px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--border);
-}
-
-.stat-item {
-  background: var(--surface);
-  padding: 24px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.stat-value {
-  font-family: 'Syne', sans-serif;
-  font-size: 30px;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-.stat-value span { color: var(--accent); }
-.stat-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
 
 /* ========================================
    FOOTER
@@ -1159,7 +1125,6 @@ footer {
 .skeleton-line.short { width: 55%; }
 .skeleton-line.long  { width: 85%; }
 
-.stats-bar { grid-template-columns: repeat(2, 1fr); margin: 0 20px 32px; }
   .ad-slot-banner { margin: 0 20px; }
   footer { padding: 40px 20px 24px; }
   .footer-inner { flex-direction: column; gap: 24px; }
@@ -1212,8 +1177,6 @@ footer {
 .skeleton-line.short { width: 55%; }
 .skeleton-line.long  { width: 85%; }
 
-.stats-bar { grid-template-columns: repeat(2, 1fr); }
-  .stat-value { font-size: 22px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn-watch, .btn-info { justify-content: center; padding: 14px 20px; }
   .hero-meta { font-size: 12px; gap: 8px; }
@@ -1662,24 +1625,7 @@ footer {
 
 
 <!-- ── Stats Bar ── -->
-<div class="stats-bar" style="max-width:1400px;margin:0 auto 48px;border-radius:12px;">
-  <div class="stat-item">
-    <div class="stat-num" id="statMovies">—</div>
-    <div class="stat-label">Movies</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">$0</div>
-    <div class="stat-label">Cost to Watch</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">0%</div>
-    <div class="stat-label">Signup Required</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">∞</div>
-    <div class="stat-label">Free. Forever</div>
-  </div>
-</div>
+
 
 <!-- ── Featured Films ── -->
 <section class="section" id="featuredSection">
@@ -1827,19 +1773,6 @@ footer {
   </div>
 </section>
 
-<!-- ── Browse CTA ── -->
-<div style="max-width:1400px;margin:0 auto;padding:48px 32px 16px;">
-  <a href="browse.html" style="display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(232,71,63,0.12) 0%,rgba(61,127,255,0.08) 100%);border:1px solid rgba(232,71,63,0.2);border-radius:16px;padding:28px 36px;text-decoration:none;transition:all 0.25s;gap:20px;" onmouseover="this.style.borderColor='rgba(232,71,63,0.5)';this.style.background='linear-gradient(135deg,rgba(232,71,63,0.18) 0%,rgba(61,127,255,0.12) 100%)'" onmouseout="this.style.borderColor='rgba(232,71,63,0.2)';this.style.background='linear-gradient(135deg,rgba(232,71,63,0.12) 0%,rgba(61,127,255,0.08) 100%)'">
-    <div>
-      <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;">Browse the Full Library</div>
-      <div style="font-size:14px;color:var(--text-muted);">Search, filter by genre, country, year and language — all free, no signup.</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;background:var(--accent);color:#fff;padding:12px 24px;border-radius:40px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;">
-      Browse All Films
-      <svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </div>
-  </a>
-</div>
 
 <!-- ============ FOOTER ============ -->
 <footer>
@@ -2288,9 +2221,6 @@ async function init() {
 
   if (!allFilms.length) { renderDemoState(); return; }
 
-  // Stats
-  document.getElementById('statMovies').textContent = allFilms.length;
-
   // Continue watching (from localStorage)
   renderContinueWatching(allFilms);
 
@@ -2461,7 +2391,6 @@ function renderDemoState() {
       <a href="admin.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:10px 22px;border-radius:6px;font-weight:600;font-size:13px;">Open Admin Panel</a>
     </div>`;
   document.getElementById('latestRow').innerHTML = '';
-  document.getElementById('statMovies').textContent = '—';
 }
 
 // ── TRAILER MODAL ────────────────────────────────────────────
@@ -2618,7 +2547,8 @@ init();
 </nav>
 <style>
 @media (min-width: 768px) { .bottom-nav-bar { display: none !important; } body { padding-bottom: 0 !important; } }
-body { padding-bottom: 64px; }
+/* On mobile: pad for bottom nav (64px) + Adsterra social bar (~56px) */
+body { padding-bottom: 120px; }
 </style>
 
 
