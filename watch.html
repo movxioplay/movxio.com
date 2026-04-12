@@ -3426,7 +3426,8 @@ init();
 </nav>
 <style>
 @media (min-width: 768px) { .mv-bottom-nav { display: none !important; } }
-body { padding-bottom: 64px; }
+/* On mobile: pad for bottom nav (64px) + Adsterra social bar (~56px) */
+body { padding-bottom: 120px; }
 @media (min-width: 768px) { body { padding-bottom: 0; } }
 </style>
 
@@ -3560,18 +3561,16 @@ async function submitReport() {
 })();
 </script>
 
-</body>
+<!-- ══ ADSTERRA SOCIAL BAR ══ -->
 <script src="https://pl29131148.profitablecpmratenetwork.com/44/a4/be/44a4be48a597891bd035368d00eb6745.js"></script>
 
 <!-- ══ MONETAG POPUNDER — Controlled firing logic ══ -->
 <script>
 (function() {
-  const SESSION_KEY  = 'mvx_ad_session';
   const DAY_KEY      = 'mvx_ad_day';
   const COUNT_KEY    = 'mvx_ad_count';
   const today        = new Date().toDateString();
 
-  // Reset counter on new day or new session
   function resetIfNeeded() {
     const lastDay = localStorage.getItem(DAY_KEY);
     if (lastDay !== today) {
@@ -3585,16 +3584,14 @@ async function submitReport() {
 
   function firePopunder() {
     resetIfNeeded();
-    if (getCount() >= 2) return; // max 2 per day
+    if (getCount() >= 2) return;
     bumpCount();
-    // Monetag popunder tag
     (function(s) {
       s.dataset.zone = '10865583';
       s.src = 'https://al5sm.com/tag.min.js';
     })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
   }
 
-  // Fire on first Play click
   let popFiredThisSession = false;
   document.addEventListener('DOMContentLoaded', function() {
     const playBtn = document.getElementById('btnPlayPause');
@@ -3607,7 +3604,6 @@ async function submitReport() {
       firePopunder();
     }
 
-    // Attach to play button and click overlay (first interaction only)
     if (playBtn) playBtn.addEventListener('click', onFirstPlay, { once: true });
     if (initBtn) initBtn.addEventListener('click', onFirstPlay, { once: true });
     if (clickOv) clickOv.addEventListener('click', onFirstPlay, { once: true });
@@ -3619,11 +3615,11 @@ async function submitReport() {
     if (thirtyFired) return;
     if (!window.player || window.player.paused()) return;
     const t = window.player.currentTime ? window.player.currentTime() : 0;
-    if (t >= 1800) { // 30 minutes
+    if (t >= 1800) {
       thirtyFired = true;
       firePopunder();
     }
-  }, 15000); // check every 15 seconds
+  }, 15000);
 
 })();
 </script>
