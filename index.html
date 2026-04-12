@@ -267,14 +267,14 @@ nav {
 @media (min-width: 901px) { #navSearchWrap { display: block !important; } }
 
 /* ========================================
-   HERO
+   HERO — Split layout (info left, trailer right)
 ======================================== */
 .hero {
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: flex-end;
-  padding: 0 32px 80px;
+  align-items: center;
+  padding: 80px 32px 80px;
   overflow: hidden;
 }
 
@@ -296,7 +296,7 @@ nav {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.18;
+  opacity: 0.10;
   filter: saturate(0.6);
   transform: scale(1.05);
   transition: opacity 1s;
@@ -325,10 +325,20 @@ nav {
 .orb-2 { width: 400px; height: 400px; background: #3d7fff; bottom: 0; right: 30%; }
 .orb-3 { width: 300px; height: 300px; background: #f5c842; top: 30%; left: -100px; opacity: 0.06; }
 
-.hero-content {
+/* ── Split inner layout ── */
+.hero-inner {
   position: relative;
   z-index: 2;
-  max-width: 600px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  align-items: center;
+  gap: 48px;
+}
+
+.hero-content {
   animation: heroIn 0.8s ease both;
 }
 
@@ -380,7 +390,7 @@ nav {
 
 .hero-title {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(36px, 6vw, 64px);
+  font-size: clamp(32px, 4vw, 56px);
   font-weight: 800;
   line-height: 1.0;
   letter-spacing: -0.03em;
@@ -398,6 +408,7 @@ nav {
   margin-bottom: 20px;
   font-size: 13px;
   color: var(--text-dim);
+  flex-wrap: wrap;
 }
 .hero-meta .year { color: var(--gold); font-weight: 600; font-family: 'Space Mono', monospace; }
 .hero-meta .rating {
@@ -416,7 +427,7 @@ nav {
   font-size: 15px;
   color: var(--text-dim);
   line-height: 1.65;
-  max-width: 460px;
+  max-width: 480px;
   margin-bottom: 32px;
 }
 
@@ -471,80 +482,109 @@ nav {
 }
 .btn-info svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 
-/* Hero right side — film poster */
-
-/* ── Hero trailer hover preview ── */
-.hero-poster {
-  cursor: pointer;
-}
-.hero-poster-inner {
+/* ── Hero right — trailer player ── */
+.hero-trailer-panel {
   position: relative;
-  width: 100%;
-  height: 100%;
-}
-.hero-trailer-preview {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-  z-index: 2;
-}
-.hero-trailer-preview.visible { opacity: 1; }
-.hero-poster-img-wrap {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  transition: opacity 0.5s ease;
-}
-.hero-poster-img-wrap.faded { opacity: 0; }
-.hero-trailer-badge {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(8,8,16,0.82);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #fff;
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 3;
-  white-space: nowrap;
-  pointer-events: none;
-}
-.hero-poster:hover .hero-trailer-badge { opacity: 1; }
-@media (max-width: 900px) {
-  .hero-trailer-preview { display: none; }
-  .hero-trailer-badge   { display: none; }
-}
-
-.hero-poster {
-  position: absolute;
-  right: 80px;
-  bottom: 60px;
   z-index: 2;
   animation: posterIn 1s 0.2s ease both;
 }
 @keyframes posterIn {
-  from { opacity: 0; transform: translateX(30px) rotate(2deg); }
-  to   { opacity: 1; transform: translateX(0) rotate(0deg); }
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-.hero-poster img {
-  width: 200px;
-  height: 300px;
+
+.hero-trailer-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07);
+}
+
+/* Poster image shown before trailer plays */
+.hero-trailer-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08);
+  z-index: 1;
+  transition: opacity 0.6s ease;
+}
+.hero-trailer-poster.hidden { opacity: 0; pointer-events: none; }
+
+/* Video element */
+#heroTrailerVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  border-radius: 12px;
+}
+#heroTrailerVideo.visible { opacity: 1; }
+
+/* Muted badge */
+.hero-trailer-muted-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 5;
+  background: rgba(8,8,16,0.75);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+.hero-trailer-muted-badge:hover {
+  background: rgba(232,71,63,0.2);
+  border-color: rgba(232,71,63,0.4);
+  color: #fff;
+}
+
+/* Trailer label top-left */
+.hero-trailer-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  background: rgba(232,71,63,0.9);
+  color: #fff;
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+/* Fallback — show poster only (no trailer) */
+.hero-poster-only {
+  width: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07);
+  max-width: 240px;
+  margin: 0 auto;
+}
+.hero-poster-only img {
+  width: 100%; height: 100%; object-fit: cover;
 }
 
 /* Scroll hint */
@@ -552,7 +592,7 @@ nav {
   position: absolute;
   bottom: 32px;
   right: 32px;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -577,6 +617,36 @@ nav {
   51% { transform: scaleY(1); transform-origin: bottom; }
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .hero-inner { grid-template-columns: 1fr 380px; gap: 32px; }
+}
+@media (max-width: 900px) {
+  .hero {
+    align-items: flex-end;
+    padding: 80px 20px 60px;
+    min-height: 100svh;
+  }
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .hero-trailer-panel { order: -1; }
+  .hero-trailer-wrap { aspect-ratio: 16/9; }
+  .hero-poster-only { max-width: 100%; aspect-ratio: 16/9; }
+  .hero-poster-only img { object-position: center top; }
+  .scroll-hint { display: none; }
+}
+@media (max-width: 600px) {
+  .hero { padding: 70px 16px 48px; }
+  .hero-title { font-size: clamp(28px, 7vw, 40px); }
+  .hero-inner { gap: 20px; }
+}
+
+/* Keep old .hero-poster hidden — replaced by new layout */
+.hero-poster { display: none !important; }
+
 
 /* ========================================
    AD SLOT
@@ -1475,9 +1545,7 @@ footer {
 <!-- ============ HERO ============ -->
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
-  <!-- Carousel slide backgrounds -->
   <div id="heroSlides" style="position:absolute;inset:0;z-index:0;"></div>
-  <!-- Fallback single backdrop (used if no carousel) -->
   <div class="hero-backdrop" id="heroBackdrop">
     <img id="heroBgImg" alt="" onerror="this.style.display='none'">
   </div>
@@ -1485,59 +1553,68 @@ footer {
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 
-  <div class="hero-content">
-    <div class="hero-badge">Now Streaming</div>
-    <div class="hero-genre-tag" id="heroGenreTag">Drama · Thriller</div>
-    <h1 class="hero-title" id="heroTitle">
-      The Featured<br>
-      <span class="title-line-2">Film Title Here</span>
-    </h1>
-    <div class="hero-meta">
-      <span class="year" id="heroYear">2024</span>
-      <span class="dot">·</span>
-      <span id="heroDuration">2h 14m</span>
-      <span class="dot">·</span>
-      <span id="heroLang">English</span>
-      <span class="rating" id="heroImdb" style="display:none;">★ <span id="heroImdbVal"></span></span>
-      <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2px 8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--text-dim);display:none;" id="heroContentRating"></span>
-    </div>
-    <p class="hero-desc" id="heroDesc">
-      Add your featured film description here. This is where viewers get their first impression of the story.
-    </p>
-    <div class="hero-actions">
-      <a class="btn-watch" id="heroWatchBtn" href="watch.html?id=featured">
-        <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
-        Watch Now
-      </a>
-      <button class="btn-info" id="heroMoreInfoBtn" onclick="openMoreInfo()">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg>
-        More Info
-      </button>
-      <button id="heroWlBtn" onclick="toggleHeroWatchlist()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:13px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;">
-        <svg id="heroWlIcon" viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        <span id="heroWlText">Watchlist</span>
-      </button>
-    </div>
-  </div>
+  <div class="hero-inner">
 
-  <div class="hero-poster" id="heroPoster"
-    onmouseenter="startTrailerPreview()"
-    onmouseleave="stopTrailerPreview()">
-    <div class="hero-poster-inner">
-      <div class="hero-poster-img-wrap" id="heroPosterImgWrap">
-        <img id="heroPosterImg" alt="" onerror="this.closest('.hero-poster').style.display='none'"
-          style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">
+    <!-- LEFT — Film info -->
+    <div class="hero-content">
+      <div class="hero-badge">Now Streaming</div>
+      <div class="hero-genre-tag" id="heroGenreTag">Drama · Thriller</div>
+      <h1 class="hero-title" id="heroTitle">
+        The Featured<br>
+        <span class="title-line-2">Film Title Here</span>
+      </h1>
+      <div class="hero-meta">
+        <span class="year" id="heroYear">2024</span>
+        <span class="dot">·</span>
+        <span id="heroDuration">2h 14m</span>
+        <span class="dot">·</span>
+        <span id="heroLang">English</span>
+        <span class="rating" id="heroImdb" style="display:none;">★ <span id="heroImdbVal"></span></span>
+        <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2px 8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--text-dim);display:none;" id="heroContentRating"></span>
       </div>
-      <video id="heroTrailerVideo" class="hero-trailer-preview"
-        muted playsinline loop preload="none"></video>
-      <div class="hero-trailer-badge">▶ Trailer</div>
+      <p class="hero-desc" id="heroDesc">
+        Add your featured film description here. This is where viewers get their first impression of the story.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-watch" id="heroWatchBtn" href="watch.html?id=featured">
+          <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+          Watch Now
+        </a>
+        <button class="btn-info" id="heroMoreInfoBtn" onclick="openMoreInfo()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg>
+          More Info
+        </button>
+        <button id="heroWlBtn" onclick="toggleHeroWatchlist()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:13px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;">
+          <svg id="heroWlIcon" viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span id="heroWlText">Watchlist</span>
+        </button>
+      </div>
     </div>
+
+    <!-- RIGHT — Trailer player (or poster fallback) -->
+    <div class="hero-trailer-panel" id="heroTrailerPanel">
+      <!-- Trailer wrap — shown when trailer_url exists -->
+      <div class="hero-trailer-wrap" id="heroTrailerWrap" style="display:none;">
+        <div class="hero-trailer-label">▶ Trailer</div>
+        <img class="hero-trailer-poster" id="heroTrailerPoster" alt="" src="">
+        <video id="heroTrailerVideo" muted playsinline loop preload="auto"></video>
+        <div class="hero-trailer-muted-badge" id="heroMutedBadge" onclick="toggleHeroMute()">
+          <svg id="heroMuteIcon" viewBox="0 0 24 24" width="11" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          <svg id="heroUnmuteIcon" viewBox="0 0 24 24" width="11" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span id="heroMuteText">Muted</span>
+        </div>
+      </div>
+      <!-- Poster fallback — shown when no trailer_url -->
+      <div class="hero-poster-only" id="heroPosterOnly">
+        <img id="heroPosterImg" alt="" onerror="this.closest('.hero-poster-only').style.display='none'"
+          style="width:100%;height:100%;object-fit:cover;">
+      </div>
+    </div>
+
   </div>
 
   <div class="scroll-hint">Scroll</div>
-  <!-- Carousel dots -->
   <div id="heroDots" style="position:absolute;bottom:28px;left:32px;z-index:3;display:flex;gap:8px;align-items:center;"></div>
-  <!-- Carousel progress bar -->
   <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.08);z-index:3;">
     <div id="heroProgressFill" style="height:100%;background:var(--accent);width:0%;transition:width 0.1s linear;"></div>
   </div>
@@ -2118,82 +2195,21 @@ function getYouTubeId(url) {
   return (m1 && m1[1]) || (m2 && m2[1]) || null;
 }
 
-function startTrailerPreview() {
-  // Desktop only — handled by CSS on mobile
-  if (window.innerWidth < 900) return;
-  var film = currentHeroFilm;
-  if (!film || !film.trailer_url) return;
-
-  // Don't restart if same film already previewing
-  if (_trailerPlaying && _trailerCurrentId === film.id) return;
-
-  // Delay 1.2s so quick mouse passes don't trigger
-  clearTimeout(_trailerHoverTimer);
-  _trailerHoverTimer = setTimeout(function() {
-    _playTrailerPreview(film);
-  }, 1200);
-}
-
-function stopTrailerPreview() {
-  clearTimeout(_trailerHoverTimer);
-  _trailerHoverTimer = null;
-
+// ── Hero trailer mute toggle ──────────────────────────────────
+function toggleHeroMute() {
   var video = document.getElementById('heroTrailerVideo');
-  var imgWrap = document.getElementById('heroPosterImgWrap');
   if (!video) return;
-
-  video.pause();
-  video.src = '';
-  video.classList.remove('visible');
-  if (imgWrap) imgWrap.classList.remove('faded');
-  _trailerPlaying  = false;
-  _trailerCurrentId = null;
+  video.muted = !video.muted;
+  document.getElementById('heroMuteIcon').style.display   = video.muted ? '' : 'none';
+  document.getElementById('heroUnmuteIcon').style.display = video.muted ? 'none' : '';
+  document.getElementById('heroMuteText').textContent     = video.muted ? 'Muted' : 'Sound On';
 }
 
-function _playTrailerPreview(film) {
-  var video   = document.getElementById('heroTrailerVideo');
-  var imgWrap = document.getElementById('heroPosterImgWrap');
-  if (!video || !film.trailer_url) return;
+// ── Stubs so carousel/other code doesn't break ──
+function startTrailerPreview() {}
+function stopTrailerPreview()  {}
+function _playTrailerPreview() {}
 
-  var ytId = getYouTubeId(film.trailer_url);
-
-  if (ytId) {
-    // YouTube — use thumbnail as poster + open trailer modal on click
-    // Can't autoplay YouTube in a <video> tag — show poster click-to-open instead
-    // Animate the badge to signal trailer available, click opens modal
-    _trailerPlaying   = true;
-    _trailerCurrentId = film.id;
-    return; // badge CSS handles the visual cue
-  }
-
-  // Self-hosted .mp4 or direct video URL — play inline
-  video.src     = film.trailer_url;
-  video.muted   = true;
-  video.loop    = true;
-  video.preload = 'auto';
-
-  video.play().then(function() {
-    video.classList.add('visible');
-    if (imgWrap) imgWrap.classList.add('faded');
-    _trailerPlaying   = true;
-    _trailerCurrentId = film.id;
-  }).catch(function() {
-    // Autoplay blocked or failed — silently ignore
-    stopTrailerPreview();
-  });
-}
-
-// Click on poster — open trailer modal if available, else go to watch
-document.getElementById('heroPoster').addEventListener('click', function() {
-  var film = currentHeroFilm;
-  if (!film) return;
-  if (film.trailer_url) {
-    stopTrailerPreview();
-    openTrailer(film);
-  } else {
-    window.location.href = film._watchLink || ('watch.html?id=' + film.id);
-  }
-});
 
 // Stop preview when carousel advances
 var _origGoSlide = goSlide;
@@ -2296,15 +2312,58 @@ function renderHero(film) {
     crEl.textContent = film.content_rating;
   } else { crEl.style.display = 'none'; }
 
+  // Backdrop
   if (film.thumbnail_url) {
     const bgImg = document.getElementById('heroBgImg');
-    const posterImg = document.getElementById('heroPosterImg');
     if (bgImg) bgImg.src = film.thumbnail_url;
-    posterImg.src = film.thumbnail_url;
-    posterImg.alt = film.title;
-    document.getElementById('heroPoster').style.display = '';
+  }
+
+  // RIGHT PANEL — trailer or poster
+  const trailerWrap  = document.getElementById('heroTrailerWrap');
+  const posterOnly   = document.getElementById('heroPosterOnly');
+  const posterImg    = document.getElementById('heroPosterImg');
+  const trailerPoster = document.getElementById('heroTrailerPoster');
+  const video        = document.getElementById('heroTrailerVideo');
+
+  if (film.thumbnail_url && posterImg) posterImg.src = film.thumbnail_url;
+  if (film.thumbnail_url && trailerPoster) trailerPoster.src = film.thumbnail_url;
+
+  if (film.trailer_url && !getYouTubeId(film.trailer_url)) {
+    // Self-hosted mp4 — show trailer panel
+    trailerWrap.style.display = 'block';
+    posterOnly.style.display  = 'none';
+    video.src     = film.trailer_url;
+    video.muted   = true;
+    video.loop    = true;
+    video.preload = 'auto';
+    video.play().then(function() {
+      video.classList.add('visible');
+      if (trailerPoster) trailerPoster.classList.add('hidden');
+    }).catch(function() {
+      // Autoplay blocked — show poster, user can interact
+      video.classList.remove('visible');
+      if (trailerPoster) trailerPoster.classList.remove('hidden');
+    });
+  } else if (film.trailer_url && getYouTubeId(film.trailer_url)) {
+    // YouTube trailer — show poster with play hint, open modal on click
+    trailerWrap.style.display = 'block';
+    posterOnly.style.display  = 'none';
+    if (video) { video.src = ''; video.classList.remove('visible'); }
+    trailerWrap.style.cursor = 'pointer';
+    trailerWrap.onclick = function() { openTrailer(film); };
+    // Add play overlay hint
+    var existingHint = trailerWrap.querySelector('.yt-play-hint');
+    if (!existingHint) {
+      var hint = document.createElement('div');
+      hint.className = 'yt-play-hint';
+      hint.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;';
+      hint.innerHTML = '<div style="width:60px;height:60px;border-radius:50%;background:rgba(232,71,63,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(232,71,63,0.5);"><svg width="22" viewBox="0 0 16 16" fill="#fff" style="margin-left:3px;"><path d="M4 2l10 6-10 6V2z"/></svg></div>';
+      trailerWrap.appendChild(hint);
+    }
   } else {
-    document.getElementById('heroPoster').style.display = 'none';
+    // No trailer — show poster only
+    trailerWrap.style.display = 'none';
+    posterOnly.style.display  = 'block';
   }
 
   // Watchlist btn
