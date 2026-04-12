@@ -6,8 +6,8 @@
 <title>Watch Free — MOVXIO</title>
 <meta name="description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://movxio.com/watch.html">
-<meta property="og:type" content="video.movie">
+<link rel="canonical" id="canonicalTag" href="https://movxio.com/watch.html">
+<meta property="og:type" content="website">
 <meta property="og:url" content="">
 <meta property="og:title" content="Watch Free — MOVXIO">
 <meta property="og:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
@@ -27,7 +27,6 @@
 <!-- Video.js HLS engine (hidden, custom UI on top) -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.6.1/video-js.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/8.6.1/video.min.js"></script>
-<script id="jsonLd" type="application/ld+json"></script>
 
 <style>
 :root {
@@ -686,8 +685,28 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .card-play svg { width: 13px; height: 13px; fill: #fff; margin-left: 2px; }
 .card-overlay-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11.5px; line-height: 1.2; color: var(--text); }
 
-/* ── FOOTER ── */
-footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
+/* ── SKELETON LOADERS ── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skel {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 4px;
+  display: block;
+}
+.skel-title  { height: 32px; width: 70%; margin-bottom: 14px; border-radius: 6px; }
+.skel-eyebrow{ height: 12px; width: 90px; margin-bottom: 10px; }
+.skel-line   { height: 13px; margin-bottom: 8px; }
+.skel-line.w80 { width: 80%; }
+.skel-line.w60 { width: 60%; }
+.skel-line.w90 { width: 90%; }
+.skel-meta   { height: 11px; width: 50%; margin-bottom: 10px; }
+.skel-poster { width: 100%; height: 100%; border-radius: 8px; }
+
+ border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
 .footer-brand .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); margin-bottom: 10px; }
 .footer-brand .logo span { color: var(--accent); }
@@ -1232,7 +1251,7 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
   <span class="bc-sep">/</span>
   <a href="browse.html" id="bcType">Movies</a>
   <span class="bc-sep">/</span>
-  <span class="bc-current" id="bcTitle">Loading...</span>
+  <span class="bc-current" id="bcTitle" style="color:var(--text-muted);font-style:italic;opacity:0.5;">Loading…</span>
 </div>
 
 <!-- ══ PLAYER ══ -->
@@ -1266,8 +1285,7 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
           <svg width="22" viewBox="0 0 16 16" fill="#fff" style="margin-left:3px;"><path d="M4 2l10 6-10 6V2z"/></svg>
         </div>
       </div>
-      <p id="noVideoMsg" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:24px;">Video coming soon</p>
-      <a href="browse.html" style="margin-top:14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--accent);text-decoration:none;border:1px solid rgba(232,71,63,0.3);padding:8px 20px;border-radius:40px;transition:all 0.2s;" onmouseover="this.style.background='rgba(232,71,63,0.1)'" onmouseout="this.style.background='none'">Browse Films →</a>
+      <p style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:24px;">Video coming soon</p>
     </div>
 
     <!-- Buffering indicator (mid-play) -->
@@ -1508,20 +1526,28 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
     <div class="film-hero">
       <!-- Poster -->
       <div class="film-poster-wrap" id="filmPosterWrap">
-        <div class="film-poster-ph" id="filmPosterPh">🎬</div>
+        <span class="skel skel-poster" id="filmPosterSkel"></span>
+        <div class="film-poster-ph" id="filmPosterPh" style="display:none;">🎬</div>
         <div class="film-poster-badge">Free</div>
       </div>
 
       <!-- Details -->
       <div class="film-details">
-        <div class="film-eyebrow" id="filmEyebrow">Now Streaming</div>
-        <h1 class="film-title" id="filmTitle">Loading...</h1>
-        <p class="film-desc" id="filmDesc" style="-webkit-line-clamp:3;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;"></p>
+        <span class="skel skel-eyebrow" id="skelEyebrow"></span>
+        <div class="film-eyebrow" id="filmEyebrow" style="display:none;">Now Streaming</div>
+        <span class="skel skel-title" id="skelTitle"></span>
+        <h1 class="film-title" id="filmTitle" style="display:none;"></h1>
+        <span class="skel skel-line w90" id="skelDesc1"></span>
+        <span class="skel skel-line w80" id="skelDesc2" style="margin-bottom:4px;"></span>
+        <span class="skel skel-line w60" id="skelDesc3" style="margin-bottom:16px;"></span>
+        <p class="film-desc" id="filmDesc" style="-webkit-line-clamp:3;display:none;-webkit-box-orient:vertical;overflow:hidden;"></p>
         <button id="expandDescBtn" onclick="toggleDesc()" style="display:none;background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;margin-bottom:14px;">Show more ↓</button>
 
         <!-- Meta table -->
         <div class="meta-table" id="filmMetaTable">
-          <!-- Populated by renderInfo() -->
+          <span class="skel skel-meta" id="skelMeta1"></span>
+          <span class="skel skel-meta" style="width:40%" id="skelMeta2"></span>
+          <span class="skel skel-meta" style="width:60%" id="skelMeta3"></span>
         </div>
 
         <!-- Actions -->
@@ -1693,6 +1719,33 @@ const CONFIG = {
   SAVE_INTERVAL: 10,
 };
 
+// ── Flush any reports saved to localStorage while offline ──────
+(async function flushPendingReports() {
+  const pending = JSON.parse(localStorage.getItem('mvx_pending_reports') || '[]');
+  if (!pending.length) return;
+  const sent = [];
+  for (const report of pending) {
+    try {
+      const res = await fetch(CONFIG.SUPABASE_URL + '/rest/v1/reports', {
+        method: 'POST',
+        headers: {
+          'apikey':        CONFIG.SUPABASE_KEY,
+          'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY,
+          'Content-Type':  'application/json',
+          'Prefer':        'return=minimal',
+        },
+        body: JSON.stringify(report),
+      });
+      if (res.ok) sent.push(report);
+    } catch { /* still offline — leave for next time */ }
+  }
+  if (sent.length) {
+    const remaining = pending.filter(r => !sent.includes(r));
+    localStorage.setItem('mvx_pending_reports', JSON.stringify(remaining));
+    console.log('[MOVXIO] Flushed', sent.length, 'pending report(s).');
+  }
+})();
+
 const DEMO = [
   { id:'demo1', title:'The Open Road',   year:2023, genre:'Drama,Thriller', language:'English', country:'United States', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80', description:'A breathtaking road trip that changes the lives of two strangers forever. When an unlikely pair hit the open highway, they discover the journey itself holds more meaning than any destination.', hls_url:null, subtitles:[], views:142, imdb_rating:7.2, director:'Alex Rivers', actors:'Tom Bradley, Sara Kim', content_rating:'PG-13' },
   { id:'demo2', title:'City Lights',     year:2022, genre:'Romance',        language:'English', country:'United Kingdom', featured:true,  thumbnail_url:'https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=800&q=80', description:'Love found in unexpected places amid the neon glow of the city. Two strangers, one chance encounter, a story that will stay with you forever.', hls_url:null, subtitles:[], views:98,  imdb_rating:6.8, content_rating:'PG' },
@@ -1706,38 +1759,21 @@ function formatDur(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60); re
 function formatTime(s) { const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=Math.floor(s%60); if(h>0)return`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; return`${m}:${String(sec).padStart(2,'0')}`; }
 
 const filmId = new URLSearchParams(location.search).get('id');
+console.log('[MOVXIO] watch.html | URL:', location.href, '| filmId:', filmId);
 let player = null;
 let currentFilm = null;
 let controlsTimer = null;
 let isDragging = false;
 
 // ── Fetch ─────────────────────────────────────────────────────
-async function fetchFilm(id) {
-  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) {
-    return DEMO.find(f => String(f.id) === String(id)) || DEMO[0];
-  }
+async function fetchFilms() {
+  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) return DEMO;
   try {
-    // Fetch only the specific film by ID
-    const res = await fetch(
-      `${CONFIG.SUPABASE_URL}/rest/v1/films?id=eq.${encodeURIComponent(id)}&select=*&limit=1`,
-      { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` } }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data[0] || null;
-  } catch { return null; }
-}
-
-async function fetchRelated(genre, excludeId) {
-  if (!CONFIG.SUPABASE_URL || !CONFIG.SUPABASE_KEY) return DEMO.filter(f => f.id !== excludeId);
-  try {
-    // Fetch a limited set of films for the sidebar and more section
-    const res = await fetch(
-      `${CONFIG.SUPABASE_URL}/rest/v1/films?id=neq.${encodeURIComponent(excludeId)}&select=id,title,year,genre,thumbnail_url,imdb_rating,views,type&order=views.desc.nullslast&limit=20`,
-      { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` } }
-    );
-    return res.ok ? await res.json() : DEMO.filter(f => f.id !== excludeId);
-  } catch { return DEMO.filter(f => f.id !== excludeId); }
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/films?select=*`, {
+      headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}` }
+    });
+    return res.ok ? await res.json() : DEMO;
+  } catch { return DEMO; }
 }
 
 async function getSignedUrl(slug) {
@@ -2181,7 +2217,7 @@ progressWrap.addEventListener('touchend', (e) => {
 
 // ── Keyboard controls ─────────────────────────────────────────
 document.addEventListener('keydown', (e) => {
-  if (!player || e.target.tagName === 'INPUT') return;
+  if (!player || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   switch(e.key) {
     case ' ': case 'k': e.preventDefault(); togglePlay(); break;
     case 'ArrowLeft':  e.preventDefault(); seek(-10); showSkipIndicator('back'); showKeyHint('◀ 10s'); break;
@@ -2371,7 +2407,7 @@ function initPlayer(film, videoUrl, episode) {
       item.className = 'menu-item cc-item';
       item.dataset.srclang = sub.lang.toLowerCase().slice(0,2);
       item.dataset.lang = sub.lang;
-      item.innerHTML = checkSVG + ' ' + esc(sub.lang);
+      item.innerHTML = checkSVG + ' ' + sub.lang;
       ccList.appendChild(item);
     });
 
@@ -2490,35 +2526,27 @@ function initPlayer(film, videoUrl, episode) {
 
 // ── Render film info ──────────────────────────────────────────
 function renderInfo(film) {
+  // Remove skeleton loaders
+  ['skelEyebrow','skelTitle','skelDesc1','skelDesc2','skelDesc3','skelMeta1','skelMeta2','skelMeta3','filmPosterSkel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  });
+  // Reveal real elements
+  ['filmEyebrow','filmTitle','filmDesc'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = '';
+  });
+  const filmDescEl = document.getElementById('filmDesc');
+  if (filmDescEl) { filmDescEl.style.display = '-webkit-box'; }
+  const filmPosterPh = document.getElementById('filmPosterPh');
+  if (filmPosterPh) filmPosterPh.style.display = '';
+
   // Dynamic SEO — safe null checks on every querySelector
   document.title = `${film.title} — Watch Free on MOVXIO`;
-
-  // JSON-LD structured data for Google rich results
-  const jsonLd = document.getElementById('jsonLd');
-  if (jsonLd) {
-    jsonLd.textContent = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': film.type === 'series' ? 'TVSeries' : 'Movie',
-      'name': film.title,
-      'description': film.description || '',
-      'image': film.backdrop_url || film.thumbnail_url || '',
-      'datePublished': film.year ? String(film.year) : undefined,
-      'director': film.director ? { '@type': 'Person', 'name': film.director } : undefined,
-      'genre': (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean),
-      'contentRating': film.content_rating || undefined,
-      'aggregateRating': film.imdb_rating ? {
-        '@type': 'AggregateRating',
-        'ratingValue': film.imdb_rating,
-        'bestRating': '10',
-        'ratingCount': film.views || 1,
-        'ratingSystem': 'IMDb'
-      } : undefined,
-    });
-  }
   const _metaDesc = document.querySelector('meta[name="description"]');
   if (_metaDesc) _metaDesc.setAttribute('content', `Watch ${film.title} free on MOVXIO. No account needed.`);
   const _canonical = document.querySelector('link[rel="canonical"]');
-  if (_canonical) _canonical.setAttribute('href', location.href);
+  if (_canonical) _canonical.setAttribute('href', `https://movxio.com/watch.html?id=${encodeURIComponent(film.id)}`);
   const _ogUrl    = document.querySelector('meta[property="og:url"]');
   if (_ogUrl) _ogUrl.setAttribute('content', location.href);
   const _ogTitle  = document.querySelector('meta[property="og:title"]');
@@ -2552,7 +2580,12 @@ function renderInfo(film) {
   // Breadcrumb
   const bcTitle = document.getElementById('bcTitle');
   const bcType  = document.getElementById('bcType');
-  if (bcTitle) bcTitle.textContent = film.title;
+  if (bcTitle) {
+    bcTitle.textContent = film.title;
+    bcTitle.style.color = '';
+    bcTitle.style.fontStyle = '';
+    bcTitle.style.opacity = '';
+  }
   if (bcType)  {
     bcType.textContent = isSeries ? 'TV Series' : 'Movies';
     bcType.href = isSeries ? 'browse.html?type=series' : 'browse.html';
@@ -2591,7 +2624,7 @@ function renderInfo(film) {
   if (film.imdb_rating)   rows.push({ key: 'IMDb',     val: `<span class="meta-imdb"><span class="star">★</span> ${esc(String(film.imdb_rating))}/10</span>` });
   if (film.content_rating)rows.push({ key: 'Rating',   val: `<span class="meta-badge" style="background:rgba(255,255,255,0.08);color:var(--text-dim);">${esc(film.content_rating)}</span>` });
   rows.push({ key: 'Quality', val: '<span class="meta-badge hd">HD</span>&nbsp;&nbsp;<span class="meta-badge free">Free</span>' });
-  if (isSeries && film.total_seasons) rows.push({ key: 'Seasons', val: '<span style="color:var(--blue);">' + esc(String(film.total_seasons)) + ' Season' + (film.total_seasons > 1 ? 's' : '') + '</span>' });
+  if (isSeries && film.total_seasons) rows.push({ key: 'Seasons', val: '<span style="color:var(--blue);">' + film.total_seasons + ' Season' + (film.total_seasons > 1 ? 's' : '') + '</span>' });
   if (film.views)         rows.push({ key: 'Views',    val: `<span class="meta-views-badge">${Number(film.views).toLocaleString()}</span>` });
 
   document.getElementById('filmMetaTable').innerHTML = rows.map(r =>
@@ -2607,10 +2640,10 @@ function renderInfo(film) {
 }
 
 // ── Render related — sorted by matching genre ─────────────────
-function renderRelated(related, currentId, currentGenres) {
+function renderRelated(films, currentId, currentGenres) {
   currentGenres = currentGenres || [];
-  const others = related
-    .filter(f => String(f.id) !== String(currentId))
+  const others = films
+    .filter(f => f.id !== currentId)
     .sort((a, b) => {
       const aMatch = (a.genre||'').split(',').map(g=>g.trim()).some(g => currentGenres.includes(g));
       const bMatch = (b.genre||'').split(',').map(g=>g.trim()).some(g => currentGenres.includes(g));
@@ -3055,7 +3088,7 @@ async function loadReviewsForFilm(filmId) {
   reviewFilmId = filmId;
   try {
     var res = await fetch(
-      CONFIG.SUPABASE_URL + '/rest/v1/reviews?film_id=eq.' + filmId + '&select=*&order=created_at.desc&limit=100',
+      CONFIG.SUPABASE_URL + '/rest/v1/reviews?film_id=eq.' + filmId + '&select=*&order=created_at.desc',
       { headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY } }
     );
     if (!res.ok) return;
@@ -3063,8 +3096,8 @@ async function loadReviewsForFilm(filmId) {
     renderReviews();
     renderRatingBreakdown();
     checkAlreadyReviewed(filmId);
+    document.getElementById('reviewsSection').style.display = 'block';
   } catch(e) { console.warn('Reviews load error:', e); }
-  document.getElementById('reviewsSection').style.display = 'block';
 }
 
 function renderReviews() {
@@ -3259,34 +3292,38 @@ function showReviewToast(msg, isError) {
 // ── Main ──────────────────────────────────────────────────────
 async function init() {
   try {
-    // No film ID — show not found
-    if (!filmId) {
-      document.getElementById('playerLoading').style.display = 'none';
-      document.getElementById('noVideo').style.display = 'flex';
-      const msg = document.getElementById('noVideoMsg');
-      if (msg) msg.textContent = 'No film specified';
-      return;
-    }
+    const ltEl = document.getElementById('loadingText');
+    if (ltEl) ltEl.textContent = 'Fetching film data…';
 
-    // Fetch only this film — not the entire catalogue
-    const film = await fetchFilm(filmId);
+    // Slow connection warning — fires if Supabase takes > 4s
+    const slowTimer = setTimeout(() => {
+      if (ltEl) ltEl.textContent = 'Taking longer than usual…';
+      showKeyHint('⚠ Slow connection detected');
+    }, 4000);
+
+    const films = await fetchFilms();
+    clearTimeout(slowTimer);
+    console.log('[MOVXIO] Films loaded:', films.length, '| filmId:', filmId);
+
+    // Safe film lookup — String cast handles UUID vs string mismatches
+    const film = filmId
+      ? (films.find(f => String(f.id) === String(filmId)) || films[0])
+      : films[0];
 
     if (!film) {
       document.getElementById('playerLoading').style.display = 'none';
       document.getElementById('noVideo').style.display = 'flex';
-      const msg = document.getElementById('noVideoMsg');
-      if (msg) msg.textContent = 'Film not found';
       document.getElementById('filmTitle').textContent = 'Film not found';
       return;
     }
 
+    console.log('[MOVXIO] Rendering:', film.title, '| hls_url:', film.hls_url || 'none');
+
     trackHistory(film.id);
     renderInfo(film);
 
-    // Fetch related films in parallel with other setup — lightweight query
     const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
-    fetchRelated(genres[0] || '', film.id).then(related => renderRelated(related, film.id, genres));
-
+    renderRelated(films, film.id, genres);
     loadReactions(film.id);
     loadReviewsForFilm(film.id);
 
@@ -3295,38 +3332,39 @@ async function init() {
       const episodes = await fetchEpisodes(film.id);
       if (episodes.length) {
         buildEpisodeSelector(film, episodes);
-        const params      = new URLSearchParams(location.search);
+        // Get starting episode from URL or first episode
+        const params   = new URLSearchParams(location.search);
         const startSeason = parseInt(params.get('season')) || 1;
-        const startEp     = parseInt(params.get('ep')) || 1;
+        const startEp    = parseInt(params.get('ep')) || 1;
         const startEpisode = episodes.find(e => e.season === startSeason && e.episode === startEp)
                           || episodes[0];
         currentEpisode = startEpisode;
         updateEpCurrentInfo();
         updateNextEpButton();
 
+        // Play starting episode
         let videoUrl = startEpisode.hls_url || null;
         if (videoUrl && slugFromUrl(videoUrl)) {
-          const ltEl = document.getElementById('loadingText');
-          if (ltEl) ltEl.textContent = 'Preparing stream...';
+          if (ltEl) ltEl.textContent = 'Preparing stream…';
           const signed = await getSignedUrl(slugFromUrl(videoUrl));
           if (signed) videoUrl = signed;
         }
         initPlayer(film, videoUrl, startEpisode);
-        return;
+        return; // skip movie init below
       }
     }
 
     // ── Movie: play film's own hls_url ──
     let videoUrl = film.hls_url || null;
     if (videoUrl && slugFromUrl(videoUrl)) {
-      const ltEl = document.getElementById('loadingText');
-      if (ltEl) ltEl.textContent = 'Preparing stream...';
+      if (ltEl) ltEl.textContent = 'Preparing stream…';
       const signed = await getSignedUrl(slugFromUrl(videoUrl));
       if (signed) videoUrl = signed;
     }
 
     initPlayer(film, videoUrl);
   } catch(e) {
+    console.error('[MOVXIO] init() error:', e);
     document.getElementById('playerLoading').style.display = 'none';
     document.getElementById('noVideo').style.display = 'flex';
   }
