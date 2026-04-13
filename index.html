@@ -333,7 +333,7 @@ nav {
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 480px;
+  grid-template-columns: 1fr 560px;
   align-items: center;
   gap: 48px;
 }
@@ -501,7 +501,30 @@ nav {
   overflow: hidden;
   background: #000;
   box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07);
+  transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
 }
+
+/* Expanded state */
+.hero-trailer-wrap.expanded {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(900px, 90vw);
+  aspect-ratio: 16/9;
+  z-index: 500;
+  border-radius: 16px;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.1);
+}
+.hero-trailer-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  z-index: 499;
+}
+.hero-trailer-backdrop.visible { display: block; }
 
 /* Poster image shown before trailer plays */
 .hero-trailer-poster {
@@ -533,7 +556,7 @@ nav {
 .hero-trailer-muted-badge {
   position: absolute;
   bottom: 12px;
-  right: 12px;
+  right: 48px;
   z-index: 5;
   background: rgba(8,8,16,0.75);
   border: 1px solid rgba(255,255,255,0.12);
@@ -555,6 +578,32 @@ nav {
   border-color: rgba(232,71,63,0.4);
   color: #fff;
 }
+
+/* Expand button */
+.hero-trailer-expand {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 5;
+  background: rgba(8,8,16,0.75);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.6);
+}
+.hero-trailer-expand:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+}
+.hero-trailer-expand svg { width: 13px; }
 
 /* Trailer label top-left */
 .hero-trailer-label {
@@ -619,8 +668,11 @@ nav {
 }
 
 /* ── Responsive ── */
+@media (max-width: 1300px) {
+  .hero-inner { grid-template-columns: 1fr 460px; gap: 36px; }
+}
 @media (max-width: 1100px) {
-  .hero-inner { grid-template-columns: 1fr 380px; gap: 32px; }
+  .hero-inner { grid-template-columns: 1fr 380px; gap: 28px; }
 }
 @media (max-width: 900px) {
   .hero {
@@ -1542,6 +1594,9 @@ footer {
   <a href="admin.html">Admin Panel</a>
 </div>
 
+<!-- Trailer expand backdrop -->
+<div class="hero-trailer-backdrop" id="heroTrailerBackdrop" onclick="toggleExpandTrailer()"></div>
+
 <!-- ============ HERO ============ -->
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
@@ -1602,6 +1657,9 @@ footer {
           <svg id="heroMuteIcon" viewBox="0 0 24 24" width="11" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
           <svg id="heroUnmuteIcon" viewBox="0 0 24 24" width="11" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
           <span id="heroMuteText">Muted</span>
+        </div>
+        <div class="hero-trailer-expand" id="heroExpandBtn" onclick="toggleExpandTrailer()" title="Expand">
+          <svg id="heroExpandIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         </div>
       </div>
       <!-- Poster fallback — shown when no trailer_url -->
@@ -2043,7 +2101,17 @@ let currentHeroFilm = null;
 let carouselTimer = null;
 let progressRaf = null;
 let progressStart = null;
-const SLIDE_DURATION = 6000;
+let currentSlideDuration = 6000;
+const SLIDE_DURATION_DEFAULT = 7000;
+const SLIDE_DURATION_TRAILER = 75000;
+
+function getSlideDuration(film) {
+  // If film has a self-hosted trailer (not YouTube), give it 75s to play
+  if (film && film.trailer_url && !getYouTubeId(film.trailer_url)) {
+    return SLIDE_DURATION_TRAILER;
+  }
+  return SLIDE_DURATION_DEFAULT;
+}
 
 function buildCarousel(films) {
   heroFilms = films.filter(f => f.featured).slice(0, 6);
@@ -2080,8 +2148,9 @@ function goSlide(idx) {
   currentSlide = idx;
   currentHeroFilm = heroFilms[idx];
   renderHero(currentHeroFilm);
+  currentSlideDuration = getSlideDuration(currentHeroFilm);
   startProgress();
-  carouselTimer = setInterval(() => goSlide((currentSlide + 1) % heroFilms.length), SLIDE_DURATION);
+  carouselTimer = setInterval(() => goSlide((currentSlide + 1) % heroFilms.length), currentSlideDuration);
 }
 
 function startProgress() {
@@ -2090,7 +2159,7 @@ function startProgress() {
   fill.style.transition = 'none'; fill.style.width = '0%';
   progressStart = Date.now();
   function tick() {
-    const pct = Math.min(100, ((Date.now() - progressStart) / SLIDE_DURATION) * 100);
+    const pct = Math.min(100, ((Date.now() - progressStart) / currentSlideDuration) * 100);
     fill.style.width = pct + '%';
     if (pct < 100) progressRaf = requestAnimationFrame(tick);
   }
@@ -2204,6 +2273,31 @@ function toggleHeroMute() {
   document.getElementById('heroUnmuteIcon').style.display = video.muted ? 'none' : '';
   document.getElementById('heroMuteText').textContent     = video.muted ? 'Muted' : 'Sound On';
 }
+
+// ── Hero trailer expand toggle ────────────────────────────────
+var _trailerExpanded = false;
+function toggleExpandTrailer() {
+  var wrap     = document.getElementById('heroTrailerWrap');
+  var backdrop = document.getElementById('heroTrailerBackdrop');
+  var icon     = document.getElementById('heroExpandIcon');
+  if (!wrap) return;
+  _trailerExpanded = !_trailerExpanded;
+  wrap.classList.toggle('expanded', _trailerExpanded);
+  backdrop.classList.toggle('visible', _trailerExpanded);
+  // Swap icon — expand vs compress
+  if (_trailerExpanded) {
+    icon.innerHTML = '<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>';
+    // Unmute when expanding — user clearly wants to watch properly
+    var video = document.getElementById('heroTrailerVideo');
+    if (video && video.muted) toggleHeroMute();
+  } else {
+    icon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';
+  }
+}
+// Close expanded on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && _trailerExpanded) toggleExpandTrailer();
+});
 
 // ── Stubs so carousel/other code doesn't break ──
 function startTrailerPreview() {}
