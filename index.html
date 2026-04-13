@@ -520,8 +520,7 @@ nav {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.82);
   z-index: 499;
 }
 .hero-trailer-backdrop.visible { display: block; }
@@ -2353,6 +2352,7 @@ async function init() {
         title: b.title || linked.title || 'Featured',
         description: b.subtitle || linked.description || '',
         thumbnail_url: b.image_url || linked.thumbnail_url || '',
+        trailer_url: linked.trailer_url || null,
         genre: linked.genre || '',
         language: linked.language || '',
         year: linked.year || null,
@@ -2421,6 +2421,29 @@ function renderHero(film) {
 
   if (film.thumbnail_url && posterImg) posterImg.src = film.thumbnail_url;
   if (film.thumbnail_url && trailerPoster) trailerPoster.src = film.thumbnail_url;
+
+  // RIGHT PANEL — stop any existing video first
+  if (video) {
+    video.pause();
+    video.src = '';
+    video.classList.remove('visible');
+    video.muted = true;
+  }
+  if (trailerPoster) trailerPoster.classList.remove('hidden');
+  // Reset mute button UI
+  var muteIcon   = document.getElementById('heroMuteIcon');
+  var unmuteIcon = document.getElementById('heroUnmuteIcon');
+  var muteText   = document.getElementById('heroMuteText');
+  if (muteIcon)   muteIcon.style.display   = '';
+  if (unmuteIcon) unmuteIcon.style.display = 'none';
+  if (muteText)   muteText.textContent     = 'Muted';
+  // Also collapse expand if open
+  if (_trailerExpanded) toggleExpandTrailer();
+  // Remove any YouTube play hint from previous slide
+  var oldHint = trailerWrap ? trailerWrap.querySelector('.yt-play-hint') : null;
+  if (oldHint) oldHint.remove();
+  trailerWrap.onclick = null;
+  trailerWrap.style.cursor = '';
 
   if (film.trailer_url && !getYouTubeId(film.trailer_url)) {
     // Self-hosted mp4 — show trailer panel
