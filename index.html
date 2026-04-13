@@ -342,6 +342,27 @@ nav {
   animation: heroIn 0.8s ease both;
 }
 
+/* Skeleton overlays the content area via absolute positioning within wrapper */
+.hero-left-wrap {
+  position: relative;
+  min-height: 320px;
+}
+.hero-left-wrap .hero-content {
+  width: 100%;
+}
+.hero-skeleton-left {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: none;
+}
+.hero-skeleton-left[style*="display: none"],
+.hero-skeleton-left[style*="display:none"] {
+  display: none !important;
+}
+
 @keyframes heroIn {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -683,20 +704,73 @@ nav {
     grid-template-columns: 1fr;
     gap: 28px;
   }
+  .hero-left-wrap { order: 1; min-height: 280px; }
   .hero-trailer-panel { order: -1; }
   .hero-trailer-wrap { aspect-ratio: 16/9; }
   .hero-poster-only { max-width: 100%; aspect-ratio: 16/9; }
   .hero-poster-only img { object-position: center top; }
   .scroll-hint { display: none; }
+  .hero-skeleton-left { gap: 10px; }
+  .hero-sk-title { height: 38px; }
 }
 @media (max-width: 600px) {
   .hero { padding: 70px 16px 48px; }
   .hero-title { font-size: clamp(28px, 7vw, 40px); }
   .hero-inner { gap: 20px; }
+  .hero-skeleton-left { gap: 10px; }
+  .hero-sk-title { height: 32px; }
+  .hero-left-wrap { min-height: 250px; }
 }
 
 /* Keep old .hero-poster hidden — replaced by new layout */
 .hero-poster { display: none !important; }
+
+/* ── Hero skeleton loader (left panel) ── */
+.hero-skeleton-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.hero-sk-badge,.hero-sk-title,.hero-sk-meta,.hero-sk-desc,.hero-sk-btn {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.6s infinite linear;
+  border-radius: 6px;
+}
+.hero-sk-badge   { width: 130px; height: 26px; border-radius: 40px; }
+.hero-sk-title   { width: 100%; height: 52px; border-radius: 8px; }
+.hero-sk-title.short { width: 70%; }
+.hero-sk-meta    { width: 220px; height: 18px; border-radius: 4px; }
+.hero-sk-desc    { width: 100%; height: 16px; border-radius: 4px; }
+.hero-sk-desc.short { width: 80%; }
+.hero-sk-actions { display: flex; gap: 10px; margin-top: 6px; }
+.hero-sk-btn     { height: 46px; width: 110px; border-radius: 6px; }
+.hero-sk-btn.wide { width: 150px; }
+
+@media (max-width: 900px) {
+  .hero-skeleton-left { gap: 10px; }
+  .hero-sk-title { height: 38px; }
+}
+@media (max-width: 600px) {
+  .hero-skeleton-left { gap: 10px; }
+  .hero-sk-title { height: 32px; }
+}
+
+/* ── YouTube trailer iframe (big player) ── */
+#heroYTContainer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+/* ── Remove old expand button styles (no longer used) ── */
+.hero-trailer-expand { display: none !important; }
+.hero-trailer-backdrop { display: none !important; }
 
 
 /* ========================================
@@ -1609,58 +1683,82 @@ footer {
 
   <div class="hero-inner">
 
-    <!-- LEFT — Film info -->
-    <div class="hero-content">
-      <div class="hero-badge">Now Streaming</div>
-      <div class="hero-genre-tag" id="heroGenreTag">Drama · Thriller</div>
-      <h1 class="hero-title" id="heroTitle">
-        The Featured<br>
-        <span class="title-line-2">Film Title Here</span>
-      </h1>
-      <div class="hero-meta">
-        <span class="year" id="heroYear">2024</span>
-        <span class="dot">·</span>
-        <span id="heroDuration">2h 14m</span>
-        <span class="dot">·</span>
-        <span id="heroLang">English</span>
-        <span class="rating" id="heroImdb" style="display:none;">★ <span id="heroImdbVal"></span></span>
-        <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2px 8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--text-dim);display:none;" id="heroContentRating"></span>
-      </div>
-      <p class="hero-desc" id="heroDesc">
-        Add your featured film description here. This is where viewers get their first impression of the story.
-      </p>
-      <div class="hero-actions">
-        <a class="btn-watch" id="heroWatchBtn" href="watch.html?id=featured">
-          <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
-          Watch Now
-        </a>
-        <button class="btn-info" id="heroMoreInfoBtn" onclick="openMoreInfo()">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg>
-          More Info
-        </button>
-        <button id="heroWlBtn" onclick="toggleHeroWatchlist()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:13px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;">
-          <svg id="heroWlIcon" viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-          <span id="heroWlText">Watchlist</span>
-        </button>
-      </div>
-    </div>
+    <!-- LEFT — wrapper holds both real content and skeleton overlay -->
+    <div class="hero-left-wrap">
 
-    <!-- RIGHT — Trailer player (or poster fallback) -->
+      <!-- Film info (hidden until data loads) -->
+      <div class="hero-content" id="heroContent" style="visibility:hidden;">
+        <div class="hero-badge">Now Streaming</div>
+        <div class="hero-genre-tag" id="heroGenreTag"></div>
+        <h1 class="hero-title" id="heroTitle"></h1>
+        <div class="hero-meta">
+          <span class="year" id="heroYear"></span>
+          <span class="dot" id="heroMetaDot1">·</span>
+          <span id="heroDuration"></span>
+          <span class="dot" id="heroMetaDot2">·</span>
+          <span id="heroLang"></span>
+          <span class="rating" id="heroImdb" style="display:none;">★ <span id="heroImdbVal"></span></span>
+          <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2px 8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--text-dim);display:none;" id="heroContentRating"></span>
+        </div>
+        <p class="hero-desc" id="heroDesc"></p>
+        <div class="hero-actions">
+          <a class="btn-watch" id="heroWatchBtn" href="watch.html?id=featured">
+            <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
+            Watch Now
+          </a>
+          <button class="btn-info" id="heroMoreInfoBtn" onclick="openMoreInfo()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg>
+            More Info
+          </button>
+          <button id="heroWlBtn" onclick="toggleHeroWatchlist()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:13px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;">
+            <svg id="heroWlIcon" viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span id="heroWlText">Watchlist</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Shimmer skeleton — shown while data loads -->
+      <div id="heroSkeleton" class="hero-skeleton-left">
+        <div class="hero-sk-badge"></div>
+        <div class="hero-sk-title"></div>
+        <div class="hero-sk-title short"></div>
+        <div class="hero-sk-meta"></div>
+        <div class="hero-sk-desc"></div>
+        <div class="hero-sk-desc short"></div>
+        <div class="hero-sk-actions">
+          <div class="hero-sk-btn wide"></div>
+          <div class="hero-sk-btn"></div>
+          <div class="hero-sk-btn"></div>
+        </div>
+      </div>
+
+    </div><!-- /hero-left-wrap -->
+
+    <!-- RIGHT — Big Trailer player (or poster fallback) -->
     <div class="hero-trailer-panel" id="heroTrailerPanel">
-      <!-- Trailer wrap — shown when trailer_url exists -->
+
+      <!-- NEW: Big immersive trailer block -->
       <div class="hero-trailer-wrap" id="heroTrailerWrap" style="display:none;">
-        <div class="hero-trailer-label">▶ Trailer</div>
+        <!-- Poster shown before trailer / while loading -->
         <img class="hero-trailer-poster" id="heroTrailerPoster" alt="" src="">
+
+        <!-- Self-hosted mp4 video -->
         <video id="heroTrailerVideo" muted playsinline loop preload="auto"></video>
-        <div class="hero-trailer-muted-badge" id="heroMutedBadge" onclick="toggleHeroMute()">
+
+        <!-- YouTube embed container (injected by JS) -->
+        <div id="heroYTContainer" style="display:none;position:absolute;inset:0;z-index:2;"></div>
+
+        <!-- Top-left TRAILER badge -->
+        <div class="hero-trailer-label">▶ Trailer</div>
+
+        <!-- Mute / unmute (only for mp4 trailers) -->
+        <div class="hero-trailer-muted-badge" id="heroMutedBadge" onclick="toggleHeroMute()" style="display:none;">
           <svg id="heroMuteIcon" viewBox="0 0 24 24" width="11" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
           <svg id="heroUnmuteIcon" viewBox="0 0 24 24" width="11" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
           <span id="heroMuteText">Muted</span>
         </div>
-        <div class="hero-trailer-expand" id="heroExpandBtn" onclick="toggleExpandTrailer()" title="Expand">
-          <svg id="heroExpandIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-        </div>
       </div>
+
       <!-- Poster fallback — shown when no trailer_url -->
       <div class="hero-poster-only" id="heroPosterOnly">
         <img id="heroPosterImg" alt="" onerror="this.closest('.hero-poster-only').style.display='none'"
@@ -2263,40 +2361,19 @@ function getYouTubeId(url) {
   return (m1 && m1[1]) || (m2 && m2[1]) || null;
 }
 
-// ── Hero trailer mute toggle ──────────────────────────────────
+// ── Hero trailer mute toggle (mp4 only) ──────────────────────
 function toggleHeroMute() {
   var video = document.getElementById('heroTrailerVideo');
-  if (!video) return;
+  if (!video || video.style.display === 'none') return;
   video.muted = !video.muted;
   document.getElementById('heroMuteIcon').style.display   = video.muted ? '' : 'none';
   document.getElementById('heroUnmuteIcon').style.display = video.muted ? 'none' : '';
   document.getElementById('heroMuteText').textContent     = video.muted ? 'Muted' : 'Sound On';
 }
 
-// ── Hero trailer expand toggle ────────────────────────────────
+// ── Hero trailer expand toggle — removed (no longer used) ──
 var _trailerExpanded = false;
-function toggleExpandTrailer() {
-  var wrap     = document.getElementById('heroTrailerWrap');
-  var backdrop = document.getElementById('heroTrailerBackdrop');
-  var icon     = document.getElementById('heroExpandIcon');
-  if (!wrap) return;
-  _trailerExpanded = !_trailerExpanded;
-  wrap.classList.toggle('expanded', _trailerExpanded);
-  backdrop.classList.toggle('visible', _trailerExpanded);
-  // Swap icon — expand vs compress
-  if (_trailerExpanded) {
-    icon.innerHTML = '<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>';
-    // Unmute when expanding — user clearly wants to watch properly
-    var video = document.getElementById('heroTrailerVideo');
-    if (video && video.muted) toggleHeroMute();
-  } else {
-    icon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>';
-  }
-}
-// Close expanded on Escape
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape' && _trailerExpanded) toggleExpandTrailer();
-});
+function toggleExpandTrailer() { /* deprecated */ }
 
 // ── Stubs so carousel/other code doesn't break ──
 function startTrailerPreview() {}
@@ -2379,6 +2456,12 @@ async function init() {
 }
 
 function renderHero(film) {
+  // ── Reveal content, hide skeleton ──────────────────────────
+  var heroContent  = document.getElementById('heroContent');
+  var heroSkeleton = document.getElementById('heroSkeleton');
+  if (heroContent)  { heroContent.style.visibility = 'visible'; }
+  if (heroSkeleton) { heroSkeleton.style.display = 'none'; }
+
   document.getElementById('heroTitle').textContent = film.title;
   document.getElementById('heroYear').textContent = film.year || '';
   document.getElementById('heroLang').textContent = film.language || 'English';
@@ -2413,72 +2496,90 @@ function renderHero(film) {
   }
 
   // RIGHT PANEL — trailer or poster
-  const trailerWrap  = document.getElementById('heroTrailerWrap');
-  const posterOnly   = document.getElementById('heroPosterOnly');
-  const posterImg    = document.getElementById('heroPosterImg');
+  const trailerWrap   = document.getElementById('heroTrailerWrap');
+  const posterOnly    = document.getElementById('heroPosterOnly');
+  const posterImg     = document.getElementById('heroPosterImg');
   const trailerPoster = document.getElementById('heroTrailerPoster');
-  const video        = document.getElementById('heroTrailerVideo');
+  const video         = document.getElementById('heroTrailerVideo');
+  const ytContainer   = document.getElementById('heroYTContainer');
+  const mutedBadge    = document.getElementById('heroMutedBadge');
 
   if (film.thumbnail_url && posterImg) posterImg.src = film.thumbnail_url;
   if (film.thumbnail_url && trailerPoster) trailerPoster.src = film.thumbnail_url;
 
-  // RIGHT PANEL — stop any existing video first
+  // Stop any existing mp4 video
   if (video) {
     video.pause();
     video.src = '';
     video.classList.remove('visible');
     video.muted = true;
+    video.style.display = 'none';
   }
+  // Clear any existing YouTube iframe
+  if (ytContainer) { ytContainer.innerHTML = ''; ytContainer.style.display = 'none'; }
   if (trailerPoster) trailerPoster.classList.remove('hidden');
-  // Reset mute button UI
-  var muteIcon   = document.getElementById('heroMuteIcon');
-  var unmuteIcon = document.getElementById('heroUnmuteIcon');
-  var muteText   = document.getElementById('heroMuteText');
-  if (muteIcon)   muteIcon.style.display   = '';
-  if (unmuteIcon) unmuteIcon.style.display = 'none';
-  if (muteText)   muteText.textContent     = 'Muted';
-  // Also collapse expand if open
-  if (_trailerExpanded) toggleExpandTrailer();
-  // Remove any YouTube play hint from previous slide
-  var oldHint = trailerWrap ? trailerWrap.querySelector('.yt-play-hint') : null;
-  if (oldHint) oldHint.remove();
+  if (mutedBadge)   mutedBadge.style.display = 'none';
+
   trailerWrap.onclick = null;
   trailerWrap.style.cursor = '';
 
-  if (film.trailer_url && !getYouTubeId(film.trailer_url)) {
-    // Self-hosted mp4 — show trailer panel
+  const ytId = getYouTubeId(film.trailer_url);
+
+  if (film.trailer_url && ytId) {
+    // ── YouTube autoplay embed ──────────────────────────────
     trailerWrap.style.display = 'block';
     posterOnly.style.display  = 'none';
+    if (video) video.style.display = 'none';
+
+    // Build autoplay muted YouTube embed
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+    // autoplay=1, mute=1 (required for autoplay), loop=1, playlist=ytId (needed for loop)
+    // rel=0 = no related videos, modestbranding=1, controls=1
+    iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&rel=0&modestbranding=1&controls=1&playsinline=1`;
+    iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:12px;z-index:2;';
+    iframe.title = (film.title || 'Trailer') + ' — Official Trailer';
+
+    // Show poster until iframe signals it's ready, then fade it out
+    if (trailerPoster) trailerPoster.classList.remove('hidden');
+    iframe.onload = function() {
+      // Give YouTube a moment to start, then fade poster
+      setTimeout(function() {
+        if (trailerPoster) trailerPoster.classList.add('hidden');
+      }, 1800);
+    };
+
+    ytContainer.style.display = 'block';
+    ytContainer.appendChild(iframe);
+
+  } else if (film.trailer_url && !ytId) {
+    // ── Self-hosted mp4 ─────────────────────────────────────
+    trailerWrap.style.display = 'block';
+    posterOnly.style.display  = 'none';
+    video.style.display = '';
     video.src     = film.trailer_url;
     video.muted   = true;
     video.loop    = true;
     video.preload = 'auto';
+    if (mutedBadge) mutedBadge.style.display = '';
+    // Reset mute UI
+    var muteIcon   = document.getElementById('heroMuteIcon');
+    var unmuteIcon = document.getElementById('heroUnmuteIcon');
+    var muteText   = document.getElementById('heroMuteText');
+    if (muteIcon)   muteIcon.style.display   = '';
+    if (unmuteIcon) unmuteIcon.style.display = 'none';
+    if (muteText)   muteText.textContent     = 'Muted';
     video.play().then(function() {
       video.classList.add('visible');
       if (trailerPoster) trailerPoster.classList.add('hidden');
     }).catch(function() {
-      // Autoplay blocked — show poster, user can interact
       video.classList.remove('visible');
       if (trailerPoster) trailerPoster.classList.remove('hidden');
     });
-  } else if (film.trailer_url && getYouTubeId(film.trailer_url)) {
-    // YouTube trailer — show poster with play hint, open modal on click
-    trailerWrap.style.display = 'block';
-    posterOnly.style.display  = 'none';
-    if (video) { video.src = ''; video.classList.remove('visible'); }
-    trailerWrap.style.cursor = 'pointer';
-    trailerWrap.onclick = function() { openTrailer(film); };
-    // Add play overlay hint
-    var existingHint = trailerWrap.querySelector('.yt-play-hint');
-    if (!existingHint) {
-      var hint = document.createElement('div');
-      hint.className = 'yt-play-hint';
-      hint.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;';
-      hint.innerHTML = '<div style="width:60px;height:60px;border-radius:50%;background:rgba(232,71,63,0.9);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(232,71,63,0.5);"><svg width="22" viewBox="0 0 16 16" fill="#fff" style="margin-left:3px;"><path d="M4 2l10 6-10 6V2z"/></svg></div>';
-      trailerWrap.appendChild(hint);
-    }
+
   } else {
-    // No trailer — show poster only
+    // ── No trailer — show poster only ───────────────────────
     trailerWrap.style.display = 'none';
     posterOnly.style.display  = 'block';
   }
@@ -2559,6 +2660,19 @@ function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 // DEMO STATE (no Supabase configured)
 // ============================================================
 function renderDemoState() {
+  // Hide hero skeleton, show content area with empty state
+  var heroContent  = document.getElementById('heroContent');
+  var heroSkeleton = document.getElementById('heroSkeleton');
+  if (heroContent)  { heroContent.style.visibility = 'visible'; }
+  if (heroSkeleton) { heroSkeleton.style.display = 'none'; }
+  // Set demo hero text
+  var titleEl = document.getElementById('heroTitle');
+  var descEl  = document.getElementById('heroDesc');
+  var genreEl = document.getElementById('heroGenreTag');
+  if (titleEl) titleEl.textContent = 'Connect Supabase to load films';
+  if (descEl)  descEl.textContent  = 'Go to Admin → Settings and enter your Supabase credentials to start streaming.';
+  if (genreEl) genreEl.textContent = '';
+
   document.getElementById('featuredGrid').innerHTML = `
     <div style="grid-column:1/-1;padding:48px;text-align:center;color:var(--text-muted);background:var(--surface);border-radius:8px;border:1px dashed var(--border);">
       <div style="font-size:32px;margin-bottom:12px;">🎬</div>
