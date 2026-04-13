@@ -267,14 +267,14 @@ nav {
 @media (min-width: 901px) { #navSearchWrap { display: block !important; } }
 
 /* ========================================
-   HERO — Split layout (info left, trailer right)
+   HERO — Cinematic stacked layout (trailer on top, info below)
 ======================================== */
 .hero {
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  padding: 80px 32px 80px;
+  align-items: flex-start;
+  padding: 80px 32px 48px;
   overflow: hidden;
 }
 
@@ -332,20 +332,31 @@ nav {
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 560px;
-  align-items: center;
-  gap: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Big cinematic trailer at top */
+.hero-trailer-panel {
+  width: 100%;
+  order: 0;
+}
+
+/* Film info below the player */
+.hero-left-wrap {
+  order: 1;
+  min-height: unset;
+  position: relative;
 }
 
 .hero-content {
   animation: heroIn 0.8s ease both;
 }
 
-/* Skeleton overlays the content area via absolute positioning within wrapper */
+/* Skeleton overlays the content area */
 .hero-left-wrap {
   position: relative;
-  min-height: 320px;
 }
 .hero-left-wrap .hero-content {
   width: 100%;
@@ -361,6 +372,27 @@ nav {
 .hero-skeleton-left[style*="display: none"],
 .hero-skeleton-left[style*="display:none"] {
   display: none !important;
+}
+
+/* Info row: genre+title+meta+desc on left, buttons on right */
+.hero-content {
+  animation: heroIn 0.8s ease both;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 24px 40px;
+}
+.hero-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.hero-actions-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  flex-shrink: 0;
 }
 
 @keyframes heroIn {
@@ -448,8 +480,8 @@ nav {
   font-size: 15px;
   color: var(--text-dim);
   line-height: 1.65;
-  max-width: 480px;
-  margin-bottom: 32px;
+  max-width: 640px;
+  margin-bottom: 0;
 }
 
 .hero-actions {
@@ -517,11 +549,11 @@ nav {
 .hero-trailer-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
-  border-radius: 12px;
+  aspect-ratio: 16/7;
+  border-radius: 16px;
   overflow: hidden;
   background: #000;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07);
+  box-shadow: 0 32px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
   transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
 }
 
@@ -689,37 +721,50 @@ nav {
 
 /* ── Responsive ── */
 @media (max-width: 1300px) {
-  .hero-inner { grid-template-columns: 1fr 460px; gap: 36px; }
+  .hero-inner { gap: 24px; }
 }
 @media (max-width: 1100px) {
-  .hero-inner { grid-template-columns: 1fr 380px; gap: 28px; }
+  .hero-inner { gap: 20px; }
+  .hero-trailer-wrap { aspect-ratio: 16/8; }
 }
 @media (max-width: 900px) {
   .hero {
-    align-items: flex-end;
-    padding: 80px 20px 60px;
-    min-height: 100svh;
+    padding: 72px 20px 48px;
+    min-height: unset;
   }
-  .hero-inner {
+  .hero-inner { gap: 20px; }
+  .hero-content {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 16px;
   }
-  .hero-left-wrap { order: 1; min-height: 280px; }
-  .hero-trailer-panel { order: -1; }
-  .hero-trailer-wrap { aspect-ratio: 16/9; }
-  .hero-poster-only { max-width: 100%; aspect-ratio: 16/9; }
+  .hero-actions-col {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .hero-actions-col .btn-watch,
+  .hero-actions-col .btn-info,
+  .hero-actions-col #heroWlBtn {
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+  }
+  .hero-trailer-wrap { aspect-ratio: 16/9; border-radius: 12px; }
+  .hero-poster-only  { aspect-ratio: 16/9; max-width: 100%; }
   .hero-poster-only img { object-position: center top; }
   .scroll-hint { display: none; }
-  .hero-skeleton-left { gap: 10px; }
-  .hero-sk-title { height: 38px; }
 }
 @media (max-width: 600px) {
-  .hero { padding: 70px 16px 48px; }
-  .hero-title { font-size: clamp(28px, 7vw, 40px); }
-  .hero-inner { gap: 20px; }
-  .hero-skeleton-left { gap: 10px; }
+  .hero { padding: 64px 14px 36px; }
+  .hero-title { font-size: clamp(24px, 7vw, 38px); }
+  .hero-inner { gap: 16px; }
+  .hero-trailer-wrap { aspect-ratio: 16/9; border-radius: 10px; }
   .hero-sk-title { height: 32px; }
-  .hero-left-wrap { min-height: 250px; }
+  .hero-sk-actions { flex-wrap: wrap; }
+  .hero-actions-col { gap: 8px; }
+  .hero-actions-col .btn-watch,
+  .hero-actions-col .btn-info,
+  .hero-actions-col #heroWlBtn { font-size: 13px; padding: 11px 14px; }
 }
 
 /* Keep old .hero-poster hidden — replaced by new layout */
@@ -1688,20 +1733,22 @@ footer {
 
       <!-- Film info (hidden until data loads) -->
       <div class="hero-content" id="heroContent" style="visibility:hidden;">
-        <div class="hero-badge">Now Streaming</div>
-        <div class="hero-genre-tag" id="heroGenreTag"></div>
-        <h1 class="hero-title" id="heroTitle"></h1>
-        <div class="hero-meta">
-          <span class="year" id="heroYear"></span>
-          <span class="dot" id="heroMetaDot1">·</span>
-          <span id="heroDuration"></span>
-          <span class="dot" id="heroMetaDot2">·</span>
-          <span id="heroLang"></span>
-          <span class="rating" id="heroImdb" style="display:none;">★ <span id="heroImdbVal"></span></span>
-          <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2px 8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--text-dim);display:none;" id="heroContentRating"></span>
+        <div class="hero-info-col">
+          <div class="hero-badge">Now Streaming</div>
+          <div class="hero-genre-tag" id="heroGenreTag"></div>
+          <h1 class="hero-title" id="heroTitle"></h1>
+          <div class="hero-meta">
+            <span class="year" id="heroYear"></span>
+            <span class="dot" id="heroMetaDot1">·</span>
+            <span id="heroDuration"></span>
+            <span class="dot" id="heroMetaDot2">·</span>
+            <span id="heroLang"></span>
+            <span class="rating" id="heroImdb" style="display:none;">★ <span id="heroImdbVal"></span></span>
+            <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:2px 8px;font-size:11px;font-family:'Space Mono',monospace;color:var(--text-dim);display:none;" id="heroContentRating"></span>
+          </div>
+          <p class="hero-desc" id="heroDesc"></p>
         </div>
-        <p class="hero-desc" id="heroDesc"></p>
-        <div class="hero-actions">
+        <div class="hero-actions-col">
           <a class="btn-watch" id="heroWatchBtn" href="watch.html?id=featured">
             <svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg>
             Watch Now
@@ -1710,7 +1757,7 @@ footer {
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-linecap="round" stroke-width="3"/></svg>
             More Info
           </button>
-          <button id="heroWlBtn" onclick="toggleHeroWatchlist()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:13px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;">
+          <button id="heroWlBtn" onclick="toggleHeroWatchlist()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:13px 18px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;transition:all 0.2s;width:100%;">
             <svg id="heroWlIcon" viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
             <span id="heroWlText">Watchlist</span>
           </button>
