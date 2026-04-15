@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<!-- Monetag Push Notifications -->
-<script src="https://5gvci.com/act/files/tag.min.js?z=10866978" data-cfasync="false" async></script>
+<!-- Evadav Push Notifications -->
+<script>(function(d){let s=d.createElement('script');s.async=true;s.src='https://tbwdoo.com/code/native.js?h=waWQiOjEyMjQzOTksInNpZCI6MTc3NDYzMSwid2lkIjo3MzkwMTMsInNyYyI6Mn0=eyJ';d.head.appendChild(s);})(document);</script>
 <title>Watch Free — MOVXIO</title>
 <meta name="description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta name="robots" content="index, follow">
@@ -16,6 +16,7 @@
 <meta property="og:site_name" content="MOVXIO">
 <meta property="og:image" content="">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Watch Free — MOVXIO">
 <meta name="twitter:description" content="Watch free movies online at MOVXIO — no account needed, no subscription.">
 <meta name="twitter:image" content="">
 <meta property="og:image:width" content="1280">
@@ -24,6 +25,8 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Preload critical font weights to prevent FOUT on mobile -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <!-- Video.js HLS engine (hidden, custom UI on top) -->
@@ -473,10 +476,16 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   border: 1px solid rgba(232,71,63,0.3);
   border-radius: 12px; padding: 14px 20px;
   display: none; align-items: center; gap: 14px;
-  font-size: 13px; z-index: 15; white-space: nowrap;
+  font-size: 13px; z-index: 15;
+  white-space: nowrap;
   backdrop-filter: blur(20px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,71,63,0.08);
   animation: bannerUp 0.32s cubic-bezier(0.34,1.4,0.64,1);
+  max-width: calc(100% - 32px);
+  white-space: normal;
+  text-align: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 #resumeBanner.show { display: flex; }
 @keyframes bannerUp { from { opacity:0; transform:translateX(-50%) translateY(12px) scale(0.97); } to { opacity:1; transform:translateX(-50%) translateY(0) scale(1); } }
@@ -660,14 +669,14 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .more-section { padding: 28px 20px 80px; max-width: 1400px; margin: 0 auto; }
 @media (min-width: 960px) { .more-section { display: none; } }
 .more-title { font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 16px; }
-.film-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+.film-grid { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); }
 @media (min-width: 400px) { .film-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 600px) { .film-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
-.film-card { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.25s ease; background: var(--surface); }
+.film-card { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.25s ease; background: var(--surface); display: flex; flex-direction: column; }
 .film-card:hover { transform: translateY(-4px); }
 .film-card:hover .card-overlay { opacity: 1; }
 .film-card:hover .card-thumb img { transform: scale(1.06); }
-.card-thumb { position: relative; aspect-ratio: 2/3; overflow: hidden; background: var(--surface2); }
+.card-thumb { position: relative; aspect-ratio: 2/3; overflow: hidden; background: var(--surface2); flex-shrink: 0; }
 .card-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
 .card-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 .placeholder-1 { background: linear-gradient(145deg, #1a1228, #0d1a2e); }
@@ -675,17 +684,23 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .placeholder-3 { background: linear-gradient(145deg, #0d1a15, #1a2a15); }
 .placeholder-4 { background: linear-gradient(145deg, #1a1a0d, #2a200a); }
 .placeholder-icon { font-size: 32px; opacity: 0.15; }
-.card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,16,0.95) 0%, rgba(8,8,16,0.5) 50%, transparent 100%); opacity: 0; transition: opacity 0.25s; display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; gap: 6px; }
+.card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,16,0.95) 0%, rgba(8,8,16,0.5) 50%, transparent 100%); opacity: 0; transition: opacity 0.25s; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; gap: 4px; }
 .card-play { align-self: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; box-shadow: 0 4px 20px rgba(232,71,63,0.5); transform: scale(0.8); transition: transform 0.2s; }
 .film-card:hover .card-overlay { opacity: 1; }
 .film-card:hover .card-play { transform: scale(1); }
 /* Touch: always show overlay */
 @media (hover: none) {
-  .card-overlay { opacity: 1; background: linear-gradient(to top, rgba(8,8,16,0.85) 0%, transparent 60%); }
+  .card-overlay { opacity: 1; background: linear-gradient(to top, rgba(8,8,16,0.9) 0%, transparent 55%); }
   .card-play { transform: scale(1); }
 }
 .card-play svg { width: 13px; height: 13px; fill: #fff; margin-left: 2px; }
-.card-overlay-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11.5px; line-height: 1.2; color: var(--text); }
+.card-overlay-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; line-height: 1.2; color: var(--text); }
+/* Card meta info below thumbnail */
+.card-meta-bar { padding: 8px 10px 10px; background: var(--surface); flex: 1; }
+.card-meta-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+.card-meta-row { display: flex; align-items: center; gap: 6px; font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); }
+.card-meta-imdb { color: var(--gold); }
+.card-meta-genre { color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── SKELETON LOADERS ── */
 @keyframes shimmer {
@@ -708,7 +723,7 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .skel-meta   { height: 11px; width: 50%; margin-bottom: 10px; }
 .skel-poster { width: 100%; height: 100%; border-radius: 8px; }
 
- border-top: 1px solid var(--border); padding: 48px 32px 32px; }
+footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 48px; flex-wrap: wrap; }
 .footer-brand .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.5px; color: var(--text); margin-bottom: 10px; }
 .footer-brand .logo span { color: var(--accent); }
@@ -726,11 +741,23 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 ══════════════════════════════════════════ */
 
 
+/* ── Hide desktop-only controls on mobile ── */
+@media (max-width: 600px) {
+  #btnTheater, #btnKb { display: none !important; }
+  .ctrl-btn { width: 38px; height: 38px; }
+  .ctrl-row { gap: 0; }
+  .ctrl-left { gap: 0; }
+  .ctrl-right { gap: 0; }
+}
+
 /* ── Theater Mode ── */
 body.theater-mode .player-section { position: fixed; top: 0; left: 0; right: 0; z-index: 900; background: #000; }
 body.theater-mode #playerContainer { max-height: 100vh; }
 body.theater-mode nav { opacity: 0; pointer-events: none; }
-body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
+body.theater-mode .master-layout { padding-top: calc(56.25vw); }
+@media (max-width: 600px) {
+  body.theater-mode .master-layout { padding-top: calc(56.25vw + 56px); }
+}
 .ctrl-btn.active { color: var(--accent, #e8473f) !important; }
 
 /* ── Quality menu ── */
@@ -738,9 +765,6 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
 .quality-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
 .quality-item.active { color: var(--accent, #e8473f); font-weight: 600; }
 .quality-badge { font-size: 10px; font-family: 'Space Mono', monospace; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: rgba(255,255,255,0.45); }
-
-/* ── Keyboard shortcut overlay ── */
-
 
 /* ── Chapter markers on progress bar ── */
 .chapter-marker {
@@ -778,7 +802,90 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
 }
 .progress-wrap:hover .chapter-tooltip { opacity: 1; }
 
-/* ── Report modal ── */
+/* ── Auto-next episode countdown overlay ── */
+#nextEpCountdown {
+  position: absolute;
+  bottom: 90px;
+  right: 18px;
+  z-index: 15;
+  background: rgba(8,8,18,0.96);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 16px 20px;
+  width: 260px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  animation: bannerUp 0.35s cubic-bezier(0.34,1.4,0.64,1);
+}
+#nextEpCountdown.show { display: flex; }
+.nec-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+.nec-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nec-bar-wrap {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.nec-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 1s linear;
+}
+.nec-actions {
+  display: flex;
+  gap: 8px;
+}
+.nec-play-btn {
+  flex: 1;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.nec-play-btn:hover { background: var(--accent2); }
+.nec-cancel-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-muted);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.nec-cancel-btn:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+@media (max-width: 480px) {
+  #nextEpCountdown { right: 10px; left: 10px; width: auto; bottom: 80px; }
+}
 #reportModal { position:fixed; inset:0; z-index:600; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(8,8,16,0.85); backdrop-filter:blur(12px); }
 #reportModal.open { display:flex; }
 .report-panel { background:var(--surface); border:1px solid rgba(255,255,255,0.09); border-radius:16px; padding:28px; max-width:420px; width:100%; }
@@ -1342,6 +1449,20 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
       <button class="resume-dismiss" id="resumeDismiss">✕</button>
     </div>
 
+    <!-- Auto-next episode countdown -->
+    <div id="nextEpCountdown">
+      <div class="nec-label">Up next</div>
+      <div class="nec-title" id="necTitle">—</div>
+      <div class="nec-bar-wrap"><div class="nec-bar-fill" id="necBar" style="width:100%"></div></div>
+      <div class="nec-actions">
+        <button class="nec-play-btn" id="necPlayBtn">
+          <svg viewBox="0 0 16 16" width="12" fill="#fff"><path d="M4 2l10 6-10 6V2z"/></svg>
+          Play now
+        </button>
+        <button class="nec-cancel-btn" id="necCancelBtn">Cancel</button>
+      </div>
+    </div>
+
     <!-- Custom Controls -->
     <div id="customControls">
 
@@ -1360,36 +1481,36 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
       <div class="ctrl-row">
         <div class="ctrl-left">
           <!-- Play/Pause -->
-          <button class="ctrl-btn" id="btnPlayPause" title="Play/Pause (Space)">
-            <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          <button class="ctrl-btn" id="btnPlayPause" title="Play/Pause (Space)" aria-label="Play">
+            <svg id="iconPlay" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="iconPause" viewBox="0 0 24 24" fill="currentColor" style="display:none" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
           </button>
 
           <!-- Skip back -->
-          <button class="ctrl-btn ctrl-btn-skip" id="btnBack" title="Back 10s (←)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.74"/></svg>
-            <span class="skip-num">10</span>
+          <button class="ctrl-btn ctrl-btn-skip" id="btnBack" title="Back 10s (←)" aria-label="Rewind 10 seconds">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.74"/></svg>
+            <span class="skip-num" aria-hidden="true">10</span>
           </button>
 
           <!-- Skip forward -->
-          <button class="ctrl-btn ctrl-btn-skip" id="btnFwd" title="Forward 10s (→)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-4.74"/></svg>
-            <span class="skip-num">10</span>
+          <button class="ctrl-btn ctrl-btn-skip" id="btnFwd" title="Forward 10s (→)" aria-label="Forward 10 seconds">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-4.74"/></svg>
+            <span class="skip-num" aria-hidden="true">10</span>
           </button>
 
           <!-- Volume -->
           <div class="volume-wrap">
-            <button class="ctrl-btn" id="btnMute" title="Mute (M)">
-              <svg id="iconVol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-              <svg id="iconMute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <button class="ctrl-btn" id="btnMute" title="Mute (M)" aria-label="Mute">
+              <svg id="iconVol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <svg id="iconMute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
             </button>
             <div class="volume-slider-wrap">
-              <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100">
+              <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="100" aria-label="Volume" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
             </div>
           </div>
 
           <!-- Time -->
-          <div class="ctrl-time">
+          <div class="ctrl-time" aria-live="off">
             <strong id="timeNow">0:00</strong> / <span id="timeDur">0:00</span>
           </div>
         </div>
@@ -1397,7 +1518,7 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
         <div class="ctrl-right">
           <!-- CC/Subtitles -->
           <div style="position:relative;">
-            <button class="ctrl-btn" id="btnCC" title="Subtitles (C)" style="display:none">
+            <button class="ctrl-btn" id="btnCC" title="Subtitles (C)" aria-label="Subtitles" style="display:none">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M7 13h4M15 13h2M7 9h2M13 9h4"/></svg>
             </button>
             <div class="menu-popup" id="ccMenu">
@@ -1408,7 +1529,7 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
 
           <!-- Quality selector -->
           <div style="position:relative;">
-            <button class="ctrl-btn" id="btnQuality" title="Quality" style="display:none;">
+            <button class="ctrl-btn" id="btnQuality" title="Quality" aria-label="Video quality" style="display:none;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             </button>
             <div class="menu-popup" id="qualityMenu">
@@ -1419,8 +1540,8 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
 
           <!-- Settings (speed) -->
           <div style="position:relative;">
-            <button class="ctrl-btn" id="btnSettings" title="Settings">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            <button class="ctrl-btn" id="btnSettings" title="Settings" aria-label="Playback settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
             </button>
             <div class="settings-popup" id="settingsMenu">
               <div class="menu-label">Playback Speed</div>
@@ -1429,25 +1550,25 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
           </div>
 
           <!-- Picture in Picture -->
-          <button class="ctrl-btn" id="btnPiP" title="Picture in Picture (P)" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="10" width="8" height="5" rx="1" fill="currentColor" stroke="none"/></svg>
+          <button class="ctrl-btn" id="btnPiP" title="Picture in Picture (P)" aria-label="Picture in picture" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="10" width="8" height="5" rx="1" fill="currentColor" stroke="none"/></svg>
           </button>
 
           <!-- Theater mode -->
-          <button class="ctrl-btn" id="btnTheater" title="Theater Mode (T)">
-            <svg id="iconTheaterOn"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20"/></svg>
-            <svg id="iconTheaterOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20"/></svg>
+          <button class="ctrl-btn" id="btnTheater" title="Theater Mode (T)" aria-label="Theater mode">
+            <svg id="iconTheaterOn"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20"/></svg>
+            <svg id="iconTheaterOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20"/></svg>
           </button>
 
           <!-- Keyboard shortcuts -->
-          <button class="ctrl-btn" id="btnKb" title="Keyboard Shortcuts (?)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h12"/></svg>
+          <button class="ctrl-btn" id="btnKb" title="Keyboard Shortcuts (?)" aria-label="Keyboard shortcuts">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h12"/></svg>
           </button>
 
           <!-- Fullscreen -->
-          <button class="ctrl-btn" id="btnFullscreen" title="Fullscreen (F)">
-            <svg id="iconExpand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-            <svg id="iconCompress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+          <button class="ctrl-btn" id="btnFullscreen" title="Fullscreen (F)" aria-label="Fullscreen">
+            <svg id="iconExpand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            <svg id="iconCompress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
           </button>
         </div>
       </div>
@@ -1507,15 +1628,15 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw + 0px); }
 <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
   <div id="infoTitleBar" style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%;"></div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <button class="reaction-btn" id="likeBtn" onclick="react('like')" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">
+    <button class="reaction-btn" id="likeBtn" onclick="react('like')" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:11px 18px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;min-height:44px;">
       <svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
       <span id="likeCount">0</span>
     </button>
-    <button class="reaction-btn" id="dislikeBtn" onclick="react('dislike')" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">
+    <button class="reaction-btn" id="dislikeBtn" onclick="react('dislike')" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:11px 18px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;min-height:44px;">
       <svg viewBox="0 0 24 24" width="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
       <span id="dislikeCount">0</span>
     </button>
-    <button onclick="openShare()" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;">
+    <button onclick="openShare()" style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text-dim);padding:11px 18px;border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;min-height:44px;">
       <svg viewBox="0 0 24 24" width="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       Share
     </button>
@@ -1919,6 +2040,7 @@ document.getElementById('volumeSlider').addEventListener('input', (e) => {
   player.volume(e.target.value / 100);
   player.muted(false);
   updateVolumeUI();
+  try { localStorage.setItem('mvx_volume', e.target.value); } catch {}
 });
 function updateVolumeUI() {
   if (!player) return;
@@ -2324,16 +2446,10 @@ async function incrementViews(fid) {
 
 // ── Init Player ───────────────────────────────────────────────
 function initPlayer(film, videoUrl, episode) {
+  // Guard: dispose any existing player instance before re-initialising
+  if (player) { try { player.dispose(); } catch(e) {} player = null; }
   currentFilm = film;
-  // Build chapter markers on progress bar
-  if (player) {
-    var _dur = player.duration();
-    if (_dur > 0) {
-      buildChapterMarkers(film);
-    } else {
-      player.one('loadedmetadata', function() { buildChapterMarkers(film); });
-    }
-  }
+
   if (episode) {
     document.getElementById('playerTitleText').textContent =
       film.title + ' · S' + episode.season + 'E' + episode.episode + ' — ' + episode.title;
@@ -2453,6 +2569,16 @@ function initPlayer(film, videoUrl, episode) {
 
   player.src({ type: 'application/x-mpegURL', src: videoUrl });
 
+  // Restore saved volume
+  try {
+    const savedVol = localStorage.getItem('mvx_volume');
+    if (savedVol !== null) {
+      const vol = parseInt(savedVol) / 100;
+      player.volume(vol);
+      document.getElementById('volumeSlider').value = savedVol;
+    }
+  } catch {}
+
   // Events
   player.on('loadedmetadata', () => {
     loading.style.display = 'none';
@@ -2474,6 +2600,7 @@ function initPlayer(film, videoUrl, episode) {
   player.on('play', () => {
     document.getElementById('iconPlay').style.display = 'none';
     document.getElementById('iconPause').style.display = '';
+    document.getElementById('btnPlayPause').setAttribute('aria-label', 'Pause');
     showControls();
     // Hide initial play button once playback starts
     const initPlayBtn = document.getElementById('initialPlayBtn');
@@ -2489,6 +2616,7 @@ function initPlayer(film, videoUrl, episode) {
   player.on('pause', () => {
     document.getElementById('iconPlay').style.display = '';
     document.getElementById('iconPause').style.display = 'none';
+    document.getElementById('btnPlayPause').setAttribute('aria-label', 'Play');
     showControls();
   });
 
@@ -2512,6 +2640,7 @@ function initPlayer(film, videoUrl, episode) {
 
   // Throttled save
   let lastSave = 0;
+  let _necFired = false;
   player.on('timeupdate', () => {
     if (!player || player.paused()) return;
     const now = Date.now();
@@ -2522,7 +2651,24 @@ function initPlayer(film, videoUrl, episode) {
     if (pos > 0) { if (episode) saveEpisodePosition(film.id, episode, pos, dur); else savePosition(film.id, pos, dur); }
   });
 
+  // Auto-next episode countdown — fires at 30s from end for series episodes
+  player.on('timeupdate', function() {
+    if (!episode || _necFired) return;
+    const dur = player.duration() || 0;
+    const remaining = dur - (player.currentTime() || 0);
+    if (dur > 0 && remaining > 0 && remaining <= 30) {
+      _necFired = true;
+      // Find next episode
+      var idx  = allEpisodes.findIndex(function(e) { return e.id === episode.id; });
+      var next = allEpisodes[idx + 1];
+      if (next) showNextEpCountdown(next);
+    }
+  });
+
   player.one('play', () => incrementViews(film.id));
+
+  // Re-attach popunder listener to this new player instance
+  if (window._attachPopunderToPlayer) window._attachPopunderToPlayer();
 }
 
 
@@ -2564,6 +2710,40 @@ function renderInfo(film) {
   if (_twTitle)  _twTitle.setAttribute('content', `${film.title} — Watch Free`);
   const _twDesc   = document.querySelector('meta[name="twitter:description"]');
   if (_twDesc)   _twDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
+
+  // JSON-LD structured data — VideoObject / Movie schema for Google rich results
+  const existingLd = document.getElementById('jsonLd');
+  if (existingLd) existingLd.remove();
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': film.type === 'series' ? 'TVSeries' : 'Movie',
+    'name': film.title,
+    'description': film.description || `Watch ${film.title} free on MOVXIO.`,
+    'url': location.href,
+    'image': film.backdrop_url || film.thumbnail_url || '',
+    'datePublished': film.year ? String(film.year) : undefined,
+    'director': film.director ? { '@type': 'Person', 'name': film.director } : undefined,
+    'actor': film.actors ? film.actors.split(',').map(a => ({ '@type': 'Person', 'name': a.trim() })) : undefined,
+    'genre': film.genre ? film.genre.split(',').map(g => g.trim()) : undefined,
+    'contentRating': film.content_rating || undefined,
+    'potentialAction': {
+      '@type': 'WatchAction',
+      'target': location.href
+    },
+    'offers': {
+      '@type': 'Offer',
+      'price': '0',
+      'priceCurrency': 'USD',
+      'availability': 'https://schema.org/InStock'
+    }
+  };
+  // Remove undefined keys
+  Object.keys(ld).forEach(k => ld[k] === undefined && delete ld[k]);
+  const ldScript = document.createElement('script');
+  ldScript.type = 'application/ld+json';
+  ldScript.id = 'jsonLd';
+  ldScript.textContent = JSON.stringify(ld);
+  document.head.appendChild(ldScript);
 
   const genres = (film.genre||'').split(',').map(g=>g.trim()).filter(Boolean);
 
@@ -2669,16 +2849,27 @@ function renderRelated(films, currentId, currentGenres) {
 
   if (others.length) {
     document.getElementById('moreSection').style.display = 'block';
-    document.getElementById('moreGrid').innerHTML = others.slice(0,4).map((f,i) => {
+    document.getElementById('moreGrid').innerHTML = others.map((f,i) => {
       const ph = PLACEHOLDERS[i%4];
       const thumb = f.thumbnail_url
         ? `<img src="${esc(f.thumbnail_url)}" alt="${esc(f.title)}" loading="lazy">`
         : `<div class="card-thumb-placeholder ${ph}"><span class="placeholder-icon">🎬</span></div>`;
+      const genres = (f.genre||'').split(',').slice(0,1).map(g=>g.trim()).join('');
+      const imdb = f.imdb_rating ? `<span class="card-meta-imdb">★ ${f.imdb_rating}</span>` : '';
+      const year = f.year ? `<span>${f.year}</span>` : '';
+      const sep = (imdb && year) ? '<span>·</span>' : '';
       return `<div class="film-card" onclick="window.location.href='watch.html?id=${esc(f.id)}'">
         <div class="card-thumb">${thumb}
-          <div class="card-overlay"><div class="card-play"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div>
-          <div class="card-overlay-title">${esc(f.title)}</div></div>
-        </div></div>`;
+          <div class="card-overlay">
+            <div class="card-play"><svg viewBox="0 0 16 16"><path d="M4 2l10 6-10 6V2z"/></svg></div>
+            <div class="card-overlay-title">${esc(f.title)}</div>
+          </div>
+        </div>
+        <div class="card-meta-bar">
+          <div class="card-meta-title">${esc(f.title)}</div>
+          <div class="card-meta-row">${year}${sep}${imdb}${genres ? `<span class="card-meta-genre">${esc(genres)}</span>` : ''}</div>
+        </div>
+      </div>`;
     }).join('');
   }
 }
@@ -3035,6 +3226,56 @@ function saveEpisodePosition(seriesId, ep, pos, dur) {
   } catch {}
 }
 
+// ── Auto-next episode countdown ───────────────────────────────
+var _necTimer = null;
+var _necSecs  = 10;
+
+function showNextEpCountdown(nextEp) {
+  var overlay  = document.getElementById('nextEpCountdown');
+  var titleEl  = document.getElementById('necTitle');
+  var barEl    = document.getElementById('necBar');
+  var playBtn  = document.getElementById('necPlayBtn');
+  var cancelBtn = document.getElementById('necCancelBtn');
+  if (!overlay || !nextEp) return;
+
+  titleEl.textContent = 'S' + nextEp.season + 'E' + nextEp.episode + ' — ' + nextEp.title;
+  _necSecs = 10;
+  barEl.style.transition = 'none';
+  barEl.style.width = '100%';
+
+  overlay.classList.add('show');
+
+  // Start countdown
+  clearInterval(_necTimer);
+  // Allow the browser to paint 100% before starting transition
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      barEl.style.transition = 'width ' + _necSecs + 's linear';
+      barEl.style.width = '0%';
+    });
+  });
+
+  _necTimer = setInterval(function() {
+    _necSecs--;
+    if (_necSecs <= 0) {
+      clearInterval(_necTimer);
+      overlay.classList.remove('show');
+      playEpisode(nextEp);
+    }
+  }, 1000);
+
+  playBtn.onclick = function() {
+    clearInterval(_necTimer);
+    overlay.classList.remove('show');
+    playEpisode(nextEp);
+  };
+
+  cancelBtn.onclick = function() {
+    clearInterval(_necTimer);
+    overlay.classList.remove('show');
+  };
+}
+
 function getEpisodeSavedPosition(seriesId, ep) {
   try {
     var key  = 'mvx_pos_' + seriesId + '_s'+ep.season+'e'+ep.episode;
@@ -3315,7 +3556,14 @@ async function init() {
     if (!film) {
       document.getElementById('playerLoading').style.display = 'none';
       document.getElementById('noVideo').style.display = 'flex';
-      document.getElementById('filmTitle').textContent = 'Film not found';
+      document.querySelector('#noVideo p').textContent = 'Film not found';
+      document.title = 'Film Not Found — MOVXIO';
+      // Show a user-friendly message in the info panel
+      const titleEl = document.getElementById('filmTitle');
+      if (titleEl) { titleEl.textContent = 'Film not found'; titleEl.style.display = ''; }
+      const descEl = document.getElementById('filmDesc');
+      if (descEl) { descEl.textContent = 'We couldn\'t find that film. It may have been removed or the link is incorrect.'; descEl.style.display = 'block'; }
+      ['skelEyebrow','skelTitle','skelDesc1','skelDesc2','skelDesc3','skelMeta1','skelMeta2','skelMeta3','filmPosterSkel'].forEach(id => { const el = document.getElementById(id); if (el) el.remove(); });
       return;
     }
 
@@ -3421,8 +3669,6 @@ init();
     <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Browse</a>
   <a href="browse.html?watchlist=1" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
     <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Watchlist</a>
-  <a href="admin.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
-    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Admin</a>
 </nav>
 <style>
 @media (min-width: 768px) { .mv-bottom-nav { display: none !important; } }
@@ -3561,24 +3807,33 @@ async function submitReport() {
 })();
 </script>
 
-<!-- ══ ADSTERRA SOCIAL BAR ══ -->
-<script src="https://pl29131148.profitablecpmratenetwork.com/44/a4/be/44a4be48a597891bd035368d00eb6745.js"></script>
-
-<!-- ══ MONETAG POPUNDER — Controlled firing logic ══ -->
+<!-- ══ ADSTERRA SOCIAL BAR — deferred so it doesn't block render ══ -->
 <script>
 (function() {
-  const DAY_KEY      = 'mvx_ad_day';
-  const COUNT_KEY    = 'mvx_ad_count';
-  const today        = new Date().toDateString();
+  function loadAdsterra() {
+    var s = document.createElement('script');
+    s.src = 'https://pl29131148.profitablecpmratenetwork.com/44/a4/be/44a4be48a597891bd035368d00eb6745.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+  if (document.readyState === 'complete') { loadAdsterra(); }
+  else { window.addEventListener('load', loadAdsterra); }
+})();
+</script>
+
+<!-- ══ MONETAG POPUNDER — fires on actual playback start, not on click ══ -->
+<script>
+(function() {
+  const DAY_KEY   = 'mvx_ad_day';
+  const COUNT_KEY = 'mvx_ad_count';
+  const today     = new Date().toDateString();
 
   function resetIfNeeded() {
-    const lastDay = localStorage.getItem(DAY_KEY);
-    if (lastDay !== today) {
+    if (localStorage.getItem(DAY_KEY) !== today) {
       localStorage.setItem(DAY_KEY, today);
       localStorage.setItem(COUNT_KEY, '0');
     }
   }
-
   function getCount()  { return parseInt(localStorage.getItem(COUNT_KEY) || '0'); }
   function bumpCount() { localStorage.setItem(COUNT_KEY, String(getCount() + 1)); }
 
@@ -3586,36 +3841,40 @@ async function submitReport() {
     resetIfNeeded();
     if (getCount() >= 2) return;
     bumpCount();
-    (function(s) {
-      s.dataset.zone = '10865583';
-      s.src = 'https://al5sm.com/tag.min.js';
-    })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+    var s = document.createElement('script');
+    s.dataset.zone = '10865583';
+    s.src = 'https://al5sm.com/tag.min.js';
+    document.body.appendChild(s);
   }
 
-  let popFiredThisSession = false;
-  document.addEventListener('DOMContentLoaded', function() {
-    const playBtn = document.getElementById('btnPlayPause');
-    const initBtn = document.getElementById('initialPlayBtn');
-    const clickOv = document.getElementById('clickOverlay');
+  var popFiredThisSession = false;
 
-    function onFirstPlay() {
+  // Exposed so initPlayer() can re-attach after each player re-init (episodes, film switches)
+  window._attachPopunderToPlayer = function() {
+    if (!window.player || !window.player.one) return;
+    window.player.one('play', function() {
       if (popFiredThisSession) return;
       popFiredThisSession = true;
       firePopunder();
+    });
+  };
+
+  // Initial attach — poll until player exists on first load
+  function pollAndAttach() {
+    if (window.player && window.player.one) {
+      window._attachPopunderToPlayer();
+    } else {
+      setTimeout(pollAndAttach, 500);
     }
+  }
+  document.addEventListener('DOMContentLoaded', pollAndAttach);
 
-    if (playBtn) playBtn.addEventListener('click', onFirstPlay, { once: true });
-    if (initBtn) initBtn.addEventListener('click', onFirstPlay, { once: true });
-    if (clickOv) clickOv.addEventListener('click', onFirstPlay, { once: true });
-  });
-
-  // Fire again at 30 minute mark
-  let thirtyFired = false;
+  // Fire again at 30-minute mark during active playback
+  var thirtyFired = false;
   setInterval(function() {
     if (thirtyFired) return;
     if (!window.player || window.player.paused()) return;
-    const t = window.player.currentTime ? window.player.currentTime() : 0;
-    if (t >= 1800) {
+    if ((window.player.currentTime ? window.player.currentTime() : 0) >= 1800) {
       thirtyFired = true;
       firePopunder();
     }
