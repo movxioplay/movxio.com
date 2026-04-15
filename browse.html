@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- Evadav Push Notifications -->
+<script>(function(d){let s=d.createElement('script');s.async=true;s.src='https://tbwdoo.com/code/native.js?h=waWQiOjEyMjQzOTksInNpZCI6MTc3NDYzMSwid2lkIjo3MzkwMTMsInNyYyI6Mn0=eyJ';d.head.appendChild(s);})(document);</script>
 <title>Browse Films — MOVXIO</title>
 <meta name="description" content="Browse and search thousands of free movies on MOVXIO. Filter by genre, country, year and language. No sign-up needed.">
 <meta name="robots" content="index, follow">
@@ -19,6 +21,7 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -80,6 +83,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .bottom-nav-item.active { color: var(--accent); }
 .bottom-nav-item:hover { color: var(--text); }
 @media (min-width: 768px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
+/* iOS safe area */
+body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 768px) { body { padding-bottom: 0; } }
 
 /* ── PAGE HEADER ── */
 .page-header { padding: 96px 32px 0; max-width: 1400px; margin: 0 auto; }
@@ -206,8 +212,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 
 /* Sort + Results */
 .filters-right { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
-.results-count { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; white-space: nowrap; }
-.results-count span { color: var(--accent); }
+.results-count { display: none; }
 
 /* Active filters chips */
 .active-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 32px 0; max-width: 1400px; margin: 0 auto; }
@@ -233,6 +238,10 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .placeholder-4 { background: linear-gradient(145deg, #1a1a0d, #2a200a); }
 .placeholder-icon { font-size: 36px; opacity: 0.15; }
 .card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,16,0.95) 0%, rgba(8,8,16,0.5) 50%, transparent 100%); opacity: 0; transition: opacity 0.25s; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px; gap: 8px; }
+@media (hover: none) {
+  .card-overlay { opacity: 1; background: linear-gradient(to top, rgba(8,8,16,0.92) 0%, transparent 55%); }
+  .card-play { transform: scale(1); }
+}
 .card-play { align-self: center; width: 40px; height: 40px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; box-shadow: 0 4px 20px rgba(232,71,63,0.5); transform: scale(0.8); transition: transform 0.2s; }
 .film-card:hover .card-play { transform: scale(1); }
 .card-play svg { width: 15px; height: 15px; fill: #fff; margin-left: 2px; }
@@ -268,6 +277,27 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
 /* ── LOAD MORE ── */
+
+/* ── PAGINATION ── */
+.pagination-wrap {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; padding: 36px 0 8px; flex-wrap: wrap;
+}
+.pg-btn {
+  min-width: 40px; height: 40px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text-dim); font-family: 'Space Mono', monospace;
+  font-size: 12px; cursor: pointer; transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 10px; gap: 5px; white-space: nowrap;
+}
+.pg-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); background: var(--surface2); }
+.pg-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.pg-btn.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+.pg-ellipsis { color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 12px; padding: 0 4px; line-height: 40px; }
+@media (max-width: 480px) {
+  .pg-btn { min-width: 36px; height: 36px; font-size: 11px; }
+}
 
 /* ── New this week chip ── */
 .new-week-chip {
@@ -349,7 +379,6 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" id="navSearchInput" placeholder="Search films..." onkeydown="if(event.key==='Enter')applyNavSearch()" autocomplete="off">
     </div>
-    <button class="btn-nav" onclick="window.location.href='admin.html'">Admin</button>
     <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
   </div>
 </nav>
@@ -367,7 +396,6 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
   <a href="browse.html?genre=thriller">Thriller</a>
   <div class="mobile-nav-divider"></div>
   <a href="browse.html?watchlist=1">My Watchlist</a>
-  <a href="admin.html">Admin Panel</a>
 </div>
 
 <!-- ── PAGE HEADER ── -->
@@ -557,9 +585,7 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
     <div class="skeleton" style="aspect-ratio:2/3;"></div>
     <div class="skeleton" style="aspect-ratio:2/3;"></div>
   </div>
-  <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
-    <button class="btn-load-more" onclick="loadMore()">Load More Films</button>
-  </div>
+  <div id="paginationWrap" class="pagination-wrap" style="display:none;"></div>
 </div>
 
 <!-- ── FOOTER ── -->
@@ -612,10 +638,6 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     Watchlist
   </a>
-  <a href="admin.html" class="bottom-nav-item">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    Admin
-  </a>
 </nav>
 
 <script>
@@ -623,7 +645,7 @@ footer { border-top: 1px solid var(--border); padding: 48px 32px 32px; }
 const SUPABASE_URL = localStorage.getItem('cv_url') || 'https://kncqgatjjcezlnwwikqm.supabase.co';
 const SUPABASE_KEY = localStorage.getItem('cv_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3FnYXRqamNlemxud3dpa3FtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjUxMzMsImV4cCI6MjA5MDY0MTEzM30.irNGQnC6SlSq2ozVHToq1TnBAs_fKdukJMPmaMB1wyc';
 const PLACEHOLDERS = ['placeholder-1','placeholder-2','placeholder-3','placeholder-4'];
-const PAGE_SIZE = 42;
+const PAGE_SIZE = 49;
 
 // ── DEMO DATA ─────────────────────────────────────────────────
 const DEMO = [
@@ -819,9 +841,12 @@ function filterFilms() {
 }
 
 function renderGrid() {
-  const total = filteredFilms.length;
-  const page  = filteredFilms.slice(0, currentPage * PAGE_SIZE);
+  const total     = filteredFilms.length;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const start     = (currentPage - 1) * PAGE_SIZE;
+  const page      = filteredFilms.slice(start, start + PAGE_SIZE);
 
+  // Results count hidden but still update for accessibility
   document.getElementById('resultsCount').innerHTML = `<span>${total}</span> film${total !== 1 ? 's' : ''}`;
 
   if (!total) {
@@ -832,18 +857,61 @@ function renderGrid() {
         <p>${isWatchlistMode ? 'Browse films and tap the bookmark icon to save them.' : 'Try adjusting your search or filters'}</p>
         ${!isWatchlistMode ? '<button onclick="clearAllFilters()">Clear Filters</button>' : ''}
       </div>`;
-    document.getElementById('loadMoreWrap').style.display = 'none';
+    document.getElementById('paginationWrap').style.display = 'none';
     return;
   }
 
   document.getElementById('filmGrid').innerHTML = page.map((f,i) => filmCard(f, i)).join('');
-  document.getElementById('loadMoreWrap').style.display = total > page.length ? 'block' : 'none';
+  renderPagination(totalPages);
+
+  // Scroll to top of grid on page change
+  const grid = document.getElementById('filmGrid');
+  if (grid && currentPage > 1) {
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
-function loadMore() {
-  currentPage++;
+function renderPagination(totalPages) {
+  const wrap = document.getElementById('paginationWrap');
+  if (totalPages <= 1) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'flex';
+
+  const p = currentPage;
+  const pages = [];
+
+  // Always show: first, last, current ±2, with ellipsis
+  const show = new Set();
+  show.add(1);
+  show.add(totalPages);
+  for (let i = Math.max(1, p - 2); i <= Math.min(totalPages, p + 2); i++) show.add(i);
+  const sorted = [...show].sort((a, b) => a - b);
+
+  // Prev button
+  let html = `<button class="pg-btn${p === 1 ? ' disabled' : ''}" onclick="goPage(${p - 1})">‹ Prev</button>`;
+
+  let prev = 0;
+  for (const n of sorted) {
+    if (n - prev > 1) html += `<span class="pg-ellipsis">…</span>`;
+    html += `<button class="pg-btn${n === p ? ' active' : ''}" onclick="goPage(${n})">${n}</button>`;
+    prev = n;
+  }
+
+  // Next button
+  html += `<button class="pg-btn${p === totalPages ? ' disabled' : ''}" onclick="goPage(${p + 1})">Next ›</button>`;
+  // Last page fast-forward
+  if (p < totalPages - 2) {
+    html += `<button class="pg-btn" onclick="goPage(${totalPages})" title="Last page">»»</button>`;
+  }
+
+  wrap.innerHTML = html;
+}
+
+function goPage(n) {
+  const total = filteredFilms.length;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  if (n < 1 || n > totalPages) return;
+  currentPage = n;
   renderGrid();
-  // Scroll to newly loaded cards
 }
 
 function renderActiveFilters(q, country, year, lang) {
