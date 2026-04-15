@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Monetag Push Notifications -->
-<script src="https://5gvci.com/act/files/tag.min.js?z=10866978" data-cfasync="false" async></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<!-- Evadav Push Notifications -->
+<script>(function(d){let s=d.createElement('script');s.async=true;s.src='https://tbwdoo.com/code/native.js?h=waWQiOjEyMjQzOTksInNpZCI6MTc3NDYzMSwid2lkIjo3MzkwMTMsInNyYyI6Mn0=eyJ';d.head.appendChild(s);})(document);</script>
 
 <!-- ══════════════════════════════════════════
      PRIMARY SEO
@@ -139,6 +139,8 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Preload critical font weights to prevent FOUT on mobile -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -1005,6 +1007,14 @@ nav {
   padding: 16px;
   gap: 10px;
 }
+/* Touch devices — always show bottom overlay so users see the title + play button */
+@media (hover: none) {
+  .card-overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(8,8,16,0.92) 0%, transparent 55%);
+  }
+  .card-play { transform: scale(1); }
+}
 
 .card-play {
   align-self: center;
@@ -1326,45 +1336,6 @@ footer {
   .section { padding: 40px 20px 24px; }
   .genre-strip { padding: 0 20px; }
   
-/* ── Skeleton loading cards ── */
-@keyframes shimmer {
-  0%   { background-position: -600px 0; }
-  100% { background-position:  600px 0; }
-}
-.skeleton-card {
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--surface);
-}
-.skeleton-thumb {
-  width: 100%;
-  aspect-ratio: 2/3;
-  background: linear-gradient(90deg,
-    var(--surface) 0%, var(--surface2) 40%,
-    rgba(255,255,255,0.04) 50%,
-    var(--surface2) 60%, var(--surface) 100%);
-  background-size: 1200px 100%;
-  animation: shimmer 1.6s infinite linear;
-}
-.skeleton-info {
-  padding: 8px 4px 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.skeleton-line {
-  height: 10px;
-  border-radius: 4px;
-  background: linear-gradient(90deg,
-    var(--surface) 0%, var(--surface2) 40%,
-    rgba(255,255,255,0.04) 50%,
-    var(--surface2) 60%, var(--surface) 100%);
-  background-size: 1200px 100%;
-  animation: shimmer 1.6s infinite linear;
-}
-.skeleton-line.short { width: 55%; }
-.skeleton-line.long  { width: 85%; }
-
   .ad-slot-banner { margin: 0 20px; }
   footer { padding: 40px 20px 24px; }
   .footer-inner { flex-direction: column; gap: 24px; }
@@ -1378,45 +1349,6 @@ footer {
 
 @media (max-width: 480px) {
   
-/* ── Skeleton loading cards ── */
-@keyframes shimmer {
-  0%   { background-position: -600px 0; }
-  100% { background-position:  600px 0; }
-}
-.skeleton-card {
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--surface);
-}
-.skeleton-thumb {
-  width: 100%;
-  aspect-ratio: 2/3;
-  background: linear-gradient(90deg,
-    var(--surface) 0%, var(--surface2) 40%,
-    rgba(255,255,255,0.04) 50%,
-    var(--surface2) 60%, var(--surface) 100%);
-  background-size: 1200px 100%;
-  animation: shimmer 1.6s infinite linear;
-}
-.skeleton-info {
-  padding: 8px 4px 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.skeleton-line {
-  height: 10px;
-  border-radius: 4px;
-  background: linear-gradient(90deg,
-    var(--surface) 0%, var(--surface2) 40%,
-    rgba(255,255,255,0.04) 50%,
-    var(--surface2) 60%, var(--surface) 100%);
-  background-size: 1200px 100%;
-  animation: shimmer 1.6s infinite linear;
-}
-.skeleton-line.short { width: 55%; }
-.skeleton-line.long  { width: 85%; }
-
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn-watch, .btn-info { justify-content: center; padding: 14px 20px; }
   .hero-meta { font-size: 12px; gap: 8px; }
@@ -1688,7 +1620,6 @@ footer {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;color:var(--text-muted);pointer-events:none;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" id="navSearch" placeholder="Search films..." onkeydown="if(event.key==='Enter')navSearchGo()" autocomplete="off" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:var(--text);padding:8px 16px 8px 36px;border-radius:40px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:180px;transition:all 0.25s;">
     </div>
-    <button class="btn-nav" onclick="window.location.href='admin.html'">Admin</button>
     <div class="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </div>
@@ -1709,7 +1640,6 @@ footer {
   <a href="browse.html?genre=thriller">Thriller</a>
   <div class="mobile-nav-divider"></div>
   <a href="browse.html?watchlist=1">My Watchlist</a>
-  <a href="admin.html">Admin Panel</a>
 </div>
 
 <!-- Trailer expand backdrop -->
@@ -1720,7 +1650,7 @@ footer {
   <div class="hero-bg"></div>
   <div id="heroSlides" style="position:absolute;inset:0;z-index:0;"></div>
   <div class="hero-backdrop" id="heroBackdrop">
-    <img id="heroBgImg" alt="" onerror="this.style.display='none'">
+    <img id="heroBgImg" alt="" fetchpriority="high" onerror="this.style.display='none'">
   </div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -2145,7 +2075,7 @@ function filmCard(film, idx = 0) {
         <div class="card-overlay-meta">${year}${dur ? ' · '+dur : ''}</div>
       </div>
     </div>
-    <button onclick="event.stopPropagation();cardToggleWl(this,'${esc(film.id)}')" title="${saved?'Remove from watchlist':'Add to watchlist'}" style="position:absolute;top:8px;right:8px;z-index:2;width:30px;height:30px;border-radius:50%;background:rgba(8,8,16,0.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 0.2s;" class="card-wl-btn ${saved?'saved':''}">
+    <button onclick="event.stopPropagation();cardToggleWl(this,'${esc(film.id)}')" title="${saved?'Remove from watchlist':'Add to watchlist'}" style="position:absolute;top:6px;right:6px;z-index:2;width:36px;height:36px;min-width:44px;min-height:44px;border-radius:50%;background:rgba(8,8,16,0.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 0.2s;" class="card-wl-btn ${saved?'saved':''}">
       <svg viewBox="0 0 24 24" width="14" style="fill:${saved?'var(--gold)':'none'};stroke:${saved?'var(--gold)':'#fff'};stroke-width:2;"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
     </button>
     <div class="card-info">
@@ -2499,6 +2429,31 @@ async function init() {
 
   // Latest row (newest 12)
   document.getElementById('latestRow').innerHTML = allFilms.slice(0, 18).map((f,i) => filmCard(f,i)).join('');
+
+  // Inject ItemList JSON-LD so Google can index the film catalogue
+  (function injectItemList() {
+    const existing = document.getElementById('itemListLd');
+    if (existing) existing.remove();
+    const items = allFilms.slice(0, 20).map((f, i) => ({
+      '@type': 'ListItem',
+      'position': i + 1,
+      'url': `https://movxio.com/watch.html?id=${encodeURIComponent(f.id)}`,
+      'name': f.title
+    }));
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': 'Free Movies on MOVXIO',
+      'url': 'https://movxio.com/',
+      'numberOfItems': items.length,
+      'itemListElement': items
+    };
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.id = 'itemListLd';
+    s.textContent = JSON.stringify(ld);
+    document.head.appendChild(s);
+  })();
 
 }
 
@@ -2878,14 +2833,11 @@ init();
   <a href="browse.html?watchlist=1" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
     <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Watchlist
   </a>
-  <a href="admin.html" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--text-muted);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.05em;text-transform:uppercase;">
-    <svg viewBox="0 0 24 24" width="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Admin
-  </a>
 </nav>
 <style>
 @media (min-width: 768px) { .bottom-nav-bar { display: none !important; } body { padding-bottom: 0 !important; } }
-/* On mobile: pad for bottom nav (64px) + Adsterra social bar (~56px) */
-body { padding-bottom: 120px; }
+/* On mobile: pad for bottom nav (64px) + Adsterra social bar (~56px) + iOS safe area */
+body { padding-bottom: 120px; padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)); }
 </style>
 
 
@@ -2948,8 +2900,19 @@ document.addEventListener('keydown', e => {
   }
 })();
 </script>
-<!-- ══ ADSTERRA SOCIAL BAR ══ -->
-<script src="https://pl29131148.profitablecpmratenetwork.com/44/a4/be/44a4be48a597891bd035368d00eb6745.js"></script>
+<!-- ══ ADSTERRA SOCIAL BAR — deferred so it doesn't block render ══ -->
+<script>
+(function() {
+  function loadAdsterra() {
+    var s = document.createElement('script');
+    s.src = 'https://pl29131148.profitablecpmratenetwork.com/44/a4/be/44a4be48a597891bd035368d00eb6745.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+  if (document.readyState === 'complete') { loadAdsterra(); }
+  else { window.addEventListener('load', loadAdsterra); }
+})();
+</script>
 
 <!-- ══ MONETAG POPUNDER — First click on index ══ -->
 <script>
@@ -2980,12 +2943,12 @@ document.addEventListener('keydown', e => {
   }
 
   // Fire on first meaningful click only
-  // Ignore nav, search, hamburger — fire on film cards and watch buttons
+  // Small delay so popunder opens behind the navigation, not in front of it
   document.addEventListener('click', function handler(e) {
     const target = e.target.closest('a[href*="watch"], .film-card, .btn-watch, .card-play, .card-overlay');
     if (!target) return;
     document.removeEventListener('click', handler);
-    firePopunder();
+    setTimeout(firePopunder, 50);
   });
 
 })();
