@@ -523,20 +523,19 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   display: block;
 }
 
-
 /* ── FILM PANEL (left) ── */
-.film-info { padding: 36px 0 0; }
+.film-info { padding: 28px 0 0; }
 
 /* Poster + details row */
 .film-hero {
-  display: flex; gap: 28px; align-items: flex-start; margin-bottom: 28px;
+  display: flex; gap: 24px; align-items: flex-start; margin-bottom: 24px;
 }
 .film-poster-wrap {
-  flex-shrink: 0; width: 130px;
-  border-radius: 10px; overflow: hidden;
+  flex-shrink: 0; width: 120px;
+  border-radius: 8px; overflow: hidden;
   box-shadow: 0 8px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
   background: var(--surface2); aspect-ratio: 2/3;
-  position: relative; /* needed for abs img */
+  position: relative;
 }
 .film-poster-wrap img {
   width: 100%; height: 100%; object-fit: cover; display: block;
@@ -553,30 +552,62 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
   padding: 3px 8px; border-radius: 4px; white-space: nowrap;
 }
 
-.film-details { flex: 1; min-width: 0; padding-top: 4px; }
-.film-eyebrow {
-  font-family: 'Space Mono', monospace; font-size: 9px; text-transform: uppercase;
-  letter-spacing: 0.18em; color: var(--accent); margin-bottom: 8px;
-  display: flex; align-items: center; gap: 8px;
-}
-.film-eyebrow::after {
-  content: ''; flex: 1; height: 1px; background: rgba(232,71,63,0.2); max-width: 60px;
+.film-details { flex: 1; min-width: 0; padding-top: 2px; }
+
+/* Title line: title + year inline */
+.film-title-line {
+  display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
 }
 .film-title {
   font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(22px, 4vw, 38px); letter-spacing: -0.03em; line-height: 1.05;
-  color: var(--text); margin-bottom: 14px;
+  font-size: clamp(22px, 4vw, 36px); letter-spacing: -0.03em; line-height: 1.05;
+  color: var(--text); margin: 0;
 }
-.film-desc {
-  font-size: 13.5px; color: var(--text-dim); line-height: 1.75; margin-bottom: 20px;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+.film-year-badge {
+  font-family: 'Syne', sans-serif; font-weight: 400;
+  font-size: clamp(18px, 3vw, 28px); color: rgba(240,238,232,0.45);
+  letter-spacing: -0.02em; line-height: 1; flex-shrink: 0;
 }
 
-/* ── META TABLE ── */
-.meta-table { display: flex; flex-direction: column; gap: 0; margin-bottom: 22px; }
+/* ── INLINE META STRIP ── */
+.film-meta-strip {
+  display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+  margin-bottom: 14px; row-gap: 6px;
+}
+.imdb-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--gold); color: #000;
+  font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700;
+  padding: 3px 7px; border-radius: 4px; letter-spacing: 0.04em;
+  flex-shrink: 0; margin-right: 10px;
+}
+.imdb-pill .imdb-label { font-size: 9px; opacity: 0.7; }
+.meta-sep {
+  color: rgba(255,255,255,0.18); font-size: 11px; margin: 0 8px; flex-shrink: 0;
+}
+.meta-inline-item {
+  font-size: 13px; color: var(--text-dim);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.meta-inline-label {
+  font-family: 'Space Mono', monospace; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted); margin-right: 3px;
+}
+
+/* ── EYEBROW (hidden — replaced by meta strip) ── */
+.film-eyebrow { display: none; }
+
+.film-desc {
+  font-size: 13.5px; color: var(--text-dim); line-height: 1.75; margin-bottom: 18px;
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ── META TABLE (hidden on desktop, shown on mobile as fallback) ── */
+.meta-table { display: none; }
 .meta-row {
   display: flex; align-items: baseline; gap: 0;
-  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
   font-size: 13px;
 }
 .meta-row:first-child { padding-top: 0; }
@@ -604,12 +635,12 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 
 /* ── ACTION ROW ── */
 .action-row {
-  display: flex; gap: 10px; flex-wrap: wrap; padding-bottom: 32px;
+  display: flex; gap: 10px; flex-wrap: wrap; padding-bottom: 28px;
   border-bottom: 1px solid var(--border);
 }
 .action-btn {
   display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
-  border-radius: 40px; border: 1px solid var(--border);
+  border-radius: 8px; border: 1px solid var(--border);
   background: var(--surface); color: var(--text-dim);
   font-size: 13px; font-weight: 500; cursor: pointer;
   transition: all 0.2s; text-decoration: none;
@@ -619,10 +650,12 @@ nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center
 .action-btn.copied { border-color: var(--accent); color: var(--accent); background: rgba(232,71,63,0.08); }
 .action-btn svg { width: 14px; flex-shrink: 0; }
 .action-btn-primary {
-  background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600;
+  background: transparent; border-color: rgba(255,255,255,0.25); color: var(--text); font-weight: 600;
 }
-.action-btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+.action-btn-primary:hover { border-color: rgba(255,255,255,0.5); color: #fff; background: rgba(255,255,255,0.06); }
 .action-btn-primary svg { width: 14px; }
+/* Like button accent */
+.action-btn-like.active { color: var(--accent); border-color: var(--accent); background: rgba(232,71,63,0.08); }
 
 /* ── SIDEBAR ── */
 .sidebar { padding-top: 36px; }
@@ -973,24 +1006,26 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw); }
 }
 
 @media (max-width: 600px) {
-  .film-hero { gap: 16px; }
-  .film-poster-wrap { width: 96px; }
-  .film-title { font-size: clamp(18px, 5vw, 24px); margin-bottom: 10px; }
-  .film-desc { font-size: 13px; -webkit-line-clamp: 2; margin-bottom: 14px; }
-  .meta-key { min-width: 72px; font-size: 9px; }
-  .meta-row { font-size: 12px; padding: 7px 0; }
-  .action-row { gap: 8px; padding-bottom: 24px; }
+  .film-hero { gap: 14px; }
+  .film-poster-wrap { width: 90px; }
+  .film-title { font-size: clamp(17px, 5vw, 22px); margin-bottom: 8px; }
+  .film-year-badge { font-size: clamp(14px, 4vw, 18px); }
+  .film-desc { font-size: 13px; -webkit-line-clamp: 3; margin-bottom: 14px; }
+  .film-meta-strip { gap: 0; row-gap: 4px; }
+  .meta-inline-item { font-size: 12px; }
+  .action-row { gap: 7px; padding-bottom: 20px; }
   .action-btn { font-size: 12px; padding: 9px 14px; min-height: 40px; }
+  .meta-sep { display: none !important; }
+  .film-meta-strip { flex-direction: column; align-items: flex-start; gap: 4px; }
 }
 
 @media (max-width: 380px) {
-  .film-poster-wrap { width: 80px; }
-  .film-hero { gap: 12px; }
-  .film-title { font-size: 18px; }
-  .meta-key { min-width: 64px; }
-  /* Stack action buttons */
-  .action-row { flex-direction: column; }
-  .action-btn { width: 100%; justify-content: center; }
+  .film-poster-wrap { width: 76px; }
+  .film-hero { gap: 10px; }
+  .film-title { font-size: 16px; }
+  .film-year-badge { font-size: 14px; }
+  .action-row { flex-wrap: wrap; }
+  .action-btn { flex: 1; min-width: 80px; justify-content: center; }
 }
 
 /* ── Film grid (more section) ── */
@@ -1656,42 +1691,74 @@ body.theater-mode .master-layout { padding-top: calc(56.25vw); }
 
       <!-- Details -->
       <div class="film-details">
-        <span class="skel skel-eyebrow" id="skelEyebrow"></span>
-        <div class="film-eyebrow" id="filmEyebrow" style="display:none;">Now Streaming</div>
-        <span class="skel skel-title" id="skelTitle"></span>
-        <h1 class="film-title" id="filmTitle" style="display:none;"></h1>
-        <span class="skel skel-line w90" id="skelDesc1"></span>
-        <span class="skel skel-line w80" id="skelDesc2" style="margin-bottom:4px;"></span>
-        <span class="skel skel-line w60" id="skelDesc3" style="margin-bottom:16px;"></span>
-        <p class="film-desc" id="filmDesc" style="-webkit-line-clamp:3;display:none;-webkit-box-orient:vertical;overflow:hidden;"></p>
-        <button id="expandDescBtn" onclick="toggleDesc()" style="display:none;background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;margin-bottom:14px;">Show more ↓</button>
 
-        <!-- Meta table -->
-        <div class="meta-table" id="filmMetaTable">
-          <span class="skel skel-meta" id="skelMeta1"></span>
-          <span class="skel skel-meta" style="width:40%" id="skelMeta2"></span>
-          <span class="skel skel-meta" style="width:60%" id="skelMeta3"></span>
+        <!-- Title + year -->
+        <span class="skel skel-title" id="skelTitle" style="width:55%;height:38px;"></span>
+        <div class="film-title-line" id="filmTitleLine" style="display:none;">
+          <h1 class="film-title" id="filmTitle"></h1>
+          <span class="film-year-badge" id="filmYear"></span>
         </div>
 
-        <!-- Actions -->
-        <div class="action-row">
+        <!-- Inline meta strip: IMDb · Genre · Duration · Country · Director -->
+        <span class="skel skel-eyebrow" id="skelEyebrow" style="width:70%;margin-bottom:14px;"></span>
+        <div class="film-meta-strip" id="filmMetaStrip" style="display:none;">
+          <span class="imdb-pill" id="metaImdb" style="display:none;">
+            <span class="imdb-label">IMDb</span>
+            <span id="metaImdbScore"></span>
+          </span>
+          <span class="meta-inline-item" id="metaGenre" style="display:none;"></span>
+          <span class="meta-sep" id="metaSep1" style="display:none;">|</span>
+          <span class="meta-inline-item" id="metaDuration" style="display:none;">
+            <span class="meta-inline-label">Duration:</span>
+            <span id="metaDurationVal"></span>
+          </span>
+          <span class="meta-sep" id="metaSep2" style="display:none;">|</span>
+          <span class="meta-inline-item" id="metaCountry" style="display:none;">
+            <span class="meta-inline-label">Country:</span>
+            <span id="metaCountryVal"></span>
+          </span>
+          <span class="meta-sep" id="metaSep3" style="display:none;">|</span>
+          <span class="meta-inline-item" id="metaDirector" style="display:none;">
+            <span class="meta-inline-label">Director:</span>
+            <span id="metaDirectorVal"></span>
+          </span>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-row" style="margin-bottom:16px;">
           <button class="action-btn action-btn-primary" onclick="document.getElementById('playerContainer').scrollIntoView({behavior:'smooth'})">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            Watch Now
+            <svg viewBox="0 0 24 24" fill="currentColor" width="13"><path d="M8 5v14l11-7z"/></svg>
+            Trailer
           </button>
-          <button class="action-btn" id="shareBtn" onclick="copyLink()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          <button class="action-btn action-btn-like" id="likeBtn2" onclick="react('like')" style="gap:7px;">
+            <svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            Like
+          </button>
+          <button class="action-btn" id="wlBtn2" onclick="toggleNavWatchlist()" style="gap:7px;">
+            <svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span id="wlBtn2Text">Add</span>
+          </button>
+          <button class="action-btn" id="shareBtn" onclick="copyLink()" style="gap:7px;">
+            <svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             Share
           </button>
-          <a class="action-btn" href="browse.html">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m7 2 0 20M17 2v20M2 12h20"/></svg>
-            Browse All
-          </a>
           <button class="action-btn" id="reportBtn" onclick="openReportModal()" title="Report an issue with this film" style="color:var(--text-muted);opacity:0.4;pointer-events:none;" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             Report
           </button>
         </div>
+
+        <!-- Description -->
+        <span class="skel skel-line w90" id="skelDesc1"></span>
+        <span class="skel skel-line w80" id="skelDesc2" style="margin-bottom:4px;"></span>
+        <span class="skel skel-line w60" id="skelDesc3" style="margin-bottom:16px;"></span>
+        <p class="film-desc" id="filmDesc" style="-webkit-line-clamp:4;display:none;-webkit-box-orient:vertical;overflow:hidden;"></p>
+        <button id="expandDescBtn" onclick="toggleDesc()" style="display:none;background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;margin-bottom:14px;">Show more ↓</button>
+
+        <!-- Legacy meta table (hidden, kept for JS compat) -->
+        <div class="meta-table" id="filmMetaTable" style="display:none;"></div>
+        <div class="film-eyebrow" id="filmEyebrow" style="display:none;"></div>
+
       </div>
 
       <!-- ══ EPISODE SELECTOR (series only) ══ -->
@@ -2677,13 +2744,9 @@ function renderInfo(film) {
   // Remove skeleton loaders
   ['skelEyebrow','skelTitle','skelDesc1','skelDesc2','skelDesc3','skelMeta1','skelMeta2','skelMeta3','filmPosterSkel'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.remove();
+    if (el) el.style.display = 'none';
   });
   // Reveal real elements
-  ['filmEyebrow','filmTitle','filmDesc'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = '';
-  });
   const filmDescEl = document.getElementById('filmDesc');
   if (filmDescEl) { filmDescEl.style.display = '-webkit-box'; }
   const filmPosterPh = document.getElementById('filmPosterPh');
@@ -2703,9 +2766,21 @@ function renderInfo(film) {
   if (_ogDesc)   _ogDesc.setAttribute('content', film.description ? film.description.slice(0,160) : `Watch ${film.title} free on MOVXIO.`);
   const _ogImg    = document.querySelector('meta[property="og:image"]');
   const _twImg    = document.querySelector('meta[name="twitter:image"]');
-  const _ogImgSrc = film.backdrop_url || '';
+  // Priority: backdrop (landscape, ideal for social) → thumbnail/poster → nothing
+  const _ogImgSrc = film.backdrop_url || film.thumbnail_url || film.poster_url || '';
   if (_ogImg && _ogImgSrc) _ogImg.setAttribute('content', _ogImgSrc);
   if (_twImg && _ogImgSrc) _twImg.setAttribute('content', _ogImgSrc);
+  // og:image:alt — improves accessibility + WhatsApp/Telegram rendering
+  let _ogImgAlt = document.querySelector('meta[property="og:image:alt"]');
+  if (!_ogImgAlt) { _ogImgAlt = document.createElement('meta'); _ogImgAlt.setAttribute('property','og:image:alt'); document.head.appendChild(_ogImgAlt); }
+  _ogImgAlt.setAttribute('content', `${film.title} poster`);
+  // Adjust dimensions: backdrop is 1280×720, poster/thumbnail is portrait ~600×900
+  const _ogW = document.querySelector('meta[property="og:image:width"]');
+  const _ogH = document.querySelector('meta[property="og:image:height"]');
+  if (_ogW && _ogH) {
+    if (film.backdrop_url) { _ogW.setAttribute('content','1280'); _ogH.setAttribute('content','720'); }
+    else { _ogW.setAttribute('content','600'); _ogH.setAttribute('content','900'); }
+  }
   const _twTitle  = document.querySelector('meta[name="twitter:title"]');
   if (_twTitle)  _twTitle.setAttribute('content', `${film.title} — Watch Free`);
   const _twDesc   = document.querySelector('meta[name="twitter:description"]');
@@ -2754,6 +2829,45 @@ function renderInfo(film) {
   } else {
     eyebrowEl.textContent = genres[0] || 'Now Streaming';
   }
+  // New title+year layout
+  const titleLine = document.getElementById('filmTitleLine');
+  const yearEl = document.getElementById('filmYear');
+  const titleEl = document.getElementById('filmTitle');
+  titleEl.textContent = film.title;
+  if (yearEl && film.year) yearEl.textContent = '(' + film.year + ')';
+  if (titleLine) { titleLine.style.display = 'flex'; document.getElementById('skelTitle').style.display = 'none'; }
+
+  // Populate inline meta strip
+  const strip = document.getElementById('filmMetaStrip');
+  if (strip) {
+    if (film.imdb_rating) {
+      document.getElementById('metaImdbScore').textContent = film.imdb_rating;
+      document.getElementById('metaImdb').style.display = 'inline-flex';
+    }
+    if (genres.length) {
+      const genreEl = document.getElementById('metaGenre');
+      genreEl.textContent = genres.join(', ');
+      genreEl.style.display = 'inline-flex';
+    }
+    if (film.duration_secs) {
+      document.getElementById('metaDurationVal').textContent = formatDur(film.duration_secs);
+      document.getElementById('metaDuration').style.display = 'inline-flex';
+      document.getElementById('metaSep1').style.display = 'inline';
+    }
+    if (film.country) {
+      document.getElementById('metaCountryVal').textContent = film.country;
+      document.getElementById('metaCountry').style.display = 'inline-flex';
+      document.getElementById('metaSep2').style.display = 'inline';
+    }
+    if (film.director) {
+      document.getElementById('metaDirectorVal').textContent = film.director;
+      document.getElementById('metaDirector').style.display = 'inline-flex';
+      document.getElementById('metaSep3').style.display = 'inline';
+    }
+    strip.style.display = 'flex';
+    document.getElementById('skelEyebrow').style.display = 'none';
+  }
+
   document.getElementById('filmTitle').textContent = film.title;
   // Info title bar
   const infoTitleBar = document.getElementById('infoTitleBar');
@@ -2903,6 +3017,14 @@ function updateNavWlBtn(saved) {
   if (!btn || !txt) return;
   btn.className = saved ? 'nav-btn saved' : 'nav-btn';
   txt.textContent = saved ? 'Saved ✓' : 'Watchlist';
+  // Also update secondary Add button in film panel
+  const wl2 = document.getElementById('wlBtn2');
+  const wl2txt = document.getElementById('wlBtn2Text');
+  if (wl2 && wl2txt) {
+    wl2txt.textContent = saved ? 'Saved ✓' : 'Add';
+    wl2.style.color = saved ? 'var(--green)' : '';
+    wl2.style.borderColor = saved ? 'var(--green)' : '';
+  }
 }
 
 // ── Track history ──────────────────────────────────────────────
